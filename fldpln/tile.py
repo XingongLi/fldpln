@@ -357,7 +357,7 @@ def CalculateFspSegmentDownstreamDistance(libFolder,libName):
 # It also calculates FSP and segment downstream distance (i.e., distance to library outlet(s)) which involves:
 # 1. Calculate FSP's within-segment downstream distance
 # 2. Calculate segment length which is more accurate than "CellCount" * cell size
-# 3. Calculate segment's dowstreeam distance (to watershed outlet) for speeding up 
+# 3. Calculate segment's downstream distance (to watershed outlet) for speeding up 
 # 4. Calculate FSP's downstream distance
 # Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).
 # This function add the gap when calculating downstream distance to the outlet!
@@ -382,7 +382,7 @@ def CalculateFspSegmentDownstreamDistance(libFolder,libName):
     # 1. Remove the segment if it's not in the FSP table
     # 2. If the missing segment is the downstream segment of another segment, set it as 0. 
     # Those missing segments are usually because of they are close to or in waterbodies. 
-    # By removing those segment, a library may have several seperate watersheds/outpets!
+    # By removing those segment, a library may have several separate watersheds/outlets!
     #
     # get the segment IDs
     segIds = segDf['SegId'].to_list()
