@@ -1,5 +1,4 @@
-"""
-    Module for handling gauge data for flood mapping
+"""Module for handling gauge data for flood mapping
 """
 
 # 

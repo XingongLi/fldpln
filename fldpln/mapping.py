@@ -1,5 +1,4 @@
-"""
-    Module for mapping tile-based library .
+"""Module for mapping tile-based library .
 """
 
 import os

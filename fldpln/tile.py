@@ -1,5 +1,4 @@
-"""
-    Module to re-organize FLDPLN segment-based library into tile-based library for fast mapping
+"""Module to re-organize FLDPLN segment-based library into tile-based library for fast mapping
 """
 
 # imports
