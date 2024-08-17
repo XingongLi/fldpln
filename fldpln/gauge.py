@@ -957,7 +957,7 @@ def GetUsgsGaugeStageFromWebServiceOld(usgsIds):
     return df
 
 #
-# read AHPS/USGS gauge stage from their repective web services
+# read AHPS/USGS gauge stage from their respective web services
 #
 def GetAhpsUsgsGaugeStageFromWebServices(gaugeIdOrgs, whichStage='Nowcast', periodInDays=7):
 # gaugeIdOrgs: a DF with columns of ["stationid", "organization"]. 
