@@ -40,7 +40,7 @@ def GetUsgsGauges(geobox,epsg=32614):
     #  dec_long_va     -- Decimal longitude
     #  coord_acy_cd    -- Latitude-longitude accuracy
     #  dec_coord_datum_cd -- Decimal Latitude-longitude datum
-    #  alt_va          -- Altitude of Gage/land surface
+    #  alt_va          -- Altitude of gauge/land surface
     #  alt_acy_va      -- Altitude accuracy
     #  alt_datum_cd    -- Altitude datum
     #  huc_cd          -- Hydrologic unit code
@@ -136,7 +136,7 @@ def GetUsgsGaugeInfo(ids):
     #  dec_long_va     -- Decimal longitude
     #  coord_acy_cd    -- Latitude-longitude accuracy
     #  dec_coord_datum_cd -- Decimal Latitude-longitude datum
-    #  alt_va          -- Altitude of Gage/land surface
+    #  alt_va          -- Altitude of gauge/land surface
     #  alt_acy_va      -- Altitude accuracy
     #  alt_datum_cd    -- Altitude datum
     #  huc_cd          -- Hydrologic unit code
@@ -359,7 +359,7 @@ def MergeUsgsAhpsGauges(usgsGauges, ahpsGauges, nearDist=350):
         #  dec_long_va     -- Decimal longitude
         #  coord_acy_cd    -- Latitude-longitude accuracy
         #  dec_coord_datum_cd -- Decimal Latitude-longitude datum
-        #  alt_va          -- Altitude of Gage/land surface
+        #  alt_va          -- Altitude of gauge/land surface
         #  alt_acy_va      -- Altitude accuracy
         #  alt_datum_cd    -- Altitude datum
     # AHPS fields:
@@ -502,7 +502,7 @@ def MergeUsgsAhpsGauges(usgsGauges, ahpsGauges, nearDist=350):
 #     # print(gaugeObsDf)
     
 #     if obsType == 'Observed':
-#         # some guage obs may have latency 
+#         # some gauge obs may have latency 
 #         nowTime = datetime.now()
 #         threeDaysAgo = nowTime - timedelta(days=3)
 #         # select obs within 3 days
@@ -588,7 +588,7 @@ def GetAhpsGaugeForecast(scratchFolder,fcstLength,gaugeDatumFile):
         gaugeObsDf = gaugeObsDf[gaugeColumns]
         # print(gaugeObsDf)
 
-        # some guage obs may have latency 
+        # some gauge obs may have latency 
         nowTime = datetime.now()
         threeDaysAgo = nowTime - timedelta(days=3)
         # select obs within 3 days
@@ -876,7 +876,7 @@ def GetUsgsGaugeStageFromWebService(usgsIds, startDate='Now', endDate='MostRecen
     # get gauge type: ST or LK
     gt = GetUsgsGaugeInfo(usgsIds)['site_tp_cd'].to_list()
 
-    # split gauges into STREM and LAKE groups
+    # split gauges into STREAM and LAKE groups
     stIds=[]; lkIds=[]
     for t, id in zip(gt, usgsIds):
         if t == 'ST':

@@ -380,7 +380,7 @@ def InterpBetweenTwoGauges(fx, fe, gx1, ge1, gy1, gx2, ge2, gy2, weightingType='
     return fy
 
 #
-# Interpolate FSP DOF using the DOFs observaed at a list of guages
+# Interpolate FSP DOF using the DOFs observaed at a list of gauges
 #
 # fx, fe -- FSP distance from downstream outlet and FSP filled DEM elevation
 # gx, ge, gy --  gauge distance from downstream outlet, filled DEM elevation and DOF
@@ -411,7 +411,7 @@ def InterpDofWithGauges(fx,fe,gx,ge,gy,weightingType='V'):
 def InterpolateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.0328084,weightingType='V'):
 # gaugeFspDf--A DF of gauge FSPs (i.e., FSPs to which gauges are snapped). 
 #       It should have at least 4 columns['lib_name','FspX','FspY','Dof'].
-# minGaugeDof--min DOF a guage should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
+# minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
 # weightingType--V (vertical distance-based) or H (horizontal, i.e. horizontal distance-based)
     
     # select the gauge FSPs in the library
@@ -503,7 +503,7 @@ def InterpolateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.032808
         gaugeOrd = pd.concat([gaugeOrd,dsEndGauge])
         # print(f"Gauges with DOFs on stream order ({ord}): \n",gaugeOrd)
         
-        # claculate the min and max downstream distance
+        # calculate the min and max downstream distance
         minDist = gaugeOrd['DsDist'].min()
         maxDist = gaugeOrd['DsDist'].max()
 
@@ -539,7 +539,7 @@ def InterpolateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.032808
 def EstimateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.0328084,weightingType='V'):
 # gaugeFspDf--A DF of gauge FSPs (i.e., FSPs to which gauges are snapped). 
 #       It should have at least 4 columns['stage_elevation','lib_name','FspX','FspY'].
-# minGaugeDof--min DOF a guage should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
+# minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
 # weightingType--V (vertical distance-based) or H (horizontal, i.e. horizontal distance-based)
     
     # select the gauge FSPs in the library
@@ -637,7 +637,7 @@ def EstimateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.0328084,w
         gaugeOrd = pd.concat([gaugeOrd,dsEndGauge])
         # print(f"Gauges with DOFs on stream order ({ord}): \n",gaugeOrd)
         
-        # claculate the min and max downstream distance
+        # calculate the min and max downstream distance
         minDist = gaugeOrd['DsDist'].min()
         maxDist = gaugeOrd['DsDist'].max()
 
@@ -672,7 +672,7 @@ def EstimateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.0328084,w
 def EstimateFspDofFromGaugeOld(libFolder,libName,gaugeFspDf,minGaugeDof=0.0328084):
 # gaugeFspDf--A DF of gauge FSPs (i.e., FSPs to which gauges are snapped). 
 #       It should have at least 4 columns['stage_elevation','lib_name','FspX','FspY'].
-# minGaugeDof--min DOF a guage should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
+# minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
     
     # select the gauge FSPs in the library
     gaugeFspDf = gaugeFspDf[gaugeFspDf['lib_name']==libName]
@@ -769,7 +769,7 @@ def EstimateFspDofFromGaugeOld(libFolder,libName,gaugeFspDf,minGaugeDof=0.032808
         gaugeOrd = pd.concat([gaugeOrd,dsEndGauge])
         # print(f"Gauges with DOFs on stream order ({ord}): \n",gaugeOrd)
         
-        # claculate the min and max downstream distance
+        # calculate the min and max downstream distance
         minDist = gaugeOrd['DsDist'].min()
         maxDist = gaugeOrd['DsDist'].max()
 
@@ -778,7 +778,7 @@ def EstimateFspDofFromGaugeOld(libFolder,libName,gaugeFspDf,minGaugeDof=0.032808
         fspOrd = fspOrd[(fspOrd['DsDist']>=minDist) & (fspOrd['DsDist']<=maxDist)]
 
         # interpolate DOF for the FSPs with the gauges
-        gaugeOrd = gaugeOrd.sort_values('DsDist') # for using np.interp(), x must be accending!
+        gaugeOrd = gaugeOrd.sort_values('DsDist') # for using np.interp(), x must be ascending!
         fspOrd['Dof'] = np.interp(fspOrd['DsDist'], gaugeOrd['DsDist'], gaugeOrd['Dof'].astype(np.float64))
         # print(fspOrd)
 
@@ -800,7 +800,7 @@ def EstimateFspDofFromGaugeOld(libFolder,libName,gaugeFspDf,minGaugeDof=0.032808
 def EstimateFspDofFromGaugeReallyOld(libFolder,libName,gaugeDf,gaugeElevField,minGaugeDof=0.0328084):
 # gaugeElevField --  field in gaugeDf that stores gauge's water surface elevation
 # gaugeDf--A DF with snapped FSP columns ['FspX','FspY','FspFilledElev','Dist']
-# minGaugeDof--min DOF a guage should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
+# minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
     
     # calculate FSP DOF
     gaugeDf['Dof'] = gaugeDf[gaugeElevField] - gaugeDf['FspFilledElev']
@@ -894,7 +894,7 @@ def EstimateFspDofFromGaugeReallyOld(libFolder,libName,gaugeDf,gaugeElevField,mi
         gaugeOrd = pd.concat([gaugeOrd,dsEndGauge])
         # print(f"Gauges with DOFs on stream order ({ord}): \n",gaugeOrd)
         
-        # claculate the min and max downstream distance
+        # calculate the min and max downstream distance
         minDist = gaugeOrd['DsDist'].min()
         maxDist = gaugeOrd['DsDist'].max()
 
@@ -903,7 +903,7 @@ def EstimateFspDofFromGaugeReallyOld(libFolder,libName,gaugeDf,gaugeElevField,mi
         fspOrd = fspOrd[(fspOrd['DsDist']>=minDist) & (fspOrd['DsDist']<=maxDist)]
 
         # interpolate DOF for the FSPs with the gauges
-        gaugeOrd = gaugeOrd.sort_values('DsDist') # for using np.interp(), x must be accending!
+        gaugeOrd = gaugeOrd.sort_values('DsDist') # for using np.interp(), x must be ascending!
         fspOrd['Dof'] = np.interp(fspOrd['DsDist'], gaugeOrd['DsDist'], gaugeOrd['Dof'].astype(np.float64))
         # print(fspOrd)
 
@@ -928,7 +928,7 @@ def EstimateFspDofFromGaugeReallyOld(libFolder,libName,gaugeDf,gaugeElevField,mi
 def EstimateFspDofFromGaugeBlob(libBlobSerClient,libName,gaugeDf,gaugeElevField,minGaugeDof=0.0328084):
 # gaugeElevField --  field in gaugeDf that stores gauge's water surface elevation
 # gaugeDf--A DF with snapped FSP columns ['FspX','FspY','FspFilledElev','Dist']
-# minGaugeDof--min DOF a guage should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
+# minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
     
     # calculate FSP DOF
     gaugeDf['Dof'] = gaugeDf[gaugeElevField] - gaugeDf['FspFilledElev']
@@ -1052,7 +1052,7 @@ def EstimateFspDofFromGaugeBlob(libBlobSerClient,libName,gaugeDf,gaugeElevField,
         gaugeOrd = pd.concat([gaugeOrd,dsEndGauge])
         # print(f"Gauges with DOFs on stream order ({ord}): \n",gaugeOrd)
         
-        # claculate the min and max downstream distance
+        # calculate the min and max downstream distance
         minDist = gaugeOrd['DsDist'].min()
         maxDist = gaugeOrd['DsDist'].max()
 
@@ -1061,7 +1061,7 @@ def EstimateFspDofFromGaugeBlob(libBlobSerClient,libName,gaugeDf,gaugeElevField,
         fspOrd = fspOrd[(fspOrd['DsDist']>=minDist) & (fspOrd['DsDist']<=maxDist)]
 
         # interpolate DOF for the FSPs with the gauges
-        gaugeOrd = gaugeOrd.sort_values('DsDist') # for using np.interp(), x must be accending!
+        gaugeOrd = gaugeOrd.sort_values('DsDist') # for using np.interp(), x must be ascending!
         fspOrd['Dof'] = np.interp(fspOrd['DsDist'], gaugeOrd['DsDist'], gaugeOrd['Dof'].astype(np.float64))
         # print(fspOrd)
 

@@ -183,12 +183,12 @@ def TileLibrary(segLibFolder,cellSize,tiledLibFolder,tileSize,fileFormat):
                 tdf.to_parquet(filePathName,engine='fastparquet',compression='snappy',index=False) # snappy fast processing
                 # tdf.to_parquet(filePathName,engine='fastparquet',compression='snappy',index=True) # snappy fast processing
             elif fileFormat == 'mat':
-                # seperate columns by datatypes (int32 and float32)
+                # separate columns by datatypes (int32 and float32)
                 fspFppsArray = tdf[relColumnNames[0:3]].to_numpy(dtype=np.int32)
                 dtfFilledDepthArray = tdf[relColumnNames[-2::]].to_numpy(dtype=np.float32)
                 # Save to compressed .mat file
                 dfDic = {'FspFpps': fspFppsArray,'DtfFilledDepth': dtfFilledDepthArray}
-                # Tile cannot be too large which may cause failture in writing into .mat file. See https://github.com/scipy/scipy/issues/12465
+                # Tile cannot be too large which may cause failure in writing into .mat file. See https://github.com/scipy/scipy/issues/12465
                 filePathName = os.path.join(tiledLibFolder, tileFileMainName+'_'+str(tileId)+'.mat')
                 sio.savemat(filePathName, dfDic, do_compression=True) 
             else:
@@ -291,7 +291,7 @@ def CalculateLibraryExtent(segLibFolder,cellSize):
     # initialize extent
     minX,maxX,minY,maxY = (math.inf,-math.inf,math.inf,-math.inf)
     relNum = 0 # number of FSP-FPP relation
-    segExts = pd.DataFrame(columns=['MinX','MaxX','MinY','MaxY','FileName']) # empty df storing each segment's FPP extent and correponding mat file name
+    segExts = pd.DataFrame(columns=['MinX','MaxX','MinY','MaxY','FileName']) # empty df storing each segment's FPP extent and corresponding mat file name
     # update the extent by all the segments
     print('Calculate library extent ...')
     for mf in segMatFileFullNames:
@@ -339,7 +339,7 @@ def ReadMatFile(matFile, varName):
         f = h5py.File(matFile,'r')
         for k, v in f.items():
             vars[k] = np.array(v)
-        # get the variable and tranpose it for dataframe!
+        # get the variable and transpose it for dataframe!
         var = vars[varName].transpose()
     except:
         ValueError('Could not read the mat file at all...')
