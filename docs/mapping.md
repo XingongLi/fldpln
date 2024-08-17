@@ -1,3 +1,3 @@
 # mapping module
 
-::: fldpln.mapping
+::: mapping
