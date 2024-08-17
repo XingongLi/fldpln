@@ -376,7 +376,7 @@ def MergeUsgsAhpsGauges(usgsGauges, ahpsGauges, nearDist=350):
     gauges = pd.DataFrame(columns=fields)
 
     # add common gauges
-    for row in commGauges.itertuples(): 
+    for row in commGauges.itertuples():  
         stationid,name,organization,stype,datum_elevation,vdatum,latitude,longitude,hdatum,x,y = (row.site_no,row.station_nm,row.agency_cd,row.site_tp_cd,row.alt_va,row.alt_datum_cd,row.dec_lat_va,row.dec_long_va,row.dec_coord_datum_cd,row.x,row.y)
         to_navd88 = np.nan
 

@@ -1042,7 +1042,7 @@ def EstimateFspDofFromGaugeBlob(libBlobSerClient,libName,gaugeDf,gaugeElevField,
             else:
                 dsEndGauge = t
                 dsEndGauge['Dof']=0
-        # print(dsEndGauge)
+        # print(dsEndGauge) 
                   
         # put all the gauges together
         gaugeOrd = gaugeOrd[['FspX','FspY','DsDist','Dof']]

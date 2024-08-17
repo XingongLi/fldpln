@@ -323,7 +323,7 @@ def CalculateLibraryExtent(segLibFolder,cellSize):
     # print('Library segment FPP extents:\n', segExts)
     print('Total number of FSP-FPP relations:', relNum)
     
-    return (minX, maxX,minY, maxY), segExts
+    return (minX, maxX,minY, maxY), segExts 
 
 #
 # Read matlab files with different versions
