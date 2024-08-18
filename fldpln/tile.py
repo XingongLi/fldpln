@@ -20,8 +20,8 @@ import shutil
 import urllib.request
 import re
 
-# import common module
-from common import *
+# # import common module
+# from common import *
 
 ############################################################################################################################################
 # Functions--convert segment-based library to tiled library
@@ -30,6 +30,14 @@ from common import *
 # Tile a library. Turn segment-based FSP-FPP relations to tile-based
 #
 def TileLibrary(segLibFolder,cellSize,tiledLibFolder,tileSize,fileFormat):
+    """Tile a library. Turn segment-based FSP-FPP relations to tile-based
+    Parameters:
+        segLibFolder (str): The folder containing the segment-based library.
+        cellSize (float): The cell size of the library.
+        tiledLibFolder (str): The folder to save the tiled library.
+        tileSize (int): The size of a tile in number of cells.
+        fileFormat (str): The file format to save the tile-based library. 'snappy' or 'mat'.
+    """
 # This function uses the fsp_info.csv file (under tiledLibFolder) to get FSP IDs
 # fileFormat: 'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
 # tileSize changed to the number of cells on May 27, 2024 to avoid partial cells within a tile and also works for GCS system
