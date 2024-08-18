@@ -36,6 +36,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://xingongli.github.io/fldpln/tile/</loc>
+         <lastmod>2024-08-18</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://xingongli.github.io/fldpln/usage/</loc>
          <lastmod>2024-08-18</lastmod>
          <changefreq>daily</changefreq>

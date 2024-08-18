@@ -12,13 +12,11 @@
         <meta name="author" content="xingongli">
       
       
-        <link rel="canonical" href="https://xingongli.github.io/fldpln/usage/">
+        <link rel="canonical" href="https://xingongli.github.io/fldpln/tile/">
       
       
-        <link rel="prev" href="../installation/">
+        <link rel="prev" href="../common/">
       
-      
-        <link rel="next" href="../contributing/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -26,7 +24,7 @@
     
     
       
-        <title>Usage - fldpln</title>
+        <title>tile module - fldpln</title>
       
     
     
@@ -82,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#usage" class="md-skip">
+        <a href="#tile-module" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Usage
+              tile module
             
           </span>
         </div>
@@ -303,19 +301,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -324,7 +313,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -476,17 +464,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
         
           
           <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
@@ -500,7 +490,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             API Reference
@@ -553,10 +543,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../tile/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    tile module
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -565,6 +575,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile" class="md-nav__link">
+    <span class="md-ellipsis">
+      fldpln.tile
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.TileLibrary" class="md-nav__link">
+    <span class="md-ellipsis">
+      TileLibrary()
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -597,6 +645,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile" class="md-nav__link">
+    <span class="md-ellipsis">
+      fldpln.tile
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.TileLibrary" class="md-nav__link">
+    <span class="md-ellipsis">
+      TileLibrary()
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -616,10 +690,112 @@
   
 
 
-<h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h1>
-<p>To use fldpln in a project:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>import fldpln
-</code></pre></div></td></tr></table></div>
+<h1 id="tile-module">tile module<a class="headerlink" href="#tile-module" title="Permanent link">&para;</a></h1>
+
+
+  <div class="doc doc-object doc-module">
+
+<a id="fldpln.tile"></a>
+    <div class="doc doc-contents first">
+
+      <p>This module contains functions to tile segment-based library for fast mapping.</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="fldpln.tile.TileLibrary" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">TileLibrary</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span> <span class="n">cellSize</span><span class="p">,</span> <span class="n">tiledLibFolder</span><span class="p">,</span> <span class="n">tileSize</span><span class="p">,</span> <span class="n">fileFormat</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.tile.TileLibrary" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Tile a library. Turn segment-based FSP-FPP relations to tile-based</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>segLibFolder</code></td>
+        <td><code>str</code></td>
+        <td><p>The folder containing the segment-based library.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>cellSize</code></td>
+        <td><code>float</code></td>
+        <td><p>The cell size of the library.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>tiledLibFolder</code></td>
+        <td><code>str</code></td>
+        <td><p>The folder to save the tiled library.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>tileSize</code></td>
+        <td><code>int</code></td>
+        <td><p>The size of a tile in number of cells.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>fileFormat</code></td>
+        <td><code>str</code></td>
+        <td><p>The file format to save the tile-based library. 'snappy' or 'mat'.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>fldpln/tile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">TileLibrary</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span><span class="n">cellSize</span><span class="p">,</span><span class="n">tiledLibFolder</span><span class="p">,</span><span class="n">tileSize</span><span class="p">,</span><span class="n">fileFormat</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tile a library. Turn segment-based FSP-FPP relations to tile-based</span>
+<span class="sd">    Parameters:</span>
+<span class="sd">        segLibFolder (str): The folder containing the segment-based library.</span>
+<span class="sd">        cellSize (float): The cell size of the library.</span>
+<span class="sd">        tiledLibFolder (str): The folder to save the tiled library.</span>
+<span class="sd">        tileSize (int): The size of a tile in number of cells.</span>
+<span class="sd">        fileFormat (str): The file format to save the tile-based library. &#39;snappy&#39; or &#39;mat&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tile a library ...&#39;</span><span class="p">)</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
 
 
 
@@ -642,7 +818,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-16T19:50:32+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-16</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-18T00:51:24+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-18</span>
   </span>
 
     
@@ -652,7 +828,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-16T19:50:32+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-16</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-16T20:54:01+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-16</span>
   </span>
 
     
