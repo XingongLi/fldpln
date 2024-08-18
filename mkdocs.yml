@@ -84,3 +84,4 @@ nav:
     - API Reference:
           - fldpln module: fldpln.md
           - common module: common.md
+          - tile module: tile.md
