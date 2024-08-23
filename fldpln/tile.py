@@ -35,7 +35,7 @@ def TileLibrary(segLibFolder,cellSize,tiledLibFolder,tileSize,fileFormat):
             tiledLibFolder: folder for the tiled library
             tileSize: number of cells in a tile
             fileFormat: 'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
-            Return: metadata of the tiled library
+        Return: metadata of the tiled library
     """
 # This function uses the fsp_info.csv file (under tiledLibFolder) to get FSP IDs
 # fileFormat: 'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package

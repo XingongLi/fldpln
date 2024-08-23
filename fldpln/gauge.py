@@ -27,10 +27,11 @@ from .mapping import *
 # Get USGS gauges. This function get USGS gauges within a box and project them
 #
 def GetUsgsGauges(geobox,epsg=32614):
-    """Get USGS gauges within a geographic box and project them to a projected coordinate system
+    """ Get USGS gauges within a geographic box and project them to a projected coordinate system.
         Parameters:
             geobox--a geographic box of (minX,minY,maxX,maxY)
-            epsg--projected coordinate system, default to UTM14 for Kansas
+            epsg--spatial coordinate system, default to UTM14 (32614) for Kansas
+        Returns: a GeoDataFrame of USGS gauges within the box
     """
 
     # USGS site/gauge table fields:
