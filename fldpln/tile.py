@@ -1,27 +1,27 @@
 """This module contains functions to tile segment-based library for fast mapping.
 """
 
-# # imports
-# from lib2to3.pgen2 import driver
-# import os
-# import math
-# import json
-# import numpy as np
-# import pandas as pd
-# import geopandas as gpd
-# import scipy.io as sio #import loadmat, savemat
-# import h5py # for reading some .mat file
-# import glob
-# from pyproj import CRS
-# from shapely.geometry import LineString
-# # from osgeo import ogr
-# import zipfile
-# import shutil
-# import urllib.request
-# import re
+# imports
+from lib2to3.pgen2 import driver
+import os
+import math
+import json
+import numpy as np
+import pandas as pd
+import geopandas as gpd
+import scipy.io as sio #import loadmat, savemat
+import h5py # for reading some .mat file
+import glob
+from pyproj import CRS
+from shapely.geometry import LineString
+# from osgeo import ogr
+import zipfile
+import shutil
+import urllib.request
+import re
 
 # import common module
-from common import *
+from .common import *
 
 ############################################################################################################################################
 # Functions--convert segment-based library to tiled library
