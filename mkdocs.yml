@@ -85,3 +85,5 @@ nav:
           - fldpln module: fldpln.md
           - common module: common.md
           - tile module: tile.md
+          - mapping module: mapping.md
+          - gauge module: gauge.md
