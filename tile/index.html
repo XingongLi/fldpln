@@ -817,14 +817,9 @@
         <td><p>'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package</p></td>
         <td><em>required</em></td>
       </tr>
-      <tr>
-        <td><code>Return</code></td>
-        <td></td>
-        <td><p>metadata of the tiled library</p></td>
-        <td><em>required</em></td>
-      </tr>
   </tbody>
-</table>
+</table>      
+
         <details class="quote">
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">TileLibrary</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span><span class="n">cellSize</span><span class="p">,</span><span class="n">tiledLibFolder</span><span class="p">,</span><span class="n">tileSize</span><span class="p">,</span><span class="n">fileFormat</span><span class="p">):</span>
@@ -835,7 +830,7 @@
 <span class="sd">            tiledLibFolder: folder for the tiled library</span>
 <span class="sd">            tileSize: number of cells in a tile</span>
 <span class="sd">            fileFormat: &#39;snappy&#39; or &#39;mat&#39;. &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
-<span class="sd">            Return: metadata of the tiled library</span>
+<span class="sd">        Return: metadata of the tiled library</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <span class="c1"># This function uses the fsp_info.csv file (under tiledLibFolder) to get FSP IDs</span>
 <span class="c1"># fileFormat: &#39;snappy&#39; or &#39;mat&#39;. &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
