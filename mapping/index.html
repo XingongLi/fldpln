@@ -769,15 +769,53 @@
 
       <p>Create folders for storing temporary files and output maps</p>
 
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>outFolder</code></td>
+        <td><code>str</code></td>
+        <td><p>the main folder for storing output maps</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>scratchFolderName</code></td>
+        <td><code>str</code></td>
+        <td><p>the folder for storing temporary files</p></td>
+        <td><code>&#39;scratch&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>outMapFolderName</code></td>
+        <td><code>str</code></td>
+        <td><p>the folder for storing output maps</p></td>
+        <td><code>&#39;maps&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>removeExist</code></td>
+        <td><code>bool</code></td>
+        <td><p>whether to remove existing folders</p></td>
+        <td><code>True</code></td>
+      </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>fldpln/mapping.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">CreateFolders</span><span class="p">(</span><span class="n">outFolder</span><span class="p">,</span><span class="n">scratchFolderName</span><span class="o">=</span><span class="s1">&#39;scratch&#39;</span><span class="p">,</span><span class="n">outMapFolderName</span><span class="o">=</span><span class="s1">&#39;maps&#39;</span><span class="p">,</span><span class="n">removeExist</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Create folders for storing temporary files and output maps</span>
-<span class="sd">    Parameters:</span>
-<span class="sd">        outFolder -- the main folder for storing output maps</span>
-<span class="sd">        scratchFolderName -- the folder for storing temporary files</span>
-<span class="sd">        outMapFolderName -- the folder for storing output maps</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create folders for storing temporary files and output maps</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        outFolder (str): the main folder for storing output maps</span>
+<span class="sd">        scratchFolderName (str): the folder for storing temporary files</span>
+<span class="sd">        outMapFolderName (str): the folder for storing output maps</span>
+<span class="sd">        removeExist (bool): whether to remove existing folders</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># create output folder if it doesn&#39;t exist</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">outFolder</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
