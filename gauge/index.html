@@ -778,19 +778,18 @@
 
     <div class="doc doc-contents ">
 
-      <p>Get USGS gauges within a geographic box and project them to a projected coordinate system.</p>
+      <p>Get USGS gauges within a geographic box and project them into a projected coordinate system</p>
       
 
         <details class="quote">
           <summary>Source code in <code>fldpln/gauge.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GetUsgsGauges</span><span class="p">(</span><span class="n">geobox</span><span class="p">,</span><span class="n">epsg</span><span class="o">=</span><span class="mi">32614</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Get USGS gauges within a geographic box and project them to a projected coordinate system.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Get USGS gauges within a geographic box and project them into a projected coordinate system</span>
 <span class="sd">        Parameters:</span>
 <span class="sd">            geobox--a geographic box of (minX,minY,maxX,maxY)</span>
-<span class="sd">            epsg--spatial coordinate system, default to UTM14 (32614) for Kansas</span>
-<span class="sd">        Returns: a GeoDataFrame of USGS gauges within the box</span>
+<span class="sd">            epsg--projected coordinate system, default to UTM14 for Kansas</span>
+<span class="sd">        Returns: a GeoDataFrame of USGS gauges</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># USGS site/gauge table fields:</span>
     <span class="c1">#  agency_cd       -- Agency</span>
     <span class="c1">#  site_no         -- Site identification number</span>
