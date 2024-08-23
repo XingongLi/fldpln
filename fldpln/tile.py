@@ -20,8 +20,8 @@
 # import urllib.request
 # import re
 
-# import common module
-from common import *
+# # import common module
+# from common import *
 
 ############################################################################################################################################
 # Functions--convert segment-based library to tiled library
