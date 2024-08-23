@@ -33,12 +33,13 @@ from .common import *
 # Build folder for storing temporary file and output maps
 #
 def CreateFolders(outFolder,scratchFolderName='scratch',outMapFolderName='maps',removeExist=True):
-    """
-    Create folders for storing temporary files and output maps
-    Parameters:
-        outFolder -- the main folder for storing output maps
-        scratchFolderName -- the folder for storing temporary files
-        outMapFolderName -- the folder for storing output maps
+    """Create folders for storing temporary files and output maps
+
+    Args:
+        outFolder (str): the main folder for storing output maps
+        scratchFolderName (str): the folder for storing temporary files
+        outMapFolderName (str): the folder for storing output maps
+        removeExist (bool): whether to remove existing folders
     """
     # create output folder if it doesn't exist
     os.makedirs(outFolder, exist_ok=True)

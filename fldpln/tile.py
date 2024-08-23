@@ -29,7 +29,7 @@ from .common import *
 
 def TileLibrary(segLibFolder,cellSize,tiledLibFolder,tileSize,fileFormat):
     """ Tile a library. Turn segment-based FSP-FPP relations to tile-based
-        param:
+        Parameters:
             segLibFolder: folder containing the segment-based library
             cellSize: cell size in meters
             tiledLibFolder: folder for the tiled library
