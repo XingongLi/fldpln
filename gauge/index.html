@@ -12,13 +12,11 @@
         <meta name="author" content="xingongli">
       
       
-        <link rel="canonical" href="https://xingongli.github.io/fldpln/usage/">
+        <link rel="canonical" href="https://xingongli.github.io/fldpln/gauge/">
       
       
-        <link rel="prev" href="../installation/">
+        <link rel="prev" href="../mapping/">
       
-      
-        <link rel="next" href="../contributing/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -26,7 +24,7 @@
     
     
       
-        <title>Usage - fldpln</title>
+        <title>gauge module - fldpln</title>
       
     
     
@@ -82,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#usage" class="md-skip">
+        <a href="#gauge-module" class="md-skip">
           Skip to content
         </a>
       
@@ -118,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Usage
+              gauge module
             
           </span>
         </div>
@@ -303,19 +301,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../usage/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -324,7 +313,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -476,17 +464,19 @@
       
   
   
+    
   
   
+  
     
     
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_9" checked>
         
           
           <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
@@ -500,7 +490,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_9">
             <span class="md-nav__icon md-icon"></span>
             API Reference
@@ -595,10 +585,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../gauge/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    gauge module
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -607,6 +617,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.gauge" class="md-nav__link">
+    <span class="md-ellipsis">
+      fldpln.gauge
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.gauge.GetUsgsGauges" class="md-nav__link">
+    <span class="md-ellipsis">
+      GetUsgsGauges()
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -639,6 +687,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.gauge" class="md-nav__link">
+    <span class="md-ellipsis">
+      fldpln.gauge
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.gauge.GetUsgsGauges" class="md-nav__link">
+    <span class="md-ellipsis">
+      GetUsgsGauges()
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -658,10 +732,174 @@
   
 
 
-<h1 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h1>
-<p>To use fldpln in a project:</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>import fldpln
-</code></pre></div></td></tr></table></div>
+<h1 id="gauge-module">gauge module<a class="headerlink" href="#gauge-module" title="Permanent link">&para;</a></h1>
+
+
+  <div class="doc doc-object doc-module">
+
+<a id="fldpln.gauge"></a>
+    <div class="doc doc-contents first">
+
+      <p>Module for handling gauge data for flood mapping</p>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="fldpln.gauge.GetUsgsGauges" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">GetUsgsGauges</span><span class="p">(</span><span class="n">geobox</span><span class="p">,</span> <span class="n">epsg</span><span class="o">=</span><span class="mi">32614</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.gauge.GetUsgsGauges" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Get USGS gauges within a geographic box and project them to a projected coordinate system</p>
+      <p>geobox--a geographic box of (minX,minY,maxX,maxY)</p>
+
+        <details class="quote">
+          <summary>Source code in <code>fldpln/gauge.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GetUsgsGauges</span><span class="p">(</span><span class="n">geobox</span><span class="p">,</span><span class="n">epsg</span><span class="o">=</span><span class="mi">32614</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get USGS gauges within a geographic box and project them to a projected coordinate system</span>
+<span class="sd">    parameters:</span>
+<span class="sd">    geobox--a geographic box of (minX,minY,maxX,maxY)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1"># geobox--a geographic box of (minX,minY,maxX,maxY)</span>
+<span class="c1"># epsg--projected coordinate system, default to UTM14 for Kansas</span>
+
+    <span class="c1"># USGS site/gauge table fields:</span>
+    <span class="c1">#  agency_cd       -- Agency</span>
+    <span class="c1">#  site_no         -- Site identification number</span>
+    <span class="c1">#  station_nm      -- Site name</span>
+    <span class="c1">#  site_tp_cd      -- Site type</span>
+    <span class="c1">#  dec_lat_va      -- Decimal latitude</span>
+    <span class="c1">#  dec_long_va     -- Decimal longitude</span>
+    <span class="c1">#  coord_acy_cd    -- Latitude-longitude accuracy</span>
+    <span class="c1">#  dec_coord_datum_cd -- Decimal Latitude-longitude datum</span>
+    <span class="c1">#  alt_va          -- Altitude of gauge/land surface</span>
+    <span class="c1">#  alt_acy_va      -- Altitude accuracy</span>
+    <span class="c1">#  alt_datum_cd    -- Altitude datum</span>
+    <span class="c1">#  huc_cd          -- Hydrologic unit code</span>
+    <span class="c1">#</span>
+    <span class="c1"># # read in USGS gauges from Excel file which is manually generated from USGS gauge web site</span>
+    <span class="c1"># # See Chapter 5 in book Flood Mapping in Kansas.</span>
+    <span class="c1"># # This can be automated too!</span>
+    <span class="c1"># gaugeExcelFile = &#39;usgs_gauges_ks_nearby.xlsx&#39;</span>
+    <span class="c1"># sheetName = &#39;usgs_gauges_ks_nearby&#39;</span>
+    <span class="c1"># gdf = pd.read_excel(gaugeExcelFile, sheet_name=sheetName,dtype={&#39;site_no&#39;:str,&#39;huc_cd&#39;:str})</span>
+    <span class="c1"># # print(&#39;USGS gauges from web:&#39;,gdf)</span>
+
+    <span class="c1"># USGS Site Web Service</span>
+    <span class="n">usgsSiteServiceUrl</span> <span class="o">=</span> <span class="s1">&#39;http://waterservices.usgs.gov/nwis/site&#39;</span>
+
+    <span class="c1"># prepare a query URL to retrieve active lake and stream USGS gauges with instantaneous values</span>
+    <span class="c1"># usgsSiteServiceUrl = &#39;http://waterservices.usgs.gov/nwis/site/?format=rdb,1.0&amp;bBox=-99.610000,36.810000,-94.200000,40.250000&amp;siteType=LK,ST&amp;siteStatus=active&amp;hasDataTypeCd=iv&#39;</span>
+    <span class="c1"># parameters</span>
+    <span class="n">bBox</span> <span class="o">=</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">geobox</span><span class="p">])</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;format&#39;</span><span class="p">:</span><span class="s1">&#39;rdb&#39;</span><span class="p">,</span> <span class="s1">&#39;bBox&#39;</span><span class="p">:</span><span class="n">bBox</span><span class="p">,</span> <span class="s1">&#39;siteType&#39;</span><span class="p">:</span> <span class="s1">&#39;LK,ST&#39;</span><span class="p">,</span> <span class="s1">&#39;siteStatus&#39;</span><span class="p">:</span><span class="s1">&#39;active&#39;</span><span class="p">,</span> <span class="s1">&#39;hasDataTypeCd&#39;</span><span class="p">:</span> <span class="s1">&#39;iv&#39;</span><span class="p">}</span>
+
+    <span class="c1"># Send the request with the get method</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">usgsSiteServiceUrl</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+
+    <span class="c1"># turn content into list of lines</span>
+    <span class="n">contentLst</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># find the number of lines of the header in the RDB file</span>
+    <span class="n">numOfHeaderLn</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ln</span> <span class="ow">in</span> <span class="n">contentLst</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ln</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;#&#39;</span><span class="p">:</span>
+            <span class="n">numOfHeaderLn</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="c1"># get field names</span>
+    <span class="n">fieldNames</span> <span class="o">=</span> <span class="n">contentLst</span><span class="p">[</span><span class="n">numOfHeaderLn</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># print(fieldNames)</span>
+
+    <span class="c1"># turn each line into a list</span>
+    <span class="n">gLst</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">contentLst</span><span class="p">[</span><span class="n">numOfHeaderLn</span><span class="o">+</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+    <span class="c1"># convert lat, longitude, and datum elevation to floats</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">gLst</span><span class="p">:</span>
+        <span class="n">g</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+        <span class="n">g</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">g</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">g</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">8</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">g</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+            <span class="n">g</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">g</span><span class="p">[</span><span class="mi">9</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># create a df from the list</span>
+    <span class="n">gdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">gLst</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">fieldNames</span><span class="p">)</span>
+
+    <span class="c1"># turn pd into gpd using gauge&#39;s latitude and longitude coordinates</span>
+    <span class="n">ggdf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">gdf</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">gpd</span><span class="o">.</span><span class="n">points_from_xy</span><span class="p">(</span><span class="n">gdf</span><span class="o">.</span><span class="n">dec_long_va</span><span class="p">,</span> <span class="n">gdf</span><span class="o">.</span><span class="n">dec_lat_va</span><span class="p">))</span>
+
+    <span class="c1"># Project gauge location </span>
+    <span class="c1"># define gauge CRS, i.e., GCS on NAD83, assuming all USGS gauges are based on NAD83</span>
+    <span class="n">ggdf</span> <span class="o">=</span> <span class="n">ggdf</span><span class="o">.</span><span class="n">set_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="mi">4326</span><span class="p">)</span>
+    <span class="c1"># project ggdf to library coordinate system, i.e., UTM 14N</span>
+    <span class="n">ggdf</span> <span class="o">=</span> <span class="n">ggdf</span><span class="o">.</span><span class="n">to_crs</span><span class="p">(</span><span class="n">epsg</span><span class="o">=</span><span class="n">epsg</span><span class="p">)</span>
+    <span class="c1"># save the projected shapefile</span>
+    <span class="c1"># ggdf.to_file(shpFullName)</span>
+
+    <span class="c1"># add gauge&#39;s coordinates as fields</span>
+    <span class="n">ggdf</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ggdf</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">x</span>
+    <span class="n">ggdf</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ggdf</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">y</span>
+
+    <span class="c1"># USGS gauges in UTM 14N</span>
+    <span class="n">gdf</span> <span class="o">=</span> <span class="n">ggdf</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">])</span>
+    <span class="c1"># print(&#39;Gauges with UTM 14N coordinates:&#39;,gdf)</span>
+    <span class="c1"># print(f&#39;Total gauges: {len(gdf)}&#39;)</span>
+
+    <span class="k">return</span> <span class="n">gdf</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
 
 
 
@@ -684,7 +922,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-16T19:50:32+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-16</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-23T21:02:34+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-23</span>
   </span>
 
     
@@ -694,7 +932,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-16T19:50:32+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-16</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago"><span class="timeago" datetime="2024-08-16T20:54:01+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date">2024-08-16</span>
   </span>
 
     

@@ -18,6 +18,8 @@
         <link rel="prev" href="../common/">
       
       
+        <link rel="next" href="../mapping/">
+      
       
       <link rel="icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.33">
@@ -618,6 +620,48 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mapping/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    mapping module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gauge/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    gauge module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -698,11 +742,18 @@
 <a id="fldpln.tile"></a>
     <div class="doc doc-contents first">
 
-      <p>This module contains functions to tile segment-based library for fast mapping.</p>
+      <p>Module to re-organize FLDPLN segment-based library into tile-based library for fast mapping</p>
 
 
 
   <div class="doc doc-children">
+
+
+
+
+
+
+
 
 
 
@@ -724,62 +775,246 @@
     <div class="doc doc-contents ">
 
       <p>Tile a library. Turn segment-based FSP-FPP relations to tile-based</p>
+<div class="admonition param">
+<p class="admonition-title">Param</p>
+<p>segLibFolder: folder containing the segment-based library
+cellSize: cell size in meters
+tiledLibFolder: folder for the tiled library
+tileSize: number of cells in a tile
+fileFormat: 'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
+Return: metadata of the tiled library</p>
+</div>
 
-<p><strong>Parameters:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Description</th>
-      <th>Default</th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr>
-        <td><code>segLibFolder</code></td>
-        <td><code>str</code></td>
-        <td><p>The folder containing the segment-based library.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>cellSize</code></td>
-        <td><code>float</code></td>
-        <td><p>The cell size of the library.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>tiledLibFolder</code></td>
-        <td><code>str</code></td>
-        <td><p>The folder to save the tiled library.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>tileSize</code></td>
-        <td><code>int</code></td>
-        <td><p>The size of a tile in number of cells.</p></td>
-        <td><em>required</em></td>
-      </tr>
-      <tr>
-        <td><code>fileFormat</code></td>
-        <td><code>str</code></td>
-        <td><p>The file format to save the tile-based library. 'snappy' or 'mat'.</p></td>
-        <td><em>required</em></td>
-      </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">TileLibrary</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span><span class="n">cellSize</span><span class="p">,</span><span class="n">tiledLibFolder</span><span class="p">,</span><span class="n">tileSize</span><span class="p">,</span><span class="n">fileFormat</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Tile a library. Turn segment-based FSP-FPP relations to tile-based</span>
-<span class="sd">    Parameters:</span>
-<span class="sd">        segLibFolder (str): The folder containing the segment-based library.</span>
-<span class="sd">        cellSize (float): The cell size of the library.</span>
-<span class="sd">        tiledLibFolder (str): The folder to save the tiled library.</span>
-<span class="sd">        tileSize (int): The size of a tile in number of cells.</span>
-<span class="sd">        fileFormat (str): The file format to save the tile-based library. &#39;snappy&#39; or &#39;mat&#39;.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Tile a library. Turn segment-based FSP-FPP relations to tile-based</span>
+<span class="sd">        param:</span>
+<span class="sd">            segLibFolder: folder containing the segment-based library</span>
+<span class="sd">            cellSize: cell size in meters</span>
+<span class="sd">            tiledLibFolder: folder for the tiled library</span>
+<span class="sd">            tileSize: number of cells in a tile</span>
+<span class="sd">            fileFormat: &#39;snappy&#39; or &#39;mat&#39;. &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
+<span class="sd">            Return: metadata of the tiled library</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tile a library ...&#39;</span><span class="p">)</span>
+<span class="c1"># This function uses the fsp_info.csv file (under tiledLibFolder) to get FSP IDs</span>
+<span class="c1"># fileFormat: &#39;snappy&#39; or &#39;mat&#39;. &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
+<span class="c1"># tileSize changed to the number of cells on May 27, 2024 to avoid partial cells within a tile and also works for GCS system</span>
+
+    <span class="c1"># # create the tiledLibFolder folder for all tiled libraries if it doesn&#39;t exist</span>
+    <span class="c1"># os.makedirs(tiledLibFolder,exist_ok=True)</span>
+
+    <span class="c1"># create a folder for the tiled library</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">tiledLibFolder</span><span class="p">,</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># </span>
+    <span class="c1"># copy FSP and segment info CSV files to tiled library folder</span>
+    <span class="c1"># </span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span> <span class="n">fspInfoFileName</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tiledLibFolder</span><span class="p">,</span> <span class="n">fspInfoFileName</span><span class="p">))</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span> <span class="n">segInfoFileName</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tiledLibFolder</span><span class="p">,</span> <span class="n">segInfoFileName</span><span class="p">))</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># save tile size, cell size and spatial reference in a metadata file </span>
+    <span class="c1">#</span>
+    <span class="c1"># read in spatial reference for the library</span>
+    <span class="n">srFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span><span class="n">prjFileName</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">srFile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">srf</span><span class="p">:</span>
+        <span class="n">srText</span> <span class="o">=</span> <span class="n">srf</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="n">metaData</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TileSize&#39;</span><span class="p">:</span> <span class="n">tileSize</span><span class="p">,</span> <span class="s1">&#39;CellSize&#39;</span><span class="p">:</span> <span class="n">cellSize</span><span class="p">,</span> <span class="s1">&#39;SpatialReference&#39;</span><span class="p">:</span> <span class="n">srText</span><span class="p">}</span>
+    <span class="c1"># save metedata</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tiledLibFolder</span><span class="p">,</span> <span class="n">metaDataFileName</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">jf</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">metaData</span><span class="p">,</span><span class="n">jf</span><span class="p">)</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># calculate library and segment extents</span>
+    <span class="n">libExt</span><span class="p">,</span> <span class="n">segExts</span> <span class="o">=</span> <span class="n">CalculateLibraryExtent</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span><span class="n">cellSize</span><span class="p">)</span>
+    <span class="n">minX</span><span class="p">,</span><span class="n">maxX</span><span class="p">,</span><span class="n">minY</span><span class="p">,</span><span class="n">maxY</span> <span class="o">=</span> <span class="n">libExt</span>
+
+    <span class="c1"># Calculate tile boundaries</span>
+    <span class="n">tb</span> <span class="o">=</span> <span class="n">CalculateTileBoundary</span><span class="p">(</span><span class="n">minX</span><span class="p">,</span><span class="n">maxX</span><span class="p">,</span><span class="n">minY</span><span class="p">,</span><span class="n">maxY</span><span class="p">,</span><span class="n">tileSize</span><span class="o">*</span><span class="n">cellSize</span><span class="p">,</span><span class="n">tileSize</span><span class="o">*</span><span class="n">cellSize</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of (possible) tiles:&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tb</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tile extents:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">tb</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Create tiles</span>
+    <span class="c1">#</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Build tiles (tiling FSP-FPP relations) ...&#39;</span><span class="p">)</span>
+    <span class="n">hcs</span> <span class="o">=</span> <span class="n">cellSize</span><span class="o">/</span><span class="mi">2</span>
+    <span class="c1"># read in FSP ID and coordinates</span>
+    <span class="c1"># need to set float_precision=&#39;round_trip&#39; to prevent rounding while reading the text file! float_precision=&#39;high&#39; DOESN&#39;T work.</span>
+    <span class="c1"># For Verdigris 10-m library, FSP ID of 22246, its FspX of -1003.7918248322967 in fsp_info.csv was read into memory as -1003.7918248322968 without using float_precision=&#39;round_trip&#39;</span>
+    <span class="n">fspIds</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span><span class="n">fspInfoFileName</span><span class="p">),</span><span class="n">float_precision</span><span class="o">=</span><span class="s1">&#39;round_trip&#39;</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">)[[</span><span class="s1">&#39;FspId&#39;</span><span class="p">,</span><span class="s1">&#39;FspX&#39;</span><span class="p">,</span><span class="s1">&#39;FspY&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># initialize the index DFs and tile ID</span>
+    <span class="n">fspIdxDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">fspIdxColumnNames</span><span class="p">)</span>
+    <span class="n">tileIdxDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">tileIdxColumnNames</span><span class="p">)</span>
+    <span class="n">tileId</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tb</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Processing tile: &#39;</span><span class="p">,</span> <span class="n">tileId</span><span class="p">)</span>
+
+        <span class="c1"># tile boundary, not the cell center boundary!</span>
+        <span class="n">tminX</span><span class="p">,</span> <span class="n">tmaxX</span><span class="p">,</span><span class="n">tminY</span><span class="p">,</span> <span class="n">tmaxY</span> <span class="o">=</span> <span class="n">t</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tile extent (minX, maxX, minY, maxY) :&#39;</span><span class="p">,(</span><span class="n">tminX</span><span class="p">,</span> <span class="n">tmaxX</span><span class="p">,</span><span class="n">tminY</span><span class="p">,</span> <span class="n">tmaxY</span><span class="p">))</span>
+
+        <span class="c1"># find the segments that intersect the tile rectangle</span>
+        <span class="n">segs</span> <span class="o">=</span> <span class="n">segExts</span><span class="p">[</span><span class="o">~</span><span class="p">((</span><span class="n">segExts</span><span class="p">[</span><span class="s1">&#39;MinX&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="n">tmaxX</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">segExts</span><span class="p">[</span><span class="s1">&#39;MaxX&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">tminX</span><span class="p">))]</span> <span class="c1"># rectangles are NOT on left or right of each other</span>
+        <span class="n">segs</span> <span class="o">=</span> <span class="n">segs</span><span class="p">[</span><span class="o">~</span><span class="p">((</span><span class="n">segs</span><span class="p">[</span><span class="s1">&#39;MinY&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="n">tmaxY</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">segs</span><span class="p">[</span><span class="s1">&#39;MaxY&#39;</span><span class="p">]</span><span class="o">&lt;</span><span class="n">tminY</span><span class="p">))]</span> <span class="c1"># rectangles are NOT on top or bottom of each other</span>
+        <span class="n">segs</span> <span class="o">=</span> <span class="n">segs</span><span class="p">[</span><span class="s1">&#39;FileName&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of segments interseting with the tile: &#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">segs</span><span class="p">))</span>
+
+        <span class="c1"># find the FPP-FSP relations in the tile from all the intersecting segments</span>
+        <span class="c1"># Initialize the df</span>
+        <span class="n">tdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">mf</span> <span class="ow">in</span> <span class="n">segs</span><span class="p">:</span> <span class="c1">#segMatFileFullNames:</span>
+            <span class="c1"># read mat file</span>
+            <span class="n">matVar</span> <span class="o">=</span> <span class="n">ReadMatFile</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span><span class="n">matRelVarName</span><span class="p">)</span>
+            <span class="c1"># converting array to a dataframe</span>
+            <span class="n">sdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">matVar</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">matRelColumnNames</span><span class="p">)</span>
+
+            <span class="c1"># rename columns to better names</span>
+            <span class="n">betterColumnNames</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;FspX&quot;</span><span class="p">,</span> <span class="s2">&quot;FspY&quot;</span><span class="p">,</span> <span class="s2">&quot;FppX&quot;</span><span class="p">,</span> <span class="s2">&quot;FppY&quot;</span><span class="p">,</span> <span class="s2">&quot;Dtf&quot;</span><span class="p">,</span> <span class="s2">&quot;FilledDepth&quot;</span><span class="p">]</span>
+            <span class="n">d</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">matRelColumnNames</span><span class="p">,</span><span class="n">betterColumnNames</span><span class="p">))</span>
+            <span class="n">sdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">d</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># inplace changing column name</span>
+
+            <span class="c1"># Code used to find out which segment file (e.g., SLIE_segment40.mat) in library &#39;midkan&quot; has problem </span>
+            <span class="c1"># where column “DTF + fill depth” is LESS than the &quot;DTF&quot; column</span>
+            <span class="c1"># t  =  sdf[&#39;FilledDepth&#39;] - sdf[&#39;Dtf&#39;]</span>
+            <span class="c1"># t  =  t &lt; -0.1</span>
+            <span class="c1"># if t.any():</span>
+            <span class="c1">#     print(&#39;Segment: &#39;, mf)</span>
+            <span class="c1">#     print(f&#39;Found negative depression in {mf}!&#39;)</span>
+
+            <span class="c1"># select the FPPs within the tile</span>
+            <span class="n">sdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="p">[(</span><span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;FppX&#39;</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">tminX</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;FppX&#39;</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">tmaxX</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;FppY&#39;</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">tminY</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">sdf</span><span class="p">[</span><span class="s1">&#39;FppY&#39;</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">tmaxY</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="c1"># tell pandas we want a copy to avoid &quot;SettingWithCopyWarning&quot; in line 86 when there is only one segment mat file read</span>
+            <span class="c1"># print(&#39;Segment:&#39;, segId, &#39;Number of FSP-FPP relations:&#39;, len(sdf))</span>
+            <span class="k">if</span> <span class="n">tdf</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="n">tdf</span> <span class="o">=</span> <span class="n">sdf</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># tdf = tdf.append(sdf)</span>
+                <span class="n">tdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">tdf</span><span class="p">,</span> <span class="n">sdf</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total number of FSP-FPP relations in the tile:&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tdf</span><span class="p">))</span>
+
+        <span class="c1"># save the FSP-FPP relations and update the index dfs</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="p">(</span><span class="n">tdf</span><span class="o">.</span><span class="n">empty</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tdf</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span> <span class="c1"># there are some FPPs in the tile</span>
+            <span class="c1"># #calculate FilledDepth</span>
+            <span class="c1"># tdf[&#39;FilledDepth&#39;] = tdf[&#39;FilledDepth&#39;]-tdf[&#39;Dtf&#39;] # This is NOT necessary as FLDPLN model output changed to save &quot;sink fill depth&quot; in v8. Modified by Xingong on 7/1/24</span>
+
+            <span class="c1"># Calculate FSP center extent for the tile</span>
+            <span class="n">fspMinX</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="s1">&#39;FspX&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">fspMaxX</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="s1">&#39;FspX&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">fspMinY</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="s1">&#39;FspY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">fspMaxY</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="s1">&#39;FspY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+            <span class="c1"># Calculate FPP center extent within the tile</span>
+            <span class="n">fppMinX</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="s1">&#39;FppX&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">fppMaxX</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="s1">&#39;FppX&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            <span class="n">fppMinY</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="s1">&#39;FppY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">fppMaxY</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="s1">&#39;FppY&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+            <span class="c1"># turn FPP coordinates into row and column within the tile</span>
+            <span class="c1"># Note that the row and column start at (fppMinX, fppMaxY)!</span>
+            <span class="n">tdf</span><span class="p">[</span><span class="s1">&#39;FppX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">tdf</span><span class="o">.</span><span class="n">FppX</span><span class="o">-</span><span class="n">fppMinX</span><span class="p">)</span><span class="o">/</span><span class="n">cellSize</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
+            <span class="n">tdf</span><span class="p">[</span><span class="s1">&#39;FppY&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">fppMaxY</span><span class="o">-</span><span class="n">tdf</span><span class="o">.</span><span class="n">FppY</span><span class="p">)</span><span class="o">/</span><span class="n">cellSize</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">()</span>
+            <span class="c1"># tdf[&#39;FppIdx&#39;] = tdf.FppX * tRows + tdf.FppY</span>
+
+            <span class="c1"># rename [&#39;FppX&#39;,&#39;FppY&#39;] to [&#39;Col&#39;,&#39;Row&#39;]</span>
+            <span class="n">tdf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;FppX&#39;</span><span class="p">:</span><span class="s1">&#39;FppCol&#39;</span><span class="p">,</span><span class="s1">&#39;FppY&#39;</span><span class="p">:</span><span class="s1">&#39;FppRow&#39;</span><span class="p">},</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># merge relations with FSP IDs</span>
+            <span class="n">tdf</span> <span class="o">=</span> <span class="n">tdf</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">fspIds</span><span class="p">,</span><span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span><span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;FspX&#39;</span><span class="p">,</span><span class="s1">&#39;FspY&#39;</span><span class="p">])</span>
+
+            <span class="c1"># # check FSP IDs</span>
+            <span class="c1"># if tdf.isnull().values.any():</span>
+            <span class="c1">#     print(&#39;There are NAN in the dataframe!&#39;)</span>
+
+            <span class="c1"># remove FspX &amp; FspY</span>
+            <span class="n">tdf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;FspX&#39;</span><span class="p">,</span><span class="s1">&#39;FspY&#39;</span><span class="p">],</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># reorder columns</span>
+            <span class="n">tdf</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="n">relColumnNames</span><span class="p">]</span>
+
+            <span class="c1"># set datatypes for the columns</span>
+            <span class="n">tdf</span><span class="o">=</span><span class="n">tdf</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;FspId&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="s2">&quot;FppCol&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="s2">&quot;FppRow&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">,</span> <span class="s2">&quot;Dtf&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="s2">&quot;FilledDepth&quot;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">},</span><span class="n">copy</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="c1"># convert float64 to float32 before saving and create index on FspX and FspY for speed up merge during mapping</span>
+            <span class="c1"># tdf.astype(np.float32,copy=False).set_index(keys=[&#39;FspX&#39;,&#39;FspY&#39;],inplace=True)</span>
+
+            <span class="c1"># save the relations in the tile in a file</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Saving FSP-FPP relations in a file...&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fileFormat</span> <span class="o">==</span> <span class="s1">&#39;snappy&#39;</span><span class="p">:</span>
+                <span class="c1"># filePathName = os.path.join(segLibFolder, tileFileMainName+&#39;_&#39;+str(tileId)+&#39;.gzip&#39;) # for gzip format</span>
+                <span class="n">filePathName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tiledLibFolder</span><span class="p">,</span> <span class="n">tileFileMainName</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">tileId</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.snz&#39;</span><span class="p">)</span> <span class="c1"># for snappy format</span>
+
+                <span class="c1"># save to parquet file. Can only save one DataFrame!</span>
+                <span class="c1"># tdf.to_parquet(filePathName,engine=&#39;fastparquet&#39;,compression=&#39;gzip&#39;,index=False) # gzip</span>
+                <span class="n">tdf</span><span class="o">.</span><span class="n">to_parquet</span><span class="p">(</span><span class="n">filePathName</span><span class="p">,</span><span class="n">engine</span><span class="o">=</span><span class="s1">&#39;fastparquet&#39;</span><span class="p">,</span><span class="n">compression</span><span class="o">=</span><span class="s1">&#39;snappy&#39;</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># snappy fast processing</span>
+                <span class="c1"># tdf.to_parquet(filePathName,engine=&#39;fastparquet&#39;,compression=&#39;snappy&#39;,index=True) # snappy fast processing</span>
+            <span class="k">elif</span> <span class="n">fileFormat</span> <span class="o">==</span> <span class="s1">&#39;mat&#39;</span><span class="p">:</span>
+                <span class="c1"># separate columns by datatypes (int32 and float32)</span>
+                <span class="n">fspFppsArray</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="n">relColumnNames</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+                <span class="n">dtfFilledDepthArray</span> <span class="o">=</span> <span class="n">tdf</span><span class="p">[</span><span class="n">relColumnNames</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">::]]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+                <span class="c1"># Save to compressed .mat file</span>
+                <span class="n">dfDic</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;FspFpps&#39;</span><span class="p">:</span> <span class="n">fspFppsArray</span><span class="p">,</span><span class="s1">&#39;DtfFilledDepth&#39;</span><span class="p">:</span> <span class="n">dtfFilledDepthArray</span><span class="p">}</span>
+                <span class="c1"># Tile cannot be too large which may cause failure in writing into .mat file. See https://github.com/scipy/scipy/issues/12465</span>
+                <span class="n">filePathName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tiledLibFolder</span><span class="p">,</span> <span class="n">tileFileMainName</span><span class="o">+</span><span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">tileId</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;.mat&#39;</span><span class="p">)</span>
+                <span class="n">sio</span><span class="o">.</span><span class="n">savemat</span><span class="p">(</span><span class="n">filePathName</span><span class="p">,</span> <span class="n">dfDic</span><span class="p">,</span> <span class="n">do_compression</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Unsupported file format!&#39;</span><span class="p">)</span>
+                <span class="k">return</span>
+
+            <span class="c1"># calculate the min and max DTF for each FSPs in the tile</span>
+            <span class="n">fspDf</span> <span class="o">=</span> <span class="n">tdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;FspId&#39;</span><span class="p">],</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">MinDtf</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Dtf&#39;</span><span class="p">,</span> <span class="nb">min</span><span class="p">),</span><span class="n">MaxDtf</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Dtf&#39;</span><span class="p">,</span> <span class="nb">max</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Number of unique FSPs in the tile:&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">fspDf</span><span class="p">))</span>
+            <span class="c1"># print(fspDf)</span>
+
+            <span class="c1"># add tile ID to fsp-tile index</span>
+            <span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;TileId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tileId</span>
+            <span class="c1"># reorder columns</span>
+            <span class="n">fspDf</span> <span class="o">=</span> <span class="n">fspDf</span><span class="p">[</span><span class="n">fspIdxColumnNames</span><span class="p">]</span>
+            <span class="c1"># append to the index table</span>
+            <span class="c1"># fspIdxDf = fspIdxDf.append(fspDf,ignore_index=True)</span>
+            <span class="n">fspIdxDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">fspIdxDf</span><span class="p">,</span> <span class="n">fspDf</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># print(&#39;Fsp-Tile index for the tile:&#39;)</span>
+            <span class="c1"># print(fspIdxDf)</span>
+
+            <span class="c1"># Calculate FSP &amp; FPP external extents for saving in the tile-index file</span>
+            <span class="n">fspMinX</span><span class="p">,</span><span class="n">fspMaxX</span><span class="p">,</span><span class="n">fspMinY</span><span class="p">,</span><span class="n">fspMaxY</span> <span class="o">=</span> <span class="n">fspMinX</span><span class="o">-</span><span class="n">hcs</span><span class="p">,</span><span class="n">fspMaxX</span><span class="o">+</span><span class="n">hcs</span><span class="p">,</span><span class="n">fspMinY</span><span class="o">-</span><span class="n">hcs</span><span class="p">,</span><span class="n">fspMaxY</span><span class="o">+</span><span class="n">hcs</span>
+            <span class="n">fppMinX</span><span class="p">,</span><span class="n">fppMaxX</span><span class="p">,</span><span class="n">fppMinY</span><span class="p">,</span><span class="n">fppMaxY</span> <span class="o">=</span> <span class="n">fppMinX</span><span class="o">-</span><span class="n">hcs</span><span class="p">,</span><span class="n">fppMaxX</span><span class="o">+</span><span class="n">hcs</span><span class="p">,</span><span class="n">fppMinY</span><span class="o">-</span><span class="n">hcs</span><span class="p">,</span><span class="n">fppMaxY</span><span class="o">+</span><span class="n">hcs</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tile FSP extent (fspMinX,fspMaxX,fspMinY,fspMaxY): &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">fspMinX</span><span class="p">,</span><span class="n">fspMaxX</span><span class="p">,</span><span class="n">fspMinY</span><span class="p">,</span><span class="n">fspMaxY</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Tile FPP extent (fppMinX,fppMaxX,fppMinY,fppMaxY): &#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">fppMinX</span><span class="p">,</span><span class="n">fppMaxX</span><span class="p">,</span><span class="n">fppMinY</span><span class="p">,</span><span class="n">fppMaxY</span><span class="p">))</span>
+
+            <span class="c1"># Calculate the min &amp; max DTF within the tile</span>
+            <span class="n">minTileDtf</span> <span class="o">=</span> <span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;MinDtf&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+            <span class="n">maxTileDtf</span> <span class="o">=</span> <span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;MaxDtf&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+            <span class="c1"># calculate number of relations and number of FPPs in the tile</span>
+            <span class="n">numOfRels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tdf</span><span class="p">)</span>
+            <span class="n">numOfFpps</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tdf</span><span class="p">[[</span><span class="s1">&#39;FppCol&#39;</span><span class="p">,</span><span class="s1">&#39;FppRow&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">())</span> <span class="c1"># groupby for fast?</span>
+
+            <span class="c1"># add tile ID and additional tile-related info to the tile index file</span>
+            <span class="n">tileIdx</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">tileId</span><span class="p">,</span><span class="n">tminX</span><span class="p">,</span><span class="n">tmaxX</span><span class="p">,</span><span class="n">tminY</span><span class="p">,</span><span class="n">tmaxY</span><span class="p">,</span><span class="n">fppMinX</span><span class="p">,</span><span class="n">fppMaxX</span><span class="p">,</span><span class="n">fppMinY</span><span class="p">,</span><span class="n">fppMaxY</span><span class="p">,</span><span class="n">fspMinX</span><span class="p">,</span><span class="n">fspMaxX</span><span class="p">,</span><span class="n">fspMinY</span><span class="p">,</span><span class="n">fspMaxY</span><span class="p">,</span><span class="n">minTileDtf</span><span class="p">,</span><span class="n">maxTileDtf</span><span class="p">,</span><span class="n">numOfRels</span><span class="p">,</span><span class="n">numOfFpps</span><span class="p">]],</span><span class="n">columns</span><span class="o">=</span><span class="n">tileIdxColumnNames</span><span class="p">)</span>
+            <span class="c1"># append to the index table</span>
+            <span class="c1"># tileIdxDf = tileIdxDf.append(tileIdx,ignore_index=True)</span>
+            <span class="n">tileIdxDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">tileIdxDf</span><span class="p">,</span> <span class="n">tileIdx</span><span class="p">],</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># print(&#39;Tile index for the tile:&#39;)</span>
+            <span class="c1"># print(tileIdxDf)</span>
+
+            <span class="c1"># move to the next tile</span>
+            <span class="n">tileId</span> <span class="o">+=</span><span class="mi">1</span>
+
+    <span class="c1"># Save the index as a file</span>
+    <span class="c1"># print(&#39;Number of items in the fsp-tile index:&#39;, len(fspIdxDf))</span>
+    <span class="c1"># print(&#39;fsp-tile Index table:\n&#39;,fspIdxDf)</span>
+    <span class="c1"># save index to a csv file</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Save fsp-tile index as a CSV file ...&#39;</span><span class="p">)</span>
+    <span class="n">fspIdxDf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tiledLibFolder</span><span class="p">,</span> <span class="n">tileFileMainName</span><span class="o">+</span><span class="s1">&#39;_fsp_index.csv&#39;</span><span class="p">),</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># print(&#39;Number of items in the tile-extent index:&#39;, len(tileIdxDf))</span>
+    <span class="c1"># print(&#39;Tile index table:\n&#39;,tileIdxDf)</span>
+    <span class="c1"># save index to a csv file</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Save tile index as a CSV file ...&#39;</span><span class="p">)</span>
+    <span class="n">tileIdxDf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tiledLibFolder</span><span class="p">,</span> <span class="n">tileFileMainName</span><span class="o">+</span><span class="s1">&#39;_tile_index.csv&#39;</span><span class="p">),</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">metaData</span>
 </code></pre></div>
         </details>
     </div>
