@@ -603,6 +603,60 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fldpln.tile.CalculateFspSegmentDownstreamDistance" class="md-nav__link">
+    <span class="md-ellipsis">
+      CalculateFspSegmentDownstreamDistance()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.CalculateLibraryExtent" class="md-nav__link">
+    <span class="md-ellipsis">
+      CalculateLibraryExtent()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.CalculateTileBoundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      CalculateTileBoundary()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.GenerateSegmentShapefilesFromFspSegmentInfoFiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      GenerateSegmentShapefilesFromFspSegmentInfoFiles()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.GetStreamOrdersForFspsSegments" class="md-nav__link">
+    <span class="md-ellipsis">
+      GetStreamOrdersForFspsSegments()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.ReadMatFile" class="md-nav__link">
+    <span class="md-ellipsis">
+      ReadMatFile()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fldpln.tile.TileLibrary" class="md-nav__link">
     <span class="md-ellipsis">
       TileLibrary()
@@ -705,6 +759,60 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fldpln.tile.CalculateFspSegmentDownstreamDistance" class="md-nav__link">
+    <span class="md-ellipsis">
+      CalculateFspSegmentDownstreamDistance()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.CalculateLibraryExtent" class="md-nav__link">
+    <span class="md-ellipsis">
+      CalculateLibraryExtent()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.CalculateTileBoundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      CalculateTileBoundary()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.GenerateSegmentShapefilesFromFspSegmentInfoFiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      GenerateSegmentShapefilesFromFspSegmentInfoFiles()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.GetStreamOrdersForFspsSegments" class="md-nav__link">
+    <span class="md-ellipsis">
+      GetStreamOrdersForFspsSegments()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.ReadMatFile" class="md-nav__link">
+    <span class="md-ellipsis">
+      ReadMatFile()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fldpln.tile.TileLibrary" class="md-nav__link">
     <span class="md-ellipsis">
       TileLibrary()
@@ -755,10 +863,728 @@
 
 
 
+  <div class="doc doc-object doc-function">
 
 
 
+<h2 id="fldpln.tile.CalculateFspSegmentDownstreamDistance" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">CalculateFspSegmentDownstreamDistance</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span> <span class="n">libName</span><span class="p">)</span></code>
 
+
+<a href="#fldpln.tile.CalculateFspSegmentDownstreamDistance" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Cleanup segments (some segments don't exist in FSPs) and save library FSP and segment information as two csv files (fsp_info.csv &amp; segment_info.csv). 
+It also reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json. It also calculates FSP and segment downstream distance (i.e., distance to library outlet(s)) 
+which involves:
+    1. Calculate FSP's within-segment downstream distance
+    2. Calculate segment length which is more accurate than "CellCount" * cell size
+    3. Calculate segment's downstream distance (to watershed outlet) for speeding up 
+    4. Calculate FSP's downstream distance
+Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>libFolder</code></td>
+        <td></td>
+        <td><p>folder containing the library</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>libName</code></td>
+        <td></td>
+        <td><p>library name</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>      
+
+        <details class="quote">
+          <summary>Source code in <code>fldpln/tile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">CalculateFspSegmentDownstreamDistance</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span><span class="n">libName</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Cleanup segments (some segments don&#39;t exist in FSPs) and save library FSP and segment information as two csv files (fsp_info.csv &amp; segment_info.csv). </span>
+<span class="sd">        It also reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json. It also calculates FSP and segment downstream distance (i.e., distance to library outlet(s)) </span>
+<span class="sd">        which involves:</span>
+<span class="sd">            1. Calculate FSP&#39;s within-segment downstream distance</span>
+<span class="sd">            2. Calculate segment length which is more accurate than &quot;CellCount&quot; * cell size</span>
+<span class="sd">            3. Calculate segment&#39;s downstream distance (to watershed outlet) for speeding up </span>
+<span class="sd">            4. Calculate FSP&#39;s downstream distance</span>
+<span class="sd">        Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            libFolder: folder containing the library</span>
+<span class="sd">            libName: library name</span>
+<span class="sd">        Return: FSP and segment data frames</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># read in fsp (flood source pixel) and segment network info Excel files</span>
+    <span class="c1">#</span>
+    <span class="c1"># fspInfoColumnNames = [&#39;FspX&#39;,&#39;FspY&#39;,&#39;SegId&#39;,&#39;FilledElev&#39;], columns &#39;DsDist&#39; will be calculated by this function</span>
+    <span class="c1"># segInfoColumnNames = [&#39;SegId&#39;,&#39;CellCount&#39;,&#39;DsSegId&#39;, &#39;StFac&#39;,&#39;EdFac&#39;], columns &#39;Length&#39;,&#39;DsDist&#39; will be added by this function</span>
+    <span class="n">fspInfoFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span> <span class="n">libName</span><span class="p">,</span> <span class="n">fspInfoFileName</span><span class="p">)</span>
+    <span class="n">segInfoFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span> <span class="n">libName</span><span class="p">,</span> <span class="n">segInfoFileName</span><span class="p">)</span>
+
+
+    <span class="c1"># read in FSP ID and coordinates</span>
+    <span class="c1"># need to set float_precision=&#39;round_trip&#39; to prevent rounding while reading the text file! float_precision=&#39;high&#39; DOESN&#39;T work.</span>
+    <span class="c1"># For Verdigris 10-m library, FSP ID of 22246, its FspX of -1003.7918248322967 in fsp_info.csv was read into memory as -1003.7918248322968 without using float_precision=&#39;round_trip&#39;</span>
+    <span class="n">fspDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fspInfoFile</span><span class="p">,</span><span class="n">float_precision</span><span class="o">=</span><span class="s1">&#39;round_trip&#39;</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">segDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">segInfoFile</span><span class="p">,</span><span class="n">float_precision</span><span class="o">=</span><span class="s1">&#39;round_trip&#39;</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Clean up the segment table.</span>
+    <span class="c1"># 1. Remove the segment if it&#39;s not in the FSP table</span>
+    <span class="c1"># 2. If the missing segment is the downstream segment of another segment, set it as 0. </span>
+    <span class="c1"># Those missing segments are usually because of they are close to or in waterbodies. </span>
+    <span class="c1"># By removing those segment, a library may have several separate watersheds/outlets!</span>
+    <span class="c1">#</span>
+    <span class="c1"># get the segment IDs</span>
+    <span class="n">segIds</span> <span class="o">=</span> <span class="n">segDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">sid</span> <span class="ow">in</span> <span class="n">segIds</span><span class="p">:</span>
+        <span class="n">fsps</span> <span class="o">=</span> <span class="n">fspDf</span><span class="p">[</span><span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">sid</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fsps</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># segment not found in the FSP table. delete the row</span>
+            <span class="n">segDf</span> <span class="o">=</span> <span class="n">segDf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">segDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">!=</span><span class="n">sid</span><span class="p">]</span>
+            <span class="c1"># set downstream segment ID to 0</span>
+            <span class="n">segDf</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">segDf</span><span class="p">[</span><span class="s1">&#39;DsSegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">sid</span><span class="p">,</span><span class="s1">&#39;DsSegId&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Calculate FSP within-segment distance, segment length, and segment dowstream distance, and FSP downstream distance</span>
+    <span class="c1">#</span>
+    <span class="c1"># add field for FSP within-segment distance</span>
+    <span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;DsDist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="c1"># add field for segment length</span>
+    <span class="n">segDf</span><span class="p">[</span><span class="s1">&#39;Length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># Calculate FSP within-segment DOWNSTREAM distance and segment length</span>
+    <span class="k">for</span> <span class="n">segIdx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">segDf</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">segID</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span>
+        <span class="c1"># print(segID)</span>
+
+        <span class="c1"># select FSP on the segment</span>
+        <span class="n">fsps</span> <span class="o">=</span> <span class="n">fspDf</span><span class="p">[</span><span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">segID</span><span class="p">][[</span><span class="s1">&#39;FspX&#39;</span><span class="p">,</span><span class="s1">&#39;FspY&#39;</span><span class="p">]]</span>
+
+        <span class="c1"># calculate fsp downstream within segment length</span>
+        <span class="n">segDist</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fsps</span><span class="p">)</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># this should not happen as we have already clean up the segment table!</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Segment </span><span class="si">{</span><span class="n">segID</span><span class="si">}</span><span class="s2"> is missing in </span><span class="si">{</span><span class="n">fspInfoFileName</span><span class="si">}</span><span class="s2">!&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  
+            <span class="n">first</span><span class="o">=</span><span class="kc">True</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">fsps</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+                <span class="c1"># Note the idx in fsps is the index in fspDf!!!</span>
+                <span class="c1"># calculate distance</span>
+                <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
+                    <span class="n">fspx1</span><span class="p">,</span> <span class="n">fspy1</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;FspX&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;FspY&#39;</span><span class="p">]</span>
+                    <span class="n">dist</span><span class="o">=</span><span class="mf">0.0</span>
+                    <span class="n">first</span><span class="o">=</span><span class="kc">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fspx2</span><span class="p">,</span> <span class="n">fspy2</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;FspX&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;FspY&#39;</span><span class="p">]</span>
+                    <span class="n">dist</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">fspx1</span><span class="o">-</span><span class="n">fspx2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">fspy1</span><span class="o">-</span><span class="n">fspy2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="n">fspx1</span><span class="p">,</span> <span class="n">fspy1</span> <span class="o">=</span> <span class="n">fspx2</span><span class="p">,</span> <span class="n">fspy2</span>
+                <span class="n">segDist</span> <span class="o">+=</span> <span class="n">dist</span>
+                <span class="n">fspDf</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="s1">&#39;DsDist&#39;</span><span class="p">]</span><span class="o">=</span><span class="n">segDist</span>
+
+        <span class="c1"># update segment distance in segDf</span>
+        <span class="n">segDf</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">segIdx</span><span class="p">,</span><span class="s1">&#39;Length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segDist</span>
+
+    <span class="c1"># show the DFs</span>
+    <span class="c1"># print(fspDf[:1136])</span>
+    <span class="c1"># print(segDf)</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Calculate segment downstream length</span>
+    <span class="c1">#</span>
+    <span class="c1"># only for the segments that exist in the FSP table</span>
+    <span class="c1"># But this not necessary as segments don&#39;t exist in FSP table already removed</span>
+    <span class="c1"># Also this line will remove the segment which has just one FSP!</span>
+    <span class="c1"># segDf = segDf[segDf[&#39;Length&#39;]&gt;0]</span>
+
+    <span class="c1"># add field for segment downstream distance for speeding up calculating FSP downstream distance</span>
+    <span class="n">segDf</span><span class="p">[</span><span class="s1">&#39;DsDist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">segIdx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">segDf</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">segID</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span>
+        <span class="n">dsSegID</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;DsSegId&#39;</span><span class="p">]</span>
+
+        <span class="n">dsDist</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">while</span> <span class="n">dsSegID</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># get downstream segment length and ID</span>
+            <span class="n">tempDf</span> <span class="o">=</span> <span class="n">segDf</span><span class="p">[</span><span class="n">segDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">dsSegID</span><span class="p">][[</span><span class="s1">&#39;Length&#39;</span><span class="p">,</span><span class="s1">&#39;DsSegId&#39;</span><span class="p">]]</span>
+            <span class="n">length</span><span class="p">,</span> <span class="n">segID_ds</span> <span class="o">=</span> <span class="n">tempDf</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">tempDf</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">dsDist</span> <span class="o">+=</span> <span class="n">length</span>
+
+            <span class="c1"># There is a GAP between two segments as they are consisted of FSP cell centers</span>
+            <span class="c1"># Calculate the GAP and add it to segment downstream dist</span>
+            <span class="c1"># last fsp in upstream segment</span>
+            <span class="n">lastFspXy</span> <span class="o">=</span> <span class="n">fspDf</span><span class="p">[</span><span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">segID</span><span class="p">][[</span><span class="s1">&#39;FspX&#39;</span><span class="p">,</span><span class="s1">&#39;FspY&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>    
+            <span class="n">fspx1</span><span class="p">,</span> <span class="n">fspy1</span> <span class="o">=</span> <span class="n">lastFspXy</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">lastFspXy</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># first FSP in downstream segment</span>
+            <span class="n">firstFspXy</span> <span class="o">=</span> <span class="n">fspDf</span><span class="p">[</span><span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">dsSegID</span><span class="p">][[</span><span class="s1">&#39;FspX&#39;</span><span class="p">,</span><span class="s1">&#39;FspY&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">fspx2</span><span class="p">,</span> <span class="n">fspy2</span> <span class="o">=</span> <span class="n">firstFspXy</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">firstFspXy</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">dist</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">fspx1</span><span class="o">-</span><span class="n">fspx2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="p">(</span><span class="n">fspy1</span><span class="o">-</span><span class="n">fspy2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">dsDist</span> <span class="o">+=</span> <span class="n">dist</span>
+
+            <span class="c1"># move to ownstream segment</span>
+            <span class="n">segID</span> <span class="o">=</span> <span class="n">dsSegID</span>
+            <span class="n">dsSegID</span> <span class="o">=</span> <span class="n">segID_ds</span>
+
+        <span class="n">segDf</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">segIdx</span><span class="p">,</span><span class="s1">&#39;DsDist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dsDist</span>
+    <span class="c1"># print(segDf)</span>
+
+    <span class="c1"># Calculate FSP downstream distance</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">fspDf</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+        <span class="n">segID</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span>
+        <span class="n">inSegDist</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;DsDist&#39;</span><span class="p">]</span>
+
+        <span class="c1"># get segment downstream distance</span>
+        <span class="n">tempDf</span> <span class="o">=</span> <span class="n">segDf</span><span class="p">[</span><span class="n">segDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">segID</span><span class="p">][[</span><span class="s1">&#39;DsDist&#39;</span><span class="p">]]</span>
+        <span class="n">segDsDist</span> <span class="o">=</span> <span class="n">tempDf</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># reset FSP downstream distance</span>
+        <span class="n">fspDf</span><span class="o">.</span><span class="n">at</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span><span class="s1">&#39;DsDist&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">inSegDist</span> <span class="o">+</span> <span class="n">segDsDist</span>
+    <span class="c1"># print(fspDf)</span>
+
+    <span class="c1"># save the updated info files</span>
+    <span class="n">fspDf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fspInfoFile</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w+&#39;</span><span class="p">)</span>
+    <span class="n">segDf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">segInfoFile</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w+&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fspDf</span><span class="p">,</span> <span class="n">segDf</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="fldpln.tile.CalculateLibraryExtent" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">CalculateLibraryExtent</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span> <span class="n">cellSize</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.tile.CalculateLibraryExtent" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Calculate library external border extent</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>segLibFolder</code></td>
+        <td></td>
+        <td><p>folder containing the segment-based library</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>cellSize</code></td>
+        <td></td>
+        <td><p>cell size in meters</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>      
+
+        <details class="quote">
+          <summary>Source code in <code>fldpln/tile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">CalculateLibraryExtent</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span> <span class="n">cellSize</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Calculate library external border extent</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            segLibFolder: folder containing the segment-based library</span>
+<span class="sd">            cellSize: cell size in meters</span>
+<span class="sd">        Return: external border extent (minX, maxX,minY, maxY) and segment extents (FPP cell center) data frame of [&#39;MinX&#39;,&#39;MaxX&#39;,&#39;MinY&#39;,&#39;MaxY&#39;,&#39;FileName&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Get all the segment mat files in the library/watershed</span>
+    <span class="n">segMatFileFullNames</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span> <span class="n">segMatFileMainName</span><span class="o">+</span><span class="s1">&#39;*.mat&#39;</span><span class="p">))</span>
+    <span class="n">hcs</span> <span class="o">=</span> <span class="n">cellSize</span><span class="o">/</span><span class="mi">2</span>
+
+    <span class="c1"># initialize extent</span>
+    <span class="n">minX</span><span class="p">,</span><span class="n">maxX</span><span class="p">,</span><span class="n">minY</span><span class="p">,</span><span class="n">maxY</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span>
+    <span class="n">relNum</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># number of FSP-FPP relation</span>
+    <span class="n">segExts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;MinX&#39;</span><span class="p">,</span><span class="s1">&#39;MaxX&#39;</span><span class="p">,</span><span class="s1">&#39;MinY&#39;</span><span class="p">,</span><span class="s1">&#39;MaxY&#39;</span><span class="p">,</span><span class="s1">&#39;FileName&#39;</span><span class="p">])</span> <span class="c1"># empty df storing each segment&#39;s FPP extent and corresponding mat file name</span>
+    <span class="c1"># update the extent by all the segments</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Calculate library extent ...&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">mf</span> <span class="ow">in</span> <span class="n">segMatFileFullNames</span><span class="p">:</span>
+        <span class="c1"># read mat file</span>
+        <span class="n">matVar</span> <span class="o">=</span> <span class="n">ReadMatFile</span><span class="p">(</span><span class="n">mf</span><span class="p">,</span><span class="n">matRelVarName</span><span class="p">)</span>
+        <span class="c1"># converting array to a dataframe</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">matVar</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">matRelColumnNames</span><span class="p">)</span>
+
+        <span class="n">relNum</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+        <span class="c1"># print(&#39;Segment:&#39;, segId, &#39;Number of FSP-FPP relations:&#39;, len(df))</span>
+
+        <span class="c1"># Calculate segment external border extent</span>
+        <span class="n">sminX</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;floodplain_pixel_x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">-</span><span class="n">hcs</span>
+        <span class="n">sminY</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;floodplain_pixel_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">-</span><span class="n">hcs</span>
+        <span class="n">smaxX</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;floodplain_pixel_x&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="n">hcs</span>
+        <span class="n">smaxY</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;floodplain_pixel_y&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="n">hcs</span>
+        <span class="n">segExt</span><span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">sminX</span><span class="p">,</span><span class="n">smaxX</span><span class="p">,</span><span class="n">sminY</span><span class="p">,</span><span class="n">smaxY</span><span class="p">,</span><span class="n">mf</span><span class="p">]],</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;MinX&#39;</span><span class="p">,</span><span class="s1">&#39;MaxX&#39;</span><span class="p">,</span><span class="s1">&#39;MinY&#39;</span><span class="p">,</span><span class="s1">&#39;MaxY&#39;</span><span class="p">,</span><span class="s1">&#39;FileName&#39;</span><span class="p">])</span>
+        <span class="c1"># add the segment extent to the df</span>
+        <span class="c1"># segExts = segExts.append(segExt)</span>
+        <span class="n">segExts</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">segExts</span><span class="p">,</span><span class="n">segExt</span><span class="p">])</span>
+
+        <span class="c1">#update library extent</span>
+        <span class="k">if</span> <span class="n">sminX</span> <span class="o">&lt;</span> <span class="n">minX</span><span class="p">:</span> <span class="n">minX</span> <span class="o">=</span> <span class="n">sminX</span>
+        <span class="k">if</span> <span class="n">sminY</span> <span class="o">&lt;</span> <span class="n">minY</span><span class="p">:</span> <span class="n">minY</span> <span class="o">=</span> <span class="n">sminY</span>
+        <span class="k">if</span> <span class="n">smaxX</span> <span class="o">&gt;</span> <span class="n">maxX</span><span class="p">:</span> <span class="n">maxX</span> <span class="o">=</span> <span class="n">smaxX</span>
+        <span class="k">if</span> <span class="n">smaxY</span> <span class="o">&gt;</span> <span class="n">maxY</span><span class="p">:</span> <span class="n">maxY</span> <span class="o">=</span> <span class="n">smaxY</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Library external border extent (minX, maxX, minY, maxY) :&#39;</span><span class="p">,(</span><span class="n">minX</span><span class="p">,</span> <span class="n">maxX</span><span class="p">,</span><span class="n">minY</span><span class="p">,</span> <span class="n">maxY</span><span class="p">))</span>
+    <span class="c1"># print(&#39;Library segment FPP extents:\n&#39;, segExts)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Total number of FSP-FPP relations:&#39;</span><span class="p">,</span> <span class="n">relNum</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">minX</span><span class="p">,</span> <span class="n">maxX</span><span class="p">,</span><span class="n">minY</span><span class="p">,</span> <span class="n">maxY</span><span class="p">),</span> <span class="n">segExts</span> 
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="fldpln.tile.CalculateTileBoundary" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">CalculateTileBoundary</span><span class="p">(</span><span class="n">minX</span><span class="p">,</span> <span class="n">maxX</span><span class="p">,</span> <span class="n">minY</span><span class="p">,</span> <span class="n">maxY</span><span class="p">,</span> <span class="n">tileSizeX</span><span class="p">,</span> <span class="n">tileSizeY</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.tile.CalculateTileBoundary" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Calculate each tile's boundary as (minX, maxX,minY, maxY)</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>minX,</code></td>
+        <td><code>maxX, minY, maxY</code></td>
+        <td><p>external border (not the cell center) coordinates of the area needs to be tiled.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>tileSizeX,</code></td>
+        <td><code>tileSizeY</code></td>
+        <td><p>external border size of a tile, not the cell center size!</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>padding</code></td>
+        <td></td>
+        <td><p>all the tiles have the same size, not reduced to the border of the tiled area. default is True.</p></td>
+        <td><code>True</code></td>
+      </tr>
+  </tbody>
+</table>      
+
+        <details class="quote">
+          <summary>Source code in <code>fldpln/tile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">CalculateTileBoundary</span><span class="p">(</span><span class="n">minX</span><span class="p">,</span> <span class="n">maxX</span><span class="p">,</span> <span class="n">minY</span><span class="p">,</span> <span class="n">maxY</span><span class="p">,</span> <span class="n">tileSizeX</span><span class="p">,</span> <span class="n">tileSizeY</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Calculate each tile&#39;s boundary as (minX, maxX,minY, maxY)</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            minX, maxX, minY, maxY: external border (not the cell center) coordinates of the area needs to be tiled.</span>
+<span class="sd">            tileSizeX, tileSizeY: external border size of a tile, not the cell center size!</span>
+<span class="sd">            padding: all the tiles have the same size, not reduced to the border of the tiled area. default is True.</span>
+<span class="sd">        Return: a list of tile boundary tuple of (minX, maxX,minY, maxY)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># helper function to generate tile boundary in one dimension</span>
+    <span class="k">def</span> <span class="nf">TileInOneDimension</span><span class="p">(</span><span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="n">tileSize</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="c1"># generate tile marker coordinates</span>
+        <span class="n">bs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">min</span><span class="p">,</span> <span class="nb">max</span><span class="p">,</span> <span class="n">tileSize</span><span class="p">)</span>
+        <span class="c1"># handle the last coordinate as np.arange() is inclusive</span>
+        <span class="k">if</span> <span class="n">padding</span><span class="p">:</span> <span class="c1">#all the tiles have the same length whether it&#39;s outside the border of the tiled area or not</span>
+            <span class="n">bs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="n">bs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">tileSize</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># the last tile stops at the border of the area</span>
+            <span class="n">bs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bs</span><span class="p">,</span> <span class="nb">max</span><span class="p">)</span>
+
+        <span class="c1"># generate tile border coordinate pairs</span>
+        <span class="n">tb</span> <span class="o">=</span> <span class="p">[(</span><span class="n">bs</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">bs</span><span class="p">[</span><span class="n">t</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bs</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">tb</span>
+
+    <span class="n">xb</span> <span class="o">=</span> <span class="n">TileInOneDimension</span><span class="p">(</span><span class="n">minX</span><span class="p">,</span><span class="n">maxX</span><span class="p">,</span><span class="n">tileSizeX</span><span class="p">,</span><span class="n">padding</span><span class="p">)</span>
+    <span class="n">yb</span> <span class="o">=</span> <span class="n">TileInOneDimension</span><span class="p">(</span><span class="n">minY</span><span class="p">,</span><span class="n">maxY</span><span class="p">,</span><span class="n">tileSizeY</span><span class="p">,</span><span class="n">padding</span><span class="p">)</span>
+    <span class="n">tb</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xb</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">yb</span><span class="p">]</span> <span class="c1"># in ((minX, maxX),(minY, maxY))</span>
+    <span class="c1"># convert to (minX, maxX,minY, maxY)</span>
+    <span class="n">tb</span> <span class="o">=</span> <span class="p">[(</span><span class="n">minX</span><span class="p">,</span> <span class="n">maxX</span><span class="p">,</span><span class="n">minY</span><span class="p">,</span> <span class="n">maxY</span><span class="p">)</span> <span class="k">for</span> <span class="p">((</span><span class="n">minX</span><span class="p">,</span><span class="n">maxX</span><span class="p">),(</span><span class="n">minY</span><span class="p">,</span><span class="n">maxY</span><span class="p">))</span> <span class="ow">in</span> <span class="n">tb</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">tb</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="fldpln.tile.GenerateSegmentShapefilesFromFspSegmentInfoFiles" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">GenerateSegmentShapefilesFromFspSegmentInfoFiles</span><span class="p">(</span><span class="n">segInfoFile</span><span class="p">,</span> <span class="n">fspInfoFile</span><span class="p">,</span> <span class="n">crs</span><span class="p">,</span> <span class="n">outShpFile</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.tile.GenerateSegmentShapefilesFromFspSegmentInfoFiles" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Generate segment shapefiles from FSP and segment info files.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>segInfoFile</code></td>
+        <td></td>
+        <td><p>segment info file</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>fspInfoFile</code></td>
+        <td></td>
+        <td><p>FSP info file</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>crs</code></td>
+        <td></td>
+        <td><p>coordinate reference system</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>outShpFile</code></td>
+        <td></td>
+        <td><p>output shapefile</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>      
+
+        <details class="quote">
+          <summary>Source code in <code>fldpln/tile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GenerateSegmentShapefilesFromFspSegmentInfoFiles</span><span class="p">(</span><span class="n">segInfoFile</span><span class="p">,</span> <span class="n">fspInfoFile</span><span class="p">,</span> <span class="n">crs</span><span class="p">,</span> <span class="n">outShpFile</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Generate segment shapefiles from FSP and segment info files.</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            segInfoFile: segment info file</span>
+<span class="sd">            fspInfoFile: FSP info file</span>
+<span class="sd">            crs: coordinate reference system</span>
+<span class="sd">            outShpFile: output shapefile</span>
+<span class="sd">        Return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># read in FSP ID and coordinates</span>
+    <span class="c1"># need to set float_precision=&#39;round_trip&#39; to prevent rounding while reading the text file! float_precision=&#39;high&#39; DOESN&#39;T work.</span>
+    <span class="c1"># For Verdigris 10-m library, FSP ID of 22246, its FspX of -1003.7918248322967 in fsp_info.csv was read into memory as -1003.7918248322968 without using float_precision=&#39;round_trip&#39;</span>
+    <span class="c1"># read column names</span>
+    <span class="n">segColNames</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">segInfoFile</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nrows</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="c1"># read in all the segments</span>
+    <span class="n">segDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">segInfoFile</span><span class="p">,</span><span class="n">float_precision</span><span class="o">=</span><span class="s1">&#39;round_trip&#39;</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># read in FSP&#39;s SegId and its coordinates</span>
+    <span class="n">fspDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fspInfoFile</span><span class="p">,</span><span class="n">float_precision</span><span class="o">=</span><span class="s1">&#39;round_trip&#39;</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">)[[</span><span class="s1">&#39;SegId&#39;</span><span class="p">,</span><span class="s1">&#39;FspX&#39;</span><span class="p">,</span><span class="s1">&#39;FspY&#39;</span><span class="p">]]</span>
+
+    <span class="c1"># Create segment geometry list using FSP coordinates on a segment</span>
+    <span class="n">segGeometry</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">segDf</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span> <span class="c1"># itertuples() is the fastest way of iterating a df</span>
+        <span class="n">segID</span><span class="p">,</span><span class="n">dsSegID</span> <span class="o">=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="s1">&#39;SegId&#39;</span><span class="p">),</span><span class="nb">getattr</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="s1">&#39;DsSegId&#39;</span><span class="p">))</span>
+
+        <span class="c1"># select FSP on the segment</span>
+        <span class="n">fsps</span> <span class="o">=</span> <span class="n">fspDf</span><span class="p">[</span><span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">segID</span><span class="p">][[</span><span class="s1">&#39;FspX&#39;</span><span class="p">,</span><span class="s1">&#39;FspY&#39;</span><span class="p">]]</span>
+
+        <span class="c1"># There is a GAP between two segments as they are consisted of FSP cell centers</span>
+        <span class="c1"># Upstream sgements are EXTENDED to the first FSP of the downstream segment!</span>
+        <span class="k">if</span> <span class="n">dsSegID</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># first FSP in downstream segment</span>
+            <span class="n">firstFspXy</span> <span class="o">=</span> <span class="n">fspDf</span><span class="p">[</span><span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">dsSegID</span><span class="p">][[</span><span class="s1">&#39;FspX&#39;</span><span class="p">,</span><span class="s1">&#39;FspY&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># append to the fsps</span>
+            <span class="c1"># fsps = fsps.append(firstFspXy)</span>
+            <span class="n">fsps</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">fsps</span><span class="p">,</span><span class="n">firstFspXy</span><span class="p">])</span>
+        <span class="c1"># print(fsps)</span>
+
+        <span class="c1"># turn the FSPs into a LineString</span>
+        <span class="c1"># create Points, a GeometryArray, from fsps</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">points_from_xy</span><span class="p">(</span><span class="n">fsps</span><span class="p">[</span><span class="s1">&#39;FspX&#39;</span><span class="p">],</span><span class="n">fsps</span><span class="p">[</span><span class="s1">&#39;FspY&#39;</span><span class="p">])</span>
+        <span class="n">segLineStr</span> <span class="o">=</span> <span class="n">LineString</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
+        <span class="c1"># print(segLineStr)</span>
+
+        <span class="c1"># Insert the line into the geometry list</span>
+        <span class="n">segGeometry</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">segLineStr</span><span class="p">)</span>
+
+    <span class="c1"># create a geodataframe for writing shapefile</span>
+    <span class="n">libSegs</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">GeoDataFrame</span><span class="p">(</span><span class="n">segDf</span><span class="p">,</span> <span class="n">crs</span><span class="o">=</span><span class="n">crs</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">segGeometry</span><span class="p">)</span>
+
+    <span class="c1"># Write the data into that Shapefile</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">infer_schema</span><span class="p">(</span><span class="n">libSegs</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">segColNames</span><span class="p">:</span>
+        <span class="n">schema</span><span class="p">[</span><span class="s1">&#39;properties&#39;</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">segColSchema</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+    <span class="n">libSegs</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="n">outShpFile</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span> <span class="s2">&quot;ESRI Shapefile&quot;</span><span class="p">,</span><span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span> <span class="c1"># existing shapefile will be replaced automatically!!!</span>
+
+    <span class="k">return</span> <span class="c1">#libSegs</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="fldpln.tile.GetStreamOrdersForFspsSegments" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">GetStreamOrdersForFspsSegments</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span> <span class="n">strOrdShpFile</span><span class="p">,</span> <span class="n">shpSegIdName</span><span class="p">,</span> <span class="n">shpStrOrdColName</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.tile.GetStreamOrdersForFspsSegments" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Get stream order for FSPs and segments from segment stream order shapefile and save them in fsp_info.csv and segment_info.csv files. 
+It also creates the stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>libFolder</code></td>
+        <td></td>
+        <td><p>library folder</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>strOrdShpFile</code></td>
+        <td></td>
+        <td><p>stream order shapefile</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>shpSegIdName</code></td>
+        <td></td>
+        <td><p>segment ID column name in the shapefile</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>shpStrOrdColName</code></td>
+        <td></td>
+        <td><p>stream order column name in the shapefile</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>      
+
+        <details class="quote">
+          <summary>Source code in <code>fldpln/tile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GetStreamOrdersForFspsSegments</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span><span class="n">strOrdShpFile</span><span class="p">,</span><span class="n">shpSegIdName</span><span class="p">,</span><span class="n">shpStrOrdColName</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Get stream order for FSPs and segments from segment stream order shapefile and save them in fsp_info.csv and segment_info.csv files. </span>
+<span class="sd">        It also creates the stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            libFolder: library folder</span>
+<span class="sd">            strOrdShpFile: stream order shapefile</span>
+<span class="sd">            shpSegIdName: segment ID column name in the shapefile</span>
+<span class="sd">            shpStrOrdColName: stream order column name in the shapefile</span>
+<span class="sd">        Return: FSP, segment, and stream order data frames</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># get stream order from the shapefile</span>
+    <span class="n">shpDf</span> <span class="o">=</span> <span class="n">gpd</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">strOrdShpFile</span><span class="p">)</span>
+
+    <span class="c1"># select columns</span>
+    <span class="n">streamOrderColumns</span> <span class="o">=</span> <span class="p">[</span><span class="n">shpSegIdName</span><span class="p">,</span><span class="n">shpStrOrdColName</span><span class="p">]</span>
+    <span class="n">segOrdDf</span> <span class="o">=</span> <span class="n">shpDf</span><span class="p">[</span><span class="n">streamOrderColumns</span><span class="p">]</span>
+    <span class="c1"># rename shp order column to &#39;StrOrd&#39;</span>
+    <span class="n">segOrdDf</span> <span class="o">=</span> <span class="n">segOrdDf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="n">shpSegIdName</span><span class="p">:</span> <span class="s1">&#39;SegId&#39;</span><span class="p">,</span> <span class="n">shpStrOrdColName</span><span class="p">:</span> <span class="n">strOrdColName</span><span class="p">})</span>
+    <span class="c1"># print(segOrdDf)</span>
+
+    <span class="c1"># read fsp and segment info csv files</span>
+    <span class="n">fspCsvFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span><span class="n">fspInfoFileName</span><span class="p">)</span>
+    <span class="n">segCsvFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span><span class="n">segInfoFileName</span><span class="p">)</span>
+    <span class="c1"># need to set float_precision=&#39;round_trip&#39; to prevent rounding while reading the text file! float_precision=&#39;high&#39; DOESN&#39;T work.</span>
+    <span class="c1"># For Verdigris 10-m library, FSP ID of 22246, its FspX of -1003.7918248322967 in fsp_info.csv was read into memory as -1003.7918248322968 without using float_precision=&#39;round_trip&#39;</span>
+    <span class="n">fspDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fspCsvFile</span><span class="p">,</span><span class="n">float_precision</span><span class="o">=</span><span class="s1">&#39;round_trip&#39;</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">segDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">segCsvFile</span><span class="p">,</span><span class="n">float_precision</span><span class="o">=</span><span class="s1">&#39;round_trip&#39;</span><span class="p">,</span><span class="n">index_col</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># remove existing &quot;StrOrd&quot; column</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;StrOrd&#39;</span> <span class="ow">in</span> <span class="n">fspDf</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+        <span class="n">fspDf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;StrOrd&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;StrOrd&#39;</span> <span class="ow">in</span> <span class="n">segDf</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+        <span class="n">segDf</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;StrOrd&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Get segment stream order by merging DFs based on segment ID</span>
+    <span class="n">segDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">segDf</span><span class="p">,</span> <span class="n">segOrdDf</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;SegId&#39;</span><span class="p">)</span>
+    <span class="c1"># print(segDf)</span>
+
+    <span class="c1"># Get FSP&#39;s stream order by merging</span>
+    <span class="n">fspDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">fspDf</span><span class="p">,</span> <span class="n">segOrdDf</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;SegId&#39;</span><span class="p">)</span>
+    <span class="c1"># print(segDf)</span>
+
+    <span class="c1"># save the DFs in CSVs</span>
+    <span class="n">fspDf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">fspCsvFile</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w+&#39;</span><span class="p">)</span>
+    <span class="n">segDf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">segCsvFile</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w+&#39;</span><span class="p">)</span>
+
+    <span class="c1">#</span>
+    <span class="c1"># Create another table storing stream order network information with the columns:</span>
+    <span class="c1"># [‘StrOrd’, ‘DsStrOrd’, ‘JunctionFspX’, ‘JunctionFspY’] for use in interpolting FSP DOF</span>
+    <span class="c1">#</span>
+    <span class="n">strOrdDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">strOrdNetColumnNames</span><span class="p">)</span>
+    <span class="n">strOrds</span> <span class="o">=</span> <span class="n">segDf</span><span class="p">[</span><span class="s1">&#39;StrOrd&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">so</span> <span class="ow">in</span> <span class="n">strOrds</span><span class="p">:</span>
+        <span class="c1"># find the most downstream segment in the stream order</span>
+        <span class="n">mostDsSeg</span> <span class="o">=</span> <span class="n">segDf</span><span class="p">[</span><span class="n">segDf</span><span class="p">[</span><span class="s1">&#39;StrOrd&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">so</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;DsDist&#39;</span><span class="p">)[[</span><span class="s1">&#39;DsSegId&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># print(mostDsSeg)</span>
+        <span class="c1"># get its downstream segment ID</span>
+        <span class="n">dsSegId</span> <span class="o">=</span> <span class="n">mostDsSeg</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">dsSegId</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># get downstream stream order</span>
+            <span class="n">dsOrd</span> <span class="o">=</span> <span class="n">segDf</span><span class="p">[</span><span class="n">segDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">dsSegId</span><span class="p">][</span><span class="s1">&#39;StrOrd&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># get the first FSP in the downstream segment</span>
+            <span class="n">firstFspXy</span> <span class="o">=</span> <span class="n">fspDf</span><span class="p">[</span><span class="n">fspDf</span><span class="p">[</span><span class="s1">&#39;SegId&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">dsSegId</span><span class="p">][[</span><span class="s1">&#39;FspX&#39;</span><span class="p">,</span><span class="s1">&#39;FspY&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">fspx</span><span class="p">,</span> <span class="n">fspy</span> <span class="o">=</span> <span class="n">firstFspXy</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">firstFspXy</span><span class="o">.</span><span class="n">iat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># no downstream segment</span>
+            <span class="n">dsOrd</span><span class="p">,</span><span class="n">fspx</span><span class="p">,</span><span class="n">fspy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+
+        <span class="c1"># add the connectivity information to the table</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="n">so</span><span class="p">,</span><span class="n">dsOrd</span><span class="p">,</span><span class="n">fspx</span><span class="p">,</span><span class="n">fspy</span><span class="p">]],</span><span class="n">columns</span><span class="o">=</span><span class="n">strOrdNetColumnNames</span><span class="p">)</span>    
+        <span class="c1"># append to the index table</span>
+        <span class="c1"># strOrdDf = strOrdDf.append(temp,ignore_index=True)</span>
+        <span class="n">strOrdDf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">strOrdDf</span><span class="p">,</span> <span class="n">temp</span><span class="p">],</span><span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># save the table as a CSV file</span>
+    <span class="n">strOrdCsvFile</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span> <span class="n">strOrdNetFileName</span><span class="p">)</span>
+    <span class="n">strOrdDf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">strOrdCsvFile</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">fspDf</span><span class="p">,</span> <span class="n">segDf</span><span class="p">,</span> <span class="n">strOrdDf</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="fldpln.tile.ReadMatFile" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">ReadMatFile</span><span class="p">(</span><span class="n">matFile</span><span class="p">,</span> <span class="n">varName</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.tile.ReadMatFile" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Read matlab files with different versions. scipy.io DOES NOT support MATLAB files version 7.3 yet! Some of the libraries are in 7.3 while the others are not.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>matFile</code></td>
+        <td></td>
+        <td><p>matlab file name</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>varName</code></td>
+        <td></td>
+        <td><p>variable name in the matlab file</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>      
+
+        <details class="quote">
+          <summary>Source code in <code>fldpln/tile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">ReadMatFile</span><span class="p">(</span><span class="n">matFile</span><span class="p">,</span> <span class="n">varName</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Read matlab files with different versions. scipy.io DOES NOT support MATLAB files version 7.3 yet! Some of the libraries are in 7.3 while the others are not.</span>
+<span class="sd">        Parameters:</span>
+<span class="sd">            matFile: matlab file name</span>
+<span class="sd">            varName: variable name in the matlab file</span>
+<span class="sd">        Return: variable in the matlab file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span> 
+        <span class="c1"># load the segment FSP-FPP-DTF table in mat file as &lt; 7.3. </span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">matFile</span><span class="p">)</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">[</span><span class="n">varName</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">matFile</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">vars</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="c1"># get the variable and transpose it for dataframe!</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="nb">vars</span><span class="p">[</span><span class="n">varName</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Could not read the mat file at all...&#39;</span><span class="p">)</span>
+        <span class="n">var</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="n">var</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
 
 
 
@@ -822,7 +1648,7 @@
 
         <details class="quote">
           <summary>Source code in <code>fldpln/tile.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">TileLibrary</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span><span class="n">cellSize</span><span class="p">,</span><span class="n">tiledLibFolder</span><span class="p">,</span><span class="n">tileSize</span><span class="p">,</span><span class="n">fileFormat</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">TileLibrary</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span> <span class="n">cellSize</span><span class="p">,</span> <span class="n">tiledLibFolder</span><span class="p">,</span> <span class="n">tileSize</span><span class="p">,</span> <span class="n">fileFormat</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Tile a library. Turn segment-based FSP-FPP relations to tile-based</span>
 <span class="sd">        Parameters:</span>
 <span class="sd">            segLibFolder: folder containing the segment-based library</span>
@@ -832,14 +1658,11 @@
 <span class="sd">            fileFormat: &#39;snappy&#39; or &#39;mat&#39;. &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
 <span class="sd">        Return: metadata of the tiled library</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<span class="c1"># This function uses the fsp_info.csv file (under tiledLibFolder) to get FSP IDs</span>
-<span class="c1"># fileFormat: &#39;snappy&#39; or &#39;mat&#39;. &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
-<span class="c1"># tileSize changed to the number of cells on May 27, 2024 to avoid partial cells within a tile and also works for GCS system</span>
+    <span class="c1"># This function uses the fsp_info.csv file (under tiledLibFolder) to get FSP IDs</span>
+    <span class="c1"># fileFormat: &#39;snappy&#39; or &#39;mat&#39;. &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
+    <span class="c1"># tileSize changed to the number of cells on May 27, 2024 to avoid partial cells within a tile and also works for GCS system</span>
 
-    <span class="c1"># # create the tiledLibFolder folder for all tiled libraries if it doesn&#39;t exist</span>
-    <span class="c1"># os.makedirs(tiledLibFolder,exist_ok=True)</span>
-
-    <span class="c1"># create a folder for the tiled library</span>
+    <span class="c1"># create the tiledLibFolder folder for all tiled libraries if it doesn&#39;t exist</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">tiledLibFolder</span><span class="p">,</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># </span>
