@@ -1,12 +1,6 @@
-json
 numpy
 pandas
 geopandas
 scipy
 h5py
-glob
 shapely
-zipfile
-shutil
-urllib
-re
