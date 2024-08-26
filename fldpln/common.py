@@ -1,13 +1,8 @@
-"""The common module contains common functions and classes used by the other modules.
+"""The common module contains common variables, functions and classes used by the other modules.
 """
-
+#
 # variables, functions, and classes used by the other modules
-
-# def hello_fldpln():
-#     """Prints a hello message to the console.
-#     """
-#     print("Hello from fldpln!")
-
+#
 ###############################################################################################################
 # Segment-based library file information. Only need when turn segment-based library to tile-based library
 ###############################################################################################################

@@ -30,7 +30,7 @@ def GetUsgsGauges(geobox, epsg=32614):
     """Get USGS gauges within a box and project them
         Parameters:
             geobox: a geographic box of (minX,minY,maxX,maxY)
-            epsg: projected coordinate system, default to UTM14 for Kansas
+            epsg: projected coordinate system, default to UTM14 (epsg=32614) for Kansas
         Returns: a dataframe of USGS gauges
     """
     

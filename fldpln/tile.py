@@ -27,7 +27,8 @@ from .common import *
 # Functions--convert segment-based library to tiled library
 ############################################################################################################################################
 
-def TileLibrary(segLibFolder,cellSize,tiledLibFolder,tileSize,fileFormat):
+############################################################################################################################################
+def TileLibrary(segLibFolder, cellSize, tiledLibFolder, tileSize, fileFormat):
     """ Tile a library. Turn segment-based FSP-FPP relations to tile-based
         Parameters:
             segLibFolder: folder containing the segment-based library
@@ -37,14 +38,11 @@ def TileLibrary(segLibFolder,cellSize,tiledLibFolder,tileSize,fileFormat):
             fileFormat: 'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
         Return: metadata of the tiled library
     """
-# This function uses the fsp_info.csv file (under tiledLibFolder) to get FSP IDs
-# fileFormat: 'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
-# tileSize changed to the number of cells on May 27, 2024 to avoid partial cells within a tile and also works for GCS system
+    # This function uses the fsp_info.csv file (under tiledLibFolder) to get FSP IDs
+    # fileFormat: 'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
+    # tileSize changed to the number of cells on May 27, 2024 to avoid partial cells within a tile and also works for GCS system
 
-    # # create the tiledLibFolder folder for all tiled libraries if it doesn't exist
-    # os.makedirs(tiledLibFolder,exist_ok=True)
-
-    # create a folder for the tiled library
+    # create the tiledLibFolder folder for all tiled libraries if it doesn't exist
     os.makedirs(tiledLibFolder,exist_ok=True)
 
     # 
@@ -256,13 +254,17 @@ def TileLibrary(segLibFolder,cellSize,tiledLibFolder,tileSize,fileFormat):
 
     return metaData
 
-#
-# Calculate each tile's boundary as (minX, maxX,minY, maxY)
-#
-# minX, maxX, minY, maxY are the external border (not the cell center) coordinates of the area needs to be tiled.
-# tileSizeX, tileSizeY are also the external border size of a tile, not the cell center size!
+############################################################################################################################################
 def CalculateTileBoundary(minX, maxX, minY, maxY, tileSizeX, tileSizeY, padding=True):
-#padding--all the tiles have the same size, not reduced to the border of the tiled area
+    """ Calculate each tile's boundary as (minX, maxX,minY, maxY)
+        Parameters:
+            minX, maxX, minY, maxY: external border (not the cell center) coordinates of the area needs to be tiled.
+            tileSizeX, tileSizeY: external border size of a tile, not the cell center size!
+            padding: all the tiles have the same size, not reduced to the border of the tiled area. default is True.
+        Return: a list of tile boundary tuple of (minX, maxX,minY, maxY)
+    """
+
+    # helper function to generate tile boundary in one dimension
     def TileInOneDimension(min, max, tileSize, padding=True):
         # generate tile marker coordinates
         bs = np.arange(min, max, tileSize)
@@ -283,12 +285,14 @@ def CalculateTileBoundary(minX, maxX, minY, maxY, tileSizeX, tileSizeY, padding=
     tb = [(minX, maxX,minY, maxY) for ((minX,maxX),(minY,maxY)) in tb]
     return tb
 
-#
-# calculate library external border extent
-#
-def CalculateLibraryExtent(segLibFolder,cellSize):
-# return external border extent (minX, maxX,minY, maxY)
-# and segment extents (FPP cell center) df ['MinX','MaxX','MinY','MaxY','FileName']
+############################################################################################################################################
+def CalculateLibraryExtent(segLibFolder, cellSize):
+    """ Calculate library external border extent
+        Parameters:
+            segLibFolder: folder containing the segment-based library
+            cellSize: cell size in meters
+        Return: external border extent (minX, maxX,minY, maxY) and segment extents (FPP cell center) data frame of ['MinX','MaxX','MinY','MaxY','FileName']
+    """
 
     # Get all the segment mat files in the library/watershed
     segMatFileFullNames = glob.glob(os.path.join(segLibFolder, segMatFileMainName+'*.mat'))
@@ -331,11 +335,15 @@ def CalculateLibraryExtent(segLibFolder,cellSize):
     
     return (minX, maxX,minY, maxY), segExts 
 
-#
-# Read matlab files with different versions
-#
+############################################################################################################################################
 def ReadMatFile(matFile, varName):
-    #scipy.io DOES NOT support matlabe files version 7.3 yet! Some of the libraries are in 7.3 while the others are not.
+    """ Read matlab files with different versions. scipy.io DOES NOT support MATLAB files version 7.3 yet! Some of the libraries are in 7.3 while the others are not.
+        Parameters:
+            matFile: matlab file name
+            varName: variable name in the matlab file
+        Return: variable in the matlab file
+    """
+
     try: 
         # load the segment FSP-FPP-DTF table in mat file as < 7.3. 
         vars = sio.loadmat(matFile)
@@ -358,15 +366,19 @@ def ReadMatFile(matFile, varName):
 ############################################################################################################################################
 
 def CalculateFspSegmentDownstreamDistance(libFolder,libName):
-# Cleanup segments (some segments don't exist in FSPs) and save library FSP and segment information as two csv files 
-# (fsp_info.csv & segment_info.csv). It also reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json
-# It also calculates FSP and segment downstream distance (i.e., distance to library outlet(s)) which involves:
-# 1. Calculate FSP's within-segment downstream distance
-# 2. Calculate segment length which is more accurate than "CellCount" * cell size
-# 3. Calculate segment's downstream distance (to watershed outlet) for speeding up 
-# 4. Calculate FSP's downstream distance
-# Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).
-# This function add the gap when calculating downstream distance to the outlet!
+    """ Cleanup segments (some segments don't exist in FSPs) and save library FSP and segment information as two csv files (fsp_info.csv & segment_info.csv). 
+        It also reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json. It also calculates FSP and segment downstream distance (i.e., distance to library outlet(s)) 
+        which involves:
+            1. Calculate FSP's within-segment downstream distance
+            2. Calculate segment length which is more accurate than "CellCount" * cell size
+            3. Calculate segment's downstream distance (to watershed outlet) for speeding up 
+            4. Calculate FSP's downstream distance
+        Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).
+        Parameters:
+            libFolder: folder containing the library
+            libName: library name
+        Return: FSP and segment data frames
+    """
    
     #
     # read in fsp (flood source pixel) and segment network info Excel files
@@ -502,11 +514,16 @@ def CalculateFspSegmentDownstreamDistance(libFolder,libName):
 
     return fspDf, segDf
 
-#
-# Generate segment shapefile from FSP and segment info files
-#
+############################################################################################################################################
 def GenerateSegmentShapefilesFromFspSegmentInfoFiles(segInfoFile, fspInfoFile, crs, outShpFile):
-# Generate segment shapefiles from FSP and segment info files.
+    """ Generate segment shapefiles from FSP and segment info files.
+        Parameters:
+            segInfoFile: segment info file
+            fspInfoFile: FSP info file
+            crs: coordinate reference system
+            outShpFile: output shapefile
+        Return: None
+    """
 
     # read in FSP ID and coordinates
     # need to set float_precision='round_trip' to prevent rounding while reading the text file! float_precision='high' DOESN'T work.
@@ -557,13 +574,18 @@ def GenerateSegmentShapefilesFromFspSegmentInfoFiles(segInfoFile, fspInfoFile, c
 
     return #libSegs
 
-#
-# Get stream order for FSPs and segments from sgement shapefile and generate stream-order network information for FSP DOF interpolation
-#
+############################################################################################################################################
 def GetStreamOrdersForFspsSegments(libFolder,strOrdShpFile,shpSegIdName,shpStrOrdColName):
-# Updates fsp_info.csv and segment_info.csv files with stream order
-# Creates the stream_order_info.csv which stores the network info at the level of stream orders
-        
+    """ Get stream order for FSPs and segments from segment stream order shapefile and save them in fsp_info.csv and segment_info.csv files. 
+        It also creates the stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation
+        Parameters:
+            libFolder: library folder
+            strOrdShpFile: stream order shapefile
+            shpSegIdName: segment ID column name in the shapefile
+            shpStrOrdColName: stream order column name in the shapefile
+        Return: FSP, segment, and stream order data frames
+    """
+     
     # get stream order from the shapefile
     shpDf = gpd.read_file(strOrdShpFile)
     
@@ -634,61 +656,66 @@ def GetStreamOrdersForFspsSegments(libFolder,strOrdShpFile,shpSegIdName,shpStrOr
 
     return fspDf, segDf, strOrdDf
 
-#
-# A function to download and unzip segment-based libraries
-#
-def DownloadSegmentLibrary(segUrl,libName,localLibFolder ):
-# Not implemented yet! The zip file name may be different in the libraries. 
-    # 
-    # get the zipped segment library file name, which can vary from library to libaray as the max DOF may be different
-    # for example: SLIE_KS_AOI_spring_DTF_49ft_(15m).zip, SLIE_KS_AOI_ninnescah_DTF_33ft_(10m).zip	
-    #
-    segUrl = segUrl+'/'+libName
-    # remove space in the URL
-    url = segUrl.replace(" ","%20")
-    # create a request
-    req = urllib.request.Request(url)
-    # open and read the HTML page
-    htmlPage = urllib.request.urlopen(req).read()
-    # turn the HTML page from byte into string
-    htmlPageStr = str(htmlPage)
+############################################################################################################################################
+# def DownloadSegmentLibrary(segUrl,libName,localLibFolder ):
+#     """ Download segment-based library from the web and unzip it. 
+#         Parameters:
+#             segUrl: URL of the segment-based library
+#             libName: library name
+#             localLibFolder: local folder to store the library
+#         Return: None
+#     """
+# # Not implemented yet! The zip file name may be different in the libraries. 
+#     # 
+#     # get the zipped segment library file name, which can vary from library to libaray as the max DOF may be different
+#     # for example: SLIE_KS_AOI_spring_DTF_49ft_(15m).zip, SLIE_KS_AOI_ninnescah_DTF_33ft_(10m).zip	
+#     #
+#     segUrl = segUrl+'/'+libName
+#     # remove space in the URL
+#     url = segUrl.replace(" ","%20")
+#     # create a request
+#     req = urllib.request.Request(url)
+#     # open and read the HTML page
+#     htmlPage = urllib.request.urlopen(req).read()
+#     # turn the HTML page from byte into string
+#     htmlPageStr = str(htmlPage)
 
-    # get segment library zip file from the HTML page
-    p1 = 'href=\"SLIE_KS_AOI_'+libName+'_DTF_\d{,3}ft_\(\d{,3}m\)\.zip\"'
-    hrefStr = re.findall(p1,str(htmlPageStr))[0]
-    p2 = 'SLIE_KS_AOI_'+libName+'_DTF_\d{,3}ft_\(\d{,3}m\)\.zip'
-    zipFile = re.findall(p2,hrefStr)[0]
+#     # get segment library zip file from the HTML page
+#     p1 = 'href=\"SLIE_KS_AOI_'+libName+'_DTF_\d{,3}ft_\(\d{,3}m\)\.zip\"'
+#     hrefStr = re.findall(p1,str(htmlPageStr))[0]
+#     p2 = 'SLIE_KS_AOI_'+libName+'_DTF_\d{,3}ft_\(\d{,3}m\)\.zip'
+#     zipFile = re.findall(p2,hrefStr)[0]
     
-    # create local folder if not existing
-    os.makedirs(localLibFolder,exist_ok=True)
+#     # create local folder if not existing
+#     os.makedirs(localLibFolder,exist_ok=True)
 
-    # If you need to redownload for whatever reason
-    if os.path.exists(os.path.join(localLibFolder, libName)):
-        shutil.rmtree(os.path.join(localLibFolder, libName))
-    os.mkdir(os.path.join(localLibFolder, libName))
+#     # If you need to redownload for whatever reason
+#     if os.path.exists(os.path.join(localLibFolder, libName)):
+#         shutil.rmtree(os.path.join(localLibFolder, libName))
+#     os.mkdir(os.path.join(localLibFolder, libName))
 
-    # Download base library
-    print(f'Downloading library {libName} ...')
-    urllib.request.urlretrieve(segUrl+'/'+zipFile,os.path.join(localLibFolder, libName, zipFile))
+#     # Download base library
+#     print(f'Downloading library {libName} ...')
+#     urllib.request.urlretrieve(segUrl+'/'+zipFile,os.path.join(localLibFolder, libName, zipFile))
     
-    # Download FSP info Excel file
-    print("Downloading FSP Excel file ...")
-    urllib.request.urlretrieve(segUrl+'/SLIE_KS_AOI_'+libName+'_fsp_info.xlsx', 
-        os.path.join(localLibFolder, libName, 'SLIE_KS_AOI_'+libName+'_fsp_info.xlsx'))
+#     # Download FSP info Excel file
+#     print("Downloading FSP Excel file ...")
+#     urllib.request.urlretrieve(segUrl+'/SLIE_KS_AOI_'+libName+'_fsp_info.xlsx', 
+#         os.path.join(localLibFolder, libName, 'SLIE_KS_AOI_'+libName+'_fsp_info.xlsx'))
 
-    # Download segment info Excel file
-    print("Downloading segment Excel file ...") #	segment_network_info_spring.xlsx
-    urllib.request.urlretrieve(segUrl+'/segment_network_info_'+libName+'.xlsx', 
-        os.path.join(localLibFolder, libName, 'segment_network_info_'+libName+'.xlsx'))
+#     # Download segment info Excel file
+#     print("Downloading segment Excel file ...") #	segment_network_info_spring.xlsx
+#     urllib.request.urlretrieve(segUrl+'/segment_network_info_'+libName+'.xlsx', 
+#         os.path.join(localLibFolder, libName, 'segment_network_info_'+libName+'.xlsx'))
 
-    # unzip library
-    print("Unzipping ...")
-    # both shutil and zipFile do NOT support "Deflated64" or "compression type 9"
-    with zipfile.ZipFile(os.path.join(localLibFolder, libName, zipFile),'r') as zip_ref:
-        zip_ref.extractall(os.path.join(localLibFolder, libName)) 
-    # shutil.unpack_archive(os.path.join(localLibFolder, libName, zipFile),os.path.join(localLibFolder, libName),'zip')
+#     # unzip library
+#     print("Unzipping ...")
+#     # both shutil and zipFile do NOT support "Deflated64" or "compression type 9"
+#     with zipfile.ZipFile(os.path.join(localLibFolder, libName, zipFile),'r') as zip_ref:
+#         zip_ref.extractall(os.path.join(localLibFolder, libName)) 
+#     # shutil.unpack_archive(os.path.join(localLibFolder, libName, zipFile),os.path.join(localLibFolder, libName),'zip')
 
-    # clean up folder
-    os.remove(os.path.join(localLibFolder, libName, zipFile))
-    print("Done for "+libName)
-    return
+#     # clean up folder
+#     os.remove(os.path.join(localLibFolder, libName, zipFile))
+#     print("Done for "+libName)
+#     return
