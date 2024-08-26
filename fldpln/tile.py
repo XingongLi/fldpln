@@ -308,8 +308,7 @@ def CalculateLibraryExtent(segLibFolder, cellSize):
             segLibFolder (str): folder containing the segment-based library.
             cellSize (float): cell size in meters.
         Return:
-            tuple: external border extent (minX, maxX,minY, maxY)
-            data frame: segment extent (FPP cell center) data frame of ['MinX','MaxX','MinY','MaxY','FileName']
+            tuple: external border extent (minX, maxX,minY, maxY), segment extent data frame of ['MinX','MaxX','MinY','MaxY','FileName'] (FPP cell center)
     """
 
     # Get all the segment mat files in the library/watershed
@@ -360,7 +359,7 @@ def ReadMatFile(matFile, varName):
             matFile (str): matlab file name.
             varName (str): variable name in the matlab file.
         Return:
-            data frame: variable in the matlab file.
+            data frame: variable matrix in the matlab file.
     """
 
     try: 
@@ -401,8 +400,7 @@ def CalculateFspSegmentDownstreamDistance(libFolder,libName):
             libName (str): library name.
 
         Return:
-            data frame: FSP data frame.
-            data frame: segment data frame.
+            tuple: FSP data frame. segment data frame.
     """
    
     #
@@ -549,7 +547,8 @@ def GenerateSegmentShapefilesFromFspSegmentInfoFiles(segInfoFile, fspInfoFile, c
             crs (str): coordinate reference system.
             outShpFile (str): output shapefile.
 
-        Return: None
+        Return: 
+            None
      """
 
     # read in FSP ID and coordinates
@@ -613,9 +612,7 @@ def GetStreamOrdersForFspsSegments(libFolder,strOrdShpFile,shpSegIdName,shpStrOr
             shpStrOrdColName (str): stream order column name in the shapefile.
 
         Return:
-            data frame: FSP data frame.
-            data frame: segment data frame.
-            data frame: stream order network data frame.
+            tuple: FSP data frame, segment data frame, stream order network data frame.
     """
      
     # get stream order from the shapefile
