@@ -850,7 +850,7 @@
 <a id="fldpln.tile"></a>
     <div class="doc doc-contents first">
 
-      <p>Module to re-organize FLDPLN segment-based library into tile-based library for fast mapping</p>
+      <p>Module to re-organize FLDPLN segment-based library into tile-based library for fast mapping.</p>
 
 
 
@@ -876,13 +876,17 @@
     <div class="doc doc-contents ">
 
       <p>Cleanup segments (some segments don't exist in FSPs) and save library FSP and segment information as two csv files (fsp_info.csv &amp; segment_info.csv). 
-It also reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json. It also calculates FSP and segment downstream distance (i.e., distance to library outlet(s)) 
-which involves:
-    1. Calculate FSP's within-segment downstream distance
-    2. Calculate segment length which is more accurate than "CellCount" * cell size
-    3. Calculate segment's downstream distance (to watershed outlet) for speeding up 
-    4. Calculate FSP's downstream distance
-Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).</p>
+It reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json. For stage interpolation, it also calculates FSP and segment 
+downstream distance (i.e., distance to library outlet(s)) which involves:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span>
+<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>1. Calculate FSP&#39;s within-segment downstream distance
+2. Calculate segment length which is more accurate than &quot;CellCount&quot; * cell size
+3. Calculate segment&#39;s downstream distance (to watershed outlet) for speeding up 
+4. Calculate FSP&#39;s downstream distance
+</code></pre></div></td></tr></table></div>
+<p>Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -914,12 +918,14 @@ Note that FSPs and segments are based on raster cell centers. Segment and its do
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">CalculateFspSegmentDownstreamDistance</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span><span class="n">libName</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Cleanup segments (some segments don&#39;t exist in FSPs) and save library FSP and segment information as two csv files (fsp_info.csv &amp; segment_info.csv). </span>
-<span class="sd">        It also reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json. It also calculates FSP and segment downstream distance (i.e., distance to library outlet(s)) </span>
-<span class="sd">        which involves:</span>
+<span class="sd">        It reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json. For stage interpolation, it also calculates FSP and segment </span>
+<span class="sd">        downstream distance (i.e., distance to library outlet(s)) which involves:</span>
+
 <span class="sd">            1. Calculate FSP&#39;s within-segment downstream distance</span>
 <span class="sd">            2. Calculate segment length which is more accurate than &quot;CellCount&quot; * cell size</span>
 <span class="sd">            3. Calculate segment&#39;s downstream distance (to watershed outlet) for speeding up </span>
 <span class="sd">            4. Calculate FSP&#39;s downstream distance</span>
+
 <span class="sd">        Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).</span>
 <span class="sd">        Parameters:</span>
 <span class="sd">            libFolder: folder containing the library</span>
@@ -1384,7 +1390,7 @@ Note that FSPs and segments are based on raster cell centers. Segment and its do
     <div class="doc doc-contents ">
 
       <p>Get stream order for FSPs and segments from segment stream order shapefile and save them in fsp_info.csv and segment_info.csv files. 
-It also creates the stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation</p>
+It also creates file stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1428,7 +1434,7 @@ It also creates the stream_order_info.csv which stores the network info at the l
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GetStreamOrdersForFspsSegments</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span><span class="n">strOrdShpFile</span><span class="p">,</span><span class="n">shpSegIdName</span><span class="p">,</span><span class="n">shpStrOrdColName</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Get stream order for FSPs and segments from segment stream order shapefile and save them in fsp_info.csv and segment_info.csv files. </span>
-<span class="sd">        It also creates the stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation</span>
+<span class="sd">        It also creates file stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation</span>
 <span class="sd">        Parameters:</span>
 <span class="sd">            libFolder: library folder</span>
 <span class="sd">            strOrdShpFile: stream order shapefile</span>
