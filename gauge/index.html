@@ -778,18 +778,44 @@
 
     <div class="doc doc-contents ">
 
-      <p>Get USGS gauges within a geographic box and project them into a projected coordinate system</p>
-      
+      <p>Get USGS gauges within a box and project them</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>geobox</code></td>
+        <td></td>
+        <td><p>a geographic box of (minX,minY,maxX,maxY)</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>epsg</code></td>
+        <td></td>
+        <td><p>projected coordinate system, default to UTM14 for Kansas</p></td>
+        <td><code>32614</code></td>
+      </tr>
+  </tbody>
+</table>      
 
         <details class="quote">
           <summary>Source code in <code>fldpln/gauge.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GetUsgsGauges</span><span class="p">(</span><span class="n">geobox</span><span class="p">,</span><span class="n">epsg</span><span class="o">=</span><span class="mi">32614</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Get USGS gauges within a geographic box and project them into a projected coordinate system</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GetUsgsGauges</span><span class="p">(</span><span class="n">geobox</span><span class="p">,</span> <span class="n">epsg</span><span class="o">=</span><span class="mi">32614</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get USGS gauges within a box and project them</span>
 <span class="sd">        Parameters:</span>
-<span class="sd">            geobox--a geographic box of (minX,minY,maxX,maxY)</span>
-<span class="sd">            epsg--projected coordinate system, default to UTM14 for Kansas</span>
-<span class="sd">        Returns: a GeoDataFrame of USGS gauges</span>
+<span class="sd">            geobox: a geographic box of (minX,minY,maxX,maxY)</span>
+<span class="sd">            epsg: projected coordinate system, default to UTM14 for Kansas</span>
+<span class="sd">        Returns: a dataframe of USGS gauges</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="c1"># USGS site/gauge table fields:</span>
     <span class="c1">#  agency_cd       -- Agency</span>
     <span class="c1">#  site_no         -- Site identification number</span>
