@@ -4,3 +4,9 @@ geopandas
 scipy
 h5py
 shapely
+rasterio
+osgeo
+rio_cogeo
+pyproj
+lxml
+psycopg2

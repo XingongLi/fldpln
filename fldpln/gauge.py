@@ -4,24 +4,29 @@
 # 
 # Some of the functions are moved to here from fldpln.py and fldpln_reorg.py
 #
-# imports
-# import math
-# import os
-# import tarfile
-# import requests
-# from lxml import html
-# import numpy as np
-# import pandas as pd
-# from osgeo import ogr
-# import geopandas as gpd
-# from datetime import datetime,timedelta # import this module after arcpy as arcpy has the same datetime object in it!
-# from pyproj import CRS
-# import psycopg2
-# import pandas.io.sql as psql
-# import tempfile
+# imports from standard libraries
+import math
+import os
+import tarfile
+import requests
+from datetime import datetime,timedelta # import this module after arcpy as arcpy has the same datetime object in it!
+import tempfile
 
+# imports from 3rd party libraries
+from lxml import html
+import numpy as np
+import pandas as pd
+from osgeo import ogr
+import geopandas as gpd
+from pyproj import CRS
+import psycopg2
+import pandas.io.sql as psql
+
+# import the mapping module from THIS package
 from .mapping import * 
-# from config import config # this from config.py which is used for connecting to the postgresql database for Kansas FIM Dashboard
+
+# Import file config.py which is used for connecting to the postgresql database for Kansas FIM Dashboard
+# from config import config 
 
 #
 # Get USGS gauges. This function get USGS gauges within a box and project them

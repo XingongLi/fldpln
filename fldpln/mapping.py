@@ -1,28 +1,32 @@
-"""Module for mapping tile-based library .
+"""Module for mapping tile-based library.
 """
 
-# import os
-# from math import sqrt
-# import numbers
-# import json
-# import numpy as np
-# import pandas as pd
-# import scipy.io as sio 
-# import rasterio
-# from rasterio.merge import merge # for some reason, cannot use it as rasterio.merge.merge()!
-# from osgeo import ogr # import ogr # ok on desktop but not on laptop
-# from osgeo import gdal # import gdal # ok on desktop but not on laptop
-# import urllib.request
-# import shutil
-# import zipfile
-# # import azure.storage.blob
-# import urllib.parse
+# imports from Python standard library
+import os
+from math import sqrt
+import numbers
+import json
+import shutil
+import zipfile
+import urllib.request
+import urllib.parse
 
-# from rasterio.io import MemoryFile
-# from rio_cogeo.cogeo import cog_translate
-# from rio_cogeo.profiles import cog_profiles
+# imports from 3rd party libraries
+import numpy as np
+import pandas as pd
+import scipy.io as sio
 
-# import fldpln common module
+import rasterio
+from rasterio.merge import merge # for some reason, cannot use it as rasterio.merge.merge()!
+from rasterio.io import MemoryFile
+
+from osgeo import ogr # import ogr # ok on desktop but not on laptop
+from osgeo import gdal # import gdal # ok on desktop but not on laptop
+
+from rio_cogeo.cogeo import cog_translate
+from rio_cogeo.profiles import cog_profiles
+
+# import the common module from THIS package
 from .common import *
 
 ############################################################################################################################################

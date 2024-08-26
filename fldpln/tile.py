@@ -16,15 +16,12 @@ import urllib.request
 import re
 
 # imports from third-party libraries
-# from lib2to3.pgen2 import driver
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-import scipy.io as sio #import loadmat, savemat
+import scipy.io as sio # imports loadmat, savemat
 import h5py # for reading some .mat file
-# from pyproj import CRS
 from shapely.geometry import LineString
-# from osgeo import ogr
 
 # import the common module from THIS package
 from .common import *
