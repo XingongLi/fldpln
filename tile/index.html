@@ -630,6 +630,15 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#fldpln.tile.DownloadSegmentLibrary" class="md-nav__link">
+    <span class="md-ellipsis">
+      DownloadSegmentLibrary()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#fldpln.tile.GenerateSegmentShapefilesFromFspSegmentInfoFiles" class="md-nav__link">
     <span class="md-ellipsis">
       GenerateSegmentShapefilesFromFspSegmentInfoFiles()
@@ -780,6 +789,15 @@
   <a href="#fldpln.tile.CalculateTileBoundary" class="md-nav__link">
     <span class="md-ellipsis">
       CalculateTileBoundary()
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fldpln.tile.DownloadSegmentLibrary" class="md-nav__link">
+    <span class="md-ellipsis">
+      DownloadSegmentLibrary()
     </span>
   </a>
   
@@ -1324,6 +1342,145 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
     <span class="c1"># convert to (minX, maxX,minY, maxY)</span>
     <span class="n">tb</span> <span class="o">=</span> <span class="p">[(</span><span class="n">minX</span><span class="p">,</span> <span class="n">maxX</span><span class="p">,</span><span class="n">minY</span><span class="p">,</span> <span class="n">maxY</span><span class="p">)</span> <span class="k">for</span> <span class="p">((</span><span class="n">minX</span><span class="p">,</span><span class="n">maxX</span><span class="p">),(</span><span class="n">minY</span><span class="p">,</span><span class="n">maxY</span><span class="p">))</span> <span class="ow">in</span> <span class="n">tb</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">tb</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h2 id="fldpln.tile.DownloadSegmentLibrary" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">DownloadSegmentLibrary</span><span class="p">(</span><span class="n">segUrl</span><span class="p">,</span> <span class="n">libName</span><span class="p">,</span> <span class="n">localLibFolder</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.tile.DownloadSegmentLibrary" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>Download segment-based library from the web and unzip it. Not implemented yet! 
+The zip file name may vary from library to library as the max DOF may be different for different libraries.
+For example: SLIE_KS_AOI_spring_DTF_49ft_(15m).zip, SLIE_KS_AOI_ninnescah_DTF_33ft_(10m).zip.</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>segUrl</code></td>
+        <td><code>str</code></td>
+        <td><p>URL of the segment-based library.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>libName</code></td>
+        <td><code>str</code></td>
+        <td><p>library name.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>localLibFolder</code></td>
+        <td><code>str</code></td>
+        <td><p>local folder to store the library.</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>None</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>fldpln/tile.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">DownloadSegmentLibrary</span><span class="p">(</span><span class="n">segUrl</span><span class="p">,</span> <span class="n">libName</span><span class="p">,</span> <span class="n">localLibFolder</span> <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Download segment-based library from the web and unzip it. Not implemented yet! </span>
+<span class="sd">        The zip file name may vary from library to library as the max DOF may be different for different libraries.</span>
+<span class="sd">        For example: SLIE_KS_AOI_spring_DTF_49ft_(15m).zip, SLIE_KS_AOI_ninnescah_DTF_33ft_(10m).zip.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            segUrl (str): URL of the segment-based library.</span>
+<span class="sd">            libName (str): library name.</span>
+<span class="sd">            localLibFolder (str): local folder to store the library.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Should use import requests instead of urllib.request</span>
+
+    <span class="c1"># # get the zipped segment library file name, 	</span>
+    <span class="c1"># #</span>
+    <span class="c1"># segUrl = segUrl+&#39;/&#39;+libName</span>
+    <span class="c1"># # remove space in the URL</span>
+    <span class="c1"># url = segUrl.replace(&quot; &quot;,&quot;%20&quot;)</span>
+    <span class="c1"># # create a request</span>
+    <span class="c1"># req = urllib.request.Request(url)</span>
+    <span class="c1"># # open and read the HTML page</span>
+    <span class="c1"># htmlPage = urllib.request.urlopen(req).read()</span>
+    <span class="c1"># # turn the HTML page from byte into string</span>
+    <span class="c1"># htmlPageStr = str(htmlPage)</span>
+
+    <span class="c1"># # get segment library zip file from the HTML page</span>
+    <span class="c1"># p1 = &#39;href=\&quot;SLIE_KS_AOI_&#39;+libName+&#39;_DTF_\d{,3}ft_\(\d{,3}m\)\.zip\&quot;&#39;</span>
+    <span class="c1"># hrefStr = re.findall(p1,str(htmlPageStr))[0]</span>
+    <span class="c1"># p2 = &#39;SLIE_KS_AOI_&#39;+libName+&#39;_DTF_\d{,3}ft_\(\d{,3}m\)\.zip&#39;</span>
+    <span class="c1"># zipFile = re.findall(p2,hrefStr)[0]</span>
+
+    <span class="c1"># # create local folder if not existing</span>
+    <span class="c1"># os.makedirs(localLibFolder,exist_ok=True)</span>
+
+    <span class="c1"># # If you need to redownload for whatever reason</span>
+    <span class="c1"># if os.path.exists(os.path.join(localLibFolder, libName)):</span>
+    <span class="c1">#     shutil.rmtree(os.path.join(localLibFolder, libName))</span>
+    <span class="c1"># os.mkdir(os.path.join(localLibFolder, libName))</span>
+
+    <span class="c1"># # Download base library</span>
+    <span class="c1"># print(f&#39;Downloading library {libName} ...&#39;)</span>
+    <span class="c1"># urllib.request.urlretrieve(segUrl+&#39;/&#39;+zipFile,os.path.join(localLibFolder, libName, zipFile))</span>
+
+    <span class="c1"># # Download FSP info Excel file</span>
+    <span class="c1"># print(&quot;Downloading FSP Excel file ...&quot;)</span>
+    <span class="c1"># urllib.request.urlretrieve(segUrl+&#39;/SLIE_KS_AOI_&#39;+libName+&#39;_fsp_info.xlsx&#39;, </span>
+    <span class="c1">#     os.path.join(localLibFolder, libName, &#39;SLIE_KS_AOI_&#39;+libName+&#39;_fsp_info.xlsx&#39;))</span>
+
+    <span class="c1"># # Download segment info Excel file</span>
+    <span class="c1"># print(&quot;Downloading segment Excel file ...&quot;) #	segment_network_info_spring.xlsx</span>
+    <span class="c1"># urllib.request.urlretrieve(segUrl+&#39;/segment_network_info_&#39;+libName+&#39;.xlsx&#39;, </span>
+    <span class="c1">#     os.path.join(localLibFolder, libName, &#39;segment_network_info_&#39;+libName+&#39;.xlsx&#39;))</span>
+
+    <span class="c1"># # unzip library</span>
+    <span class="c1"># print(&quot;Unzipping ...&quot;)</span>
+    <span class="c1"># # both shutil and zipFile do NOT support &quot;Deflated64&quot; or &quot;compression type 9&quot;</span>
+    <span class="c1"># with zipfile.ZipFile(os.path.join(localLibFolder, libName, zipFile),&#39;r&#39;) as zip_ref:</span>
+    <span class="c1">#     zip_ref.extractall(os.path.join(localLibFolder, libName)) </span>
+    <span class="c1"># # shutil.unpack_archive(os.path.join(localLibFolder, libName, zipFile),os.path.join(localLibFolder, libName),&#39;zip&#39;)</span>
+
+    <span class="c1"># # clean up folder</span>
+    <span class="c1"># os.remove(os.path.join(localLibFolder, libName, zipFile))</span>
+    <span class="c1"># print(&quot;Done for &quot;+libName)</span>
+
+    <span class="k">return</span>
 </code></pre></div>
         </details>
     </div>
