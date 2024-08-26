@@ -923,9 +923,8 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
   </thead>
   <tbody>
     <tr>
-      <td><code>data frame</code></td>
-      <td><p>FSP data frame.
-data frame: segment data frame.</p></td>
+      <td><code>tuple</code></td>
+      <td><p>FSP data frame. segment data frame.</p></td>
     </tr>
   </tbody>
 </table>
@@ -948,8 +947,7 @@ data frame: segment data frame.</p></td>
 <span class="sd">            libName (str): library name.</span>
 
 <span class="sd">        Return:</span>
-<span class="sd">            data frame: FSP data frame.</span>
-<span class="sd">            data frame: segment data frame.</span>
+<span class="sd">            tuple: FSP data frame. segment data frame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#</span>
@@ -1143,8 +1141,7 @@ data frame: segment data frame.</p></td>
   <tbody>
     <tr>
       <td><code>tuple</code></td>
-      <td><p>external border extent (minX, maxX,minY, maxY)
-data frame: segment extent (FPP cell center) data frame of ['MinX','MaxX','MinY','MaxY','FileName']</p></td>
+      <td><p>external border extent (minX, maxX,minY, maxY), segment extent data frame of ['MinX','MaxX','MinY','MaxY','FileName'] (FPP cell center)</p></td>
     </tr>
   </tbody>
 </table>
@@ -1156,8 +1153,7 @@ data frame: segment extent (FPP cell center) data frame of ['MinX','MaxX','MinY'
 <span class="sd">            segLibFolder (str): folder containing the segment-based library.</span>
 <span class="sd">            cellSize (float): cell size in meters.</span>
 <span class="sd">        Return:</span>
-<span class="sd">            tuple: external border extent (minX, maxX,minY, maxY)</span>
-<span class="sd">            data frame: segment extent (FPP cell center) data frame of [&#39;MinX&#39;,&#39;MaxX&#39;,&#39;MinY&#39;,&#39;MaxY&#39;,&#39;FileName&#39;]</span>
+<span class="sd">            tuple: external border extent (minX, maxX,minY, maxY), segment extent data frame of [&#39;MinX&#39;,&#39;MaxX&#39;,&#39;MinY&#39;,&#39;MaxY&#39;,&#39;FileName&#39;] (FPP cell center)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Get all the segment mat files in the library/watershed</span>
@@ -1399,7 +1395,8 @@ data frame: segment extent (FPP cell center) data frame of ['MinX','MaxX','MinY'
 <span class="sd">            crs (str): coordinate reference system.</span>
 <span class="sd">            outShpFile (str): output shapefile.</span>
 
-<span class="sd">        Return: None</span>
+<span class="sd">        Return: </span>
+<span class="sd">            None</span>
 <span class="sd">     &quot;&quot;&quot;</span>
 
     <span class="c1"># read in FSP ID and coordinates</span>
@@ -1520,10 +1517,8 @@ It also creates file stream_order_info.csv which stores the network info at the 
   </thead>
   <tbody>
     <tr>
-      <td><code>data frame</code></td>
-      <td><p>FSP data frame.
-data frame: segment data frame.
-data frame: stream order network data frame.</p></td>
+      <td><code>tuple</code></td>
+      <td><p>FSP data frame, segment data frame, stream order network data frame.</p></td>
     </tr>
   </tbody>
 </table>
@@ -1540,9 +1535,7 @@ data frame: stream order network data frame.</p></td>
 <span class="sd">            shpStrOrdColName (str): stream order column name in the shapefile.</span>
 
 <span class="sd">        Return:</span>
-<span class="sd">            data frame: FSP data frame.</span>
-<span class="sd">            data frame: segment data frame.</span>
-<span class="sd">            data frame: stream order network data frame.</span>
+<span class="sd">            tuple: FSP data frame, segment data frame, stream order network data frame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># get stream order from the shapefile</span>
@@ -1672,7 +1665,7 @@ data frame: stream order network data frame.</p></td>
   <tbody>
     <tr>
       <td><code>data frame</code></td>
-      <td><p>variable in the matlab file.</p></td>
+      <td><p>variable matrix in the matlab file.</p></td>
     </tr>
   </tbody>
 </table>
@@ -1684,7 +1677,7 @@ data frame: stream order network data frame.</p></td>
 <span class="sd">            matFile (str): matlab file name.</span>
 <span class="sd">            varName (str): variable name in the matlab file.</span>
 <span class="sd">        Return:</span>
-<span class="sd">            data frame: variable in the matlab file.</span>
+<span class="sd">            data frame: variable matrix in the matlab file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">try</span><span class="p">:</span> 
