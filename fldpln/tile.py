@@ -29,15 +29,26 @@ from .common import *
 
 ############################################################################################################################################
 def TileLibrary(segLibFolder, cellSize, tiledLibFolder, tileSize, fileFormat):
-    """ Tile a library. Turn segment-based FSP-FPP relations to tile-based
-        Parameters:
-            segLibFolder: folder containing the segment-based library
-            cellSize: cell size in meters
-            tiledLibFolder: folder for the tiled library
-            tileSize: number of cells in a tile
-            fileFormat: 'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
-        Return: metadata of the tiled library
+    """ Tile a library. Turn segment-based FSP-FPP relations to tile-based. Note that 'snappy' format needs to install the 'fastparquet' python package
+
+        Args:
+            segLibFolder (str): folder containing the segment-based library.
+            cellSize (float): cell size in meters.
+            tiledLibFolder (str): folder for the tiled library.
+            tileSize (int): number of cells in a tile.
+            fileFormat (str): 'snappy' or 'mat'.
+
+        Return:
+            dict: metadata of the tiled library
     """
+    #     Parameters:
+    #         segLibFolder: folder containing the segment-based library
+    #         cellSize: cell size in meters
+    #         tiledLibFolder: folder for the tiled library
+    #         tileSize: number of cells in a tile
+    #         fileFormat: 'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
+    #     Return: metadata of the tiled library
+    # """
     # This function uses the fsp_info.csv file (under tiledLibFolder) to get FSP IDs
     # fileFormat: 'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
     # tileSize changed to the number of cells on May 27, 2024 to avoid partial cells within a tile and also works for GCS system
@@ -256,12 +267,17 @@ def TileLibrary(segLibFolder, cellSize, tiledLibFolder, tileSize, fileFormat):
 
 ############################################################################################################################################
 def CalculateTileBoundary(minX, maxX, minY, maxY, tileSizeX, tileSizeY, padding=True):
-    """ Calculate each tile's boundary as (minX, maxX,minY, maxY)
-        Parameters:
-            minX, maxX, minY, maxY: external border (not the cell center) coordinates of the area needs to be tiled.
-            tileSizeX, tileSizeY: external border size of a tile, not the cell center size!
-            padding: all the tiles have the same size, not reduced to the border of the tiled area. default is True.
-        Return: a list of tile boundary tuple of (minX, maxX,minY, maxY)
+    """ Calculate each tile's boundary as (minX, maxX,minY, maxY).
+        Args:
+            minX (float): min x of the external border (not the cell center) coordinates of the area needs to be tiled.
+            maxX (float): max x of the external border (not the cell center) coordinates of the area needs to be tiled.
+            minY (float): min y of the external border (not the cell center) coordinates of the area needs to be tiled.
+            maxY (float): max y of the external border (not the cell center) coordinates of the area needs to be tiled.
+            tileSizeX (float): tile external border size (not the cell center size) in x axis.
+            tileSizeY (float): tile external border size (not the cell center size) in y axis.
+            padding (bool): whether the tiles have the same size and not reduced to the border of the tiled area. Default is True.
+        Return:
+            list: list of tile boundaries of (minX, maxX,minY, maxY)
     """
 
     # helper function to generate tile boundary in one dimension
@@ -287,11 +303,13 @@ def CalculateTileBoundary(minX, maxX, minY, maxY, tileSizeX, tileSizeY, padding=
 
 ############################################################################################################################################
 def CalculateLibraryExtent(segLibFolder, cellSize):
-    """ Calculate library external border extent
-        Parameters:
-            segLibFolder: folder containing the segment-based library
-            cellSize: cell size in meters
-        Return: external border extent (minX, maxX,minY, maxY) and segment extents (FPP cell center) data frame of ['MinX','MaxX','MinY','MaxY','FileName']
+    """ Calculate library external border extent. Also calculate segment extents (FPP cell center) and save them in a data frame.
+        Args:
+            segLibFolder (str): folder containing the segment-based library.
+            cellSize (float): cell size in meters.
+        Return:
+            tuple: external border extent (minX, maxX,minY, maxY)
+            data frame: segment extent (FPP cell center) data frame of ['MinX','MaxX','MinY','MaxY','FileName']
     """
 
     # Get all the segment mat files in the library/watershed
@@ -338,10 +356,11 @@ def CalculateLibraryExtent(segLibFolder, cellSize):
 ############################################################################################################################################
 def ReadMatFile(matFile, varName):
     """ Read matlab files with different versions. scipy.io DOES NOT support MATLAB files version 7.3 yet! Some of the libraries are in 7.3 while the others are not.
-        Parameters:
-            matFile: matlab file name
-            varName: variable name in the matlab file
-        Return: variable in the matlab file
+        Args:
+            matFile (str): matlab file name.
+            varName (str): variable name in the matlab file.
+        Return:
+            data frame: variable in the matlab file.
     """
 
     try: 
@@ -374,12 +393,16 @@ def CalculateFspSegmentDownstreamDistance(libFolder,libName):
             2. Calculate segment length which is more accurate than "CellCount" * cell size
             3. Calculate segment's downstream distance (to watershed outlet) for speeding up 
             4. Calculate FSP's downstream distance
-            
+
         Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).
-        Parameters:
-            libFolder: folder containing the library
-            libName: library name
-        Return: FSP and segment data frames
+
+        Args:
+            libFolder (str): folder containing the library.
+            libName (str): library name.
+
+        Return:
+            data frame: FSP data frame.
+            data frame: segment data frame.
     """
    
     #
@@ -519,13 +542,15 @@ def CalculateFspSegmentDownstreamDistance(libFolder,libName):
 ############################################################################################################################################
 def GenerateSegmentShapefilesFromFspSegmentInfoFiles(segInfoFile, fspInfoFile, crs, outShpFile):
     """ Generate segment shapefiles from FSP and segment info files.
-        Parameters:
-            segInfoFile: segment info file
-            fspInfoFile: FSP info file
-            crs: coordinate reference system
-            outShpFile: output shapefile
+
+        Args:
+            segInfoFile (str): segment info file.
+            fspInfoFile (str): FSP info file.
+            crs (str): coordinate reference system.
+            outShpFile (str): output shapefile.
+
         Return: None
-    """
+     """
 
     # read in FSP ID and coordinates
     # need to set float_precision='round_trip' to prevent rounding while reading the text file! float_precision='high' DOESN'T work.
@@ -579,13 +604,18 @@ def GenerateSegmentShapefilesFromFspSegmentInfoFiles(segInfoFile, fspInfoFile, c
 ############################################################################################################################################
 def GetStreamOrdersForFspsSegments(libFolder,strOrdShpFile,shpSegIdName,shpStrOrdColName):
     """ Get stream order for FSPs and segments from segment stream order shapefile and save them in fsp_info.csv and segment_info.csv files. 
-        It also creates file stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation
-        Parameters:
-            libFolder: library folder
-            strOrdShpFile: stream order shapefile
-            shpSegIdName: segment ID column name in the shapefile
-            shpStrOrdColName: stream order column name in the shapefile
-        Return: FSP, segment, and stream order data frames
+        It also creates file stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation.
+
+        Args:
+            libFolder (str): library folder.
+            strOrdShpFile (str): stream order shapefile.
+            shpSegIdName (str): segment ID column name in the shapefile.
+            shpStrOrdColName (str): stream order column name in the shapefile.
+
+        Return:
+            data frame: FSP data frame.
+            data frame: segment data frame.
+            data frame: stream order network data frame.
     """
      
     # get stream order from the shapefile
