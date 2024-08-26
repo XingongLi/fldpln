@@ -20,19 +20,20 @@
 # import pandas.io.sql as psql
 # import tempfile
 
-from .mapping import *
+from .mapping import * 
 # from config import config # this from config.py which is used for connecting to the postgresql database for Kansas FIM Dashboard
 
 #
 # Get USGS gauges. This function get USGS gauges within a box and project them
 #
-def GetUsgsGauges(geobox,epsg=32614):
-    """ Get USGS gauges within a geographic box and project them into a projected coordinate system
+def GetUsgsGauges(geobox, epsg=32614):
+    """Get USGS gauges within a box and project them
         Parameters:
-            geobox--a geographic box of (minX,minY,maxX,maxY)
-            epsg--projected coordinate system, default to UTM14 for Kansas
-        Returns: a GeoDataFrame of USGS gauges
+            geobox: a geographic box of (minX,minY,maxX,maxY)
+            epsg: projected coordinate system, default to UTM14 for Kansas
+        Returns: a dataframe of USGS gauges
     """
+    
     # USGS site/gauge table fields:
     #  agency_cd       -- Agency
     #  site_no         -- Site identification number
