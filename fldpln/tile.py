@@ -1,4 +1,4 @@
-"""Module to re-organize FLDPLN segment-based library into tile-based library for fast mapping
+"""Module to re-organize FLDPLN segment-based library into tile-based library for fast mapping.
 """
 
 # # imports
@@ -367,12 +367,14 @@ def ReadMatFile(matFile, varName):
 
 def CalculateFspSegmentDownstreamDistance(libFolder,libName):
     """ Cleanup segments (some segments don't exist in FSPs) and save library FSP and segment information as two csv files (fsp_info.csv & segment_info.csv). 
-        It also reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json. It also calculates FSP and segment downstream distance (i.e., distance to library outlet(s)) 
-        which involves:
+        It reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json. For stage interpolation, it also calculates FSP and segment 
+        downstream distance (i.e., distance to library outlet(s)) which involves:
+
             1. Calculate FSP's within-segment downstream distance
             2. Calculate segment length which is more accurate than "CellCount" * cell size
             3. Calculate segment's downstream distance (to watershed outlet) for speeding up 
             4. Calculate FSP's downstream distance
+            
         Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).
         Parameters:
             libFolder: folder containing the library
@@ -577,7 +579,7 @@ def GenerateSegmentShapefilesFromFspSegmentInfoFiles(segInfoFile, fspInfoFile, c
 ############################################################################################################################################
 def GetStreamOrdersForFspsSegments(libFolder,strOrdShpFile,shpSegIdName,shpStrOrdColName):
     """ Get stream order for FSPs and segments from segment stream order shapefile and save them in fsp_info.csv and segment_info.csv files. 
-        It also creates the stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation
+        It also creates file stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation
         Parameters:
             libFolder: library folder
             strOrdShpFile: stream order shapefile
