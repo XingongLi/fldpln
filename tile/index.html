@@ -901,19 +901,34 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
   <tbody>
       <tr>
         <td><code>libFolder</code></td>
-        <td></td>
-        <td><p>folder containing the library</p></td>
+        <td><code>str</code></td>
+        <td><p>folder containing the library.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>libName</code></td>
-        <td></td>
-        <td><p>library name</p></td>
+        <td><code>str</code></td>
+        <td><p>library name.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
-</table>      
-
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>data frame</code></td>
+      <td><p>FSP data frame.
+data frame: segment data frame.</p></td>
+    </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">CalculateFspSegmentDownstreamDistance</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span><span class="n">libName</span><span class="p">):</span>
@@ -927,10 +942,14 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
 <span class="sd">            4. Calculate FSP&#39;s downstream distance</span>
 
 <span class="sd">        Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).</span>
-<span class="sd">        Parameters:</span>
-<span class="sd">            libFolder: folder containing the library</span>
-<span class="sd">            libName: library name</span>
-<span class="sd">        Return: FSP and segment data frames</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            libFolder (str): folder containing the library.</span>
+<span class="sd">            libName (str): library name.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            data frame: FSP data frame.</span>
+<span class="sd">            data frame: segment data frame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#</span>
@@ -1086,7 +1105,7 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
 
     <div class="doc doc-contents ">
 
-      <p>Calculate library external border extent</p>
+      <p>Calculate library external border extent. Also calculate segment extents (FPP cell center) and save them in a data frame.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1101,27 +1120,44 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
   <tbody>
       <tr>
         <td><code>segLibFolder</code></td>
-        <td></td>
-        <td><p>folder containing the segment-based library</p></td>
+        <td><code>str</code></td>
+        <td><p>folder containing the segment-based library.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>cellSize</code></td>
-        <td></td>
-        <td><p>cell size in meters</p></td>
+        <td><code>float</code></td>
+        <td><p>cell size in meters.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
-</table>      
-
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>tuple</code></td>
+      <td><p>external border extent (minX, maxX,minY, maxY)
+data frame: segment extent (FPP cell center) data frame of ['MinX','MaxX','MinY','MaxY','FileName']</p></td>
+    </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">CalculateLibraryExtent</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span> <span class="n">cellSize</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Calculate library external border extent</span>
-<span class="sd">        Parameters:</span>
-<span class="sd">            segLibFolder: folder containing the segment-based library</span>
-<span class="sd">            cellSize: cell size in meters</span>
-<span class="sd">        Return: external border extent (minX, maxX,minY, maxY) and segment extents (FPP cell center) data frame of [&#39;MinX&#39;,&#39;MaxX&#39;,&#39;MinY&#39;,&#39;MaxY&#39;,&#39;FileName&#39;]</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Calculate library external border extent. Also calculate segment extents (FPP cell center) and save them in a data frame.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            segLibFolder (str): folder containing the segment-based library.</span>
+<span class="sd">            cellSize (float): cell size in meters.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            tuple: external border extent (minX, maxX,minY, maxY)</span>
+<span class="sd">            data frame: segment extent (FPP cell center) data frame of [&#39;MinX&#39;,&#39;MaxX&#39;,&#39;MinY&#39;,&#39;MaxY&#39;,&#39;FileName&#39;]</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># Get all the segment mat files in the library/watershed</span>
@@ -1184,7 +1220,7 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
 
     <div class="doc doc-contents ">
 
-      <p>Calculate each tile's boundary as (minX, maxX,minY, maxY)</p>
+      <p>Calculate each tile's boundary as (minX, maxX,minY, maxY).</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1198,35 +1234,78 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
   </thead>
   <tbody>
       <tr>
-        <td><code>minX,</code></td>
-        <td><code>maxX, minY, maxY</code></td>
-        <td><p>external border (not the cell center) coordinates of the area needs to be tiled.</p></td>
+        <td><code>minX</code></td>
+        <td><code>float</code></td>
+        <td><p>min x of the external border (not the cell center) coordinates of the area needs to be tiled.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
-        <td><code>tileSizeX,</code></td>
+        <td><code>maxX</code></td>
+        <td><code>float</code></td>
+        <td><p>max x of the external border (not the cell center) coordinates of the area needs to be tiled.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>minY</code></td>
+        <td><code>float</code></td>
+        <td><p>min y of the external border (not the cell center) coordinates of the area needs to be tiled.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>maxY</code></td>
+        <td><code>float</code></td>
+        <td><p>max y of the external border (not the cell center) coordinates of the area needs to be tiled.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>tileSizeX</code></td>
+        <td><code>float</code></td>
+        <td><p>tile external border size (not the cell center size) in x axis.</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
         <td><code>tileSizeY</code></td>
-        <td><p>external border size of a tile, not the cell center size!</p></td>
+        <td><code>float</code></td>
+        <td><p>tile external border size (not the cell center size) in y axis.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>padding</code></td>
-        <td></td>
-        <td><p>all the tiles have the same size, not reduced to the border of the tiled area. default is True.</p></td>
+        <td><code>bool</code></td>
+        <td><p>whether the tiles have the same size and not reduced to the border of the tiled area. Default is True.</p></td>
         <td><code>True</code></td>
       </tr>
   </tbody>
-</table>      
-
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>list</code></td>
+      <td><p>list of tile boundaries of (minX, maxX,minY, maxY)</p></td>
+    </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">CalculateTileBoundary</span><span class="p">(</span><span class="n">minX</span><span class="p">,</span> <span class="n">maxX</span><span class="p">,</span> <span class="n">minY</span><span class="p">,</span> <span class="n">maxY</span><span class="p">,</span> <span class="n">tileSizeX</span><span class="p">,</span> <span class="n">tileSizeY</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Calculate each tile&#39;s boundary as (minX, maxX,minY, maxY)</span>
-<span class="sd">        Parameters:</span>
-<span class="sd">            minX, maxX, minY, maxY: external border (not the cell center) coordinates of the area needs to be tiled.</span>
-<span class="sd">            tileSizeX, tileSizeY: external border size of a tile, not the cell center size!</span>
-<span class="sd">            padding: all the tiles have the same size, not reduced to the border of the tiled area. default is True.</span>
-<span class="sd">        Return: a list of tile boundary tuple of (minX, maxX,minY, maxY)</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Calculate each tile&#39;s boundary as (minX, maxX,minY, maxY).</span>
+<span class="sd">        Args:</span>
+<span class="sd">            minX (float): min x of the external border (not the cell center) coordinates of the area needs to be tiled.</span>
+<span class="sd">            maxX (float): max x of the external border (not the cell center) coordinates of the area needs to be tiled.</span>
+<span class="sd">            minY (float): min y of the external border (not the cell center) coordinates of the area needs to be tiled.</span>
+<span class="sd">            maxY (float): max y of the external border (not the cell center) coordinates of the area needs to be tiled.</span>
+<span class="sd">            tileSizeX (float): tile external border size (not the cell center size) in x axis.</span>
+<span class="sd">            tileSizeY (float): tile external border size (not the cell center size) in y axis.</span>
+<span class="sd">            padding (bool): whether the tiles have the same size and not reduced to the border of the tiled area. Default is True.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            list: list of tile boundaries of (minX, maxX,minY, maxY)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># helper function to generate tile boundary in one dimension</span>
@@ -1284,26 +1363,26 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
   <tbody>
       <tr>
         <td><code>segInfoFile</code></td>
-        <td></td>
-        <td><p>segment info file</p></td>
+        <td><code>str</code></td>
+        <td><p>segment info file.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>fspInfoFile</code></td>
-        <td></td>
-        <td><p>FSP info file</p></td>
+        <td><code>str</code></td>
+        <td><p>FSP info file.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>crs</code></td>
-        <td></td>
-        <td><p>coordinate reference system</p></td>
+        <td><code>str</code></td>
+        <td><p>coordinate reference system.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>outShpFile</code></td>
-        <td></td>
-        <td><p>output shapefile</p></td>
+        <td><code>str</code></td>
+        <td><p>output shapefile.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
@@ -1313,13 +1392,15 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GenerateSegmentShapefilesFromFspSegmentInfoFiles</span><span class="p">(</span><span class="n">segInfoFile</span><span class="p">,</span> <span class="n">fspInfoFile</span><span class="p">,</span> <span class="n">crs</span><span class="p">,</span> <span class="n">outShpFile</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Generate segment shapefiles from FSP and segment info files.</span>
-<span class="sd">        Parameters:</span>
-<span class="sd">            segInfoFile: segment info file</span>
-<span class="sd">            fspInfoFile: FSP info file</span>
-<span class="sd">            crs: coordinate reference system</span>
-<span class="sd">            outShpFile: output shapefile</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            segInfoFile (str): segment info file.</span>
+<span class="sd">            fspInfoFile (str): FSP info file.</span>
+<span class="sd">            crs (str): coordinate reference system.</span>
+<span class="sd">            outShpFile (str): output shapefile.</span>
+
 <span class="sd">        Return: None</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">     &quot;&quot;&quot;</span>
 
     <span class="c1"># read in FSP ID and coordinates</span>
     <span class="c1"># need to set float_precision=&#39;round_trip&#39; to prevent rounding while reading the text file! float_precision=&#39;high&#39; DOESN&#39;T work.</span>
@@ -1390,7 +1471,7 @@ downstream distance (i.e., distance to library outlet(s)) which involves:</p>
     <div class="doc doc-contents ">
 
       <p>Get stream order for FSPs and segments from segment stream order shapefile and save them in fsp_info.csv and segment_info.csv files. 
-It also creates file stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation</p>
+It also creates file stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation.</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1405,42 +1486,63 @@ It also creates file stream_order_info.csv which stores the network info at the 
   <tbody>
       <tr>
         <td><code>libFolder</code></td>
-        <td></td>
-        <td><p>library folder</p></td>
+        <td><code>str</code></td>
+        <td><p>library folder.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>strOrdShpFile</code></td>
-        <td></td>
-        <td><p>stream order shapefile</p></td>
+        <td><code>str</code></td>
+        <td><p>stream order shapefile.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>shpSegIdName</code></td>
-        <td></td>
-        <td><p>segment ID column name in the shapefile</p></td>
+        <td><code>str</code></td>
+        <td><p>segment ID column name in the shapefile.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>shpStrOrdColName</code></td>
-        <td></td>
-        <td><p>stream order column name in the shapefile</p></td>
+        <td><code>str</code></td>
+        <td><p>stream order column name in the shapefile.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
-</table>      
-
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>data frame</code></td>
+      <td><p>FSP data frame.
+data frame: segment data frame.
+data frame: stream order network data frame.</p></td>
+    </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GetStreamOrdersForFspsSegments</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span><span class="n">strOrdShpFile</span><span class="p">,</span><span class="n">shpSegIdName</span><span class="p">,</span><span class="n">shpStrOrdColName</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Get stream order for FSPs and segments from segment stream order shapefile and save them in fsp_info.csv and segment_info.csv files. </span>
-<span class="sd">        It also creates file stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation</span>
-<span class="sd">        Parameters:</span>
-<span class="sd">            libFolder: library folder</span>
-<span class="sd">            strOrdShpFile: stream order shapefile</span>
-<span class="sd">            shpSegIdName: segment ID column name in the shapefile</span>
-<span class="sd">            shpStrOrdColName: stream order column name in the shapefile</span>
-<span class="sd">        Return: FSP, segment, and stream order data frames</span>
+<span class="sd">        It also creates file stream_order_info.csv which stores the network info at the level of stream orders for FSP DOF interpolation.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            libFolder (str): library folder.</span>
+<span class="sd">            strOrdShpFile (str): stream order shapefile.</span>
+<span class="sd">            shpSegIdName (str): segment ID column name in the shapefile.</span>
+<span class="sd">            shpStrOrdColName (str): stream order column name in the shapefile.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            data frame: FSP data frame.</span>
+<span class="sd">            data frame: segment data frame.</span>
+<span class="sd">            data frame: stream order network data frame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># get stream order from the shapefile</span>
@@ -1547,27 +1649,42 @@ It also creates file stream_order_info.csv which stores the network info at the 
   <tbody>
       <tr>
         <td><code>matFile</code></td>
-        <td></td>
-        <td><p>matlab file name</p></td>
+        <td><code>str</code></td>
+        <td><p>matlab file name.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>varName</code></td>
-        <td></td>
-        <td><p>variable name in the matlab file</p></td>
+        <td><code>str</code></td>
+        <td><p>variable name in the matlab file.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
-</table>      
-
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>data frame</code></td>
+      <td><p>variable in the matlab file.</p></td>
+    </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">ReadMatFile</span><span class="p">(</span><span class="n">matFile</span><span class="p">,</span> <span class="n">varName</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Read matlab files with different versions. scipy.io DOES NOT support MATLAB files version 7.3 yet! Some of the libraries are in 7.3 while the others are not.</span>
-<span class="sd">        Parameters:</span>
-<span class="sd">            matFile: matlab file name</span>
-<span class="sd">            varName: variable name in the matlab file</span>
-<span class="sd">        Return: variable in the matlab file</span>
+<span class="sd">        Args:</span>
+<span class="sd">            matFile (str): matlab file name.</span>
+<span class="sd">            varName (str): variable name in the matlab file.</span>
+<span class="sd">        Return:</span>
+<span class="sd">            data frame: variable in the matlab file.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">try</span><span class="p">:</span> 
@@ -1606,7 +1723,7 @@ It also creates file stream_order_info.csv which stores the network info at the 
 
     <div class="doc doc-contents ">
 
-      <p>Tile a library. Turn segment-based FSP-FPP relations to tile-based</p>
+      <p>Tile a library. Turn segment-based FSP-FPP relations to tile-based. Note that 'snappy' format needs to install the 'fastparquet' python package</p>
 
 <p><strong>Parameters:</strong></p>
 <table>
@@ -1621,49 +1738,74 @@ It also creates file stream_order_info.csv which stores the network info at the 
   <tbody>
       <tr>
         <td><code>segLibFolder</code></td>
-        <td></td>
-        <td><p>folder containing the segment-based library</p></td>
+        <td><code>str</code></td>
+        <td><p>folder containing the segment-based library.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>cellSize</code></td>
-        <td></td>
-        <td><p>cell size in meters</p></td>
+        <td><code>float</code></td>
+        <td><p>cell size in meters.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>tiledLibFolder</code></td>
-        <td></td>
-        <td><p>folder for the tiled library</p></td>
+        <td><code>str</code></td>
+        <td><p>folder for the tiled library.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>tileSize</code></td>
-        <td></td>
-        <td><p>number of cells in a tile</p></td>
+        <td><code>int</code></td>
+        <td><p>number of cells in a tile.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
         <td><code>fileFormat</code></td>
-        <td></td>
-        <td><p>'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package</p></td>
+        <td><code>str</code></td>
+        <td><p>'snappy' or 'mat'.</p></td>
         <td><em>required</em></td>
       </tr>
   </tbody>
-</table>      
-
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>dict</code></td>
+      <td><p>metadata of the tiled library</p></td>
+    </tr>
+  </tbody>
+</table>
         <details class="quote">
           <summary>Source code in <code>fldpln/tile.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">TileLibrary</span><span class="p">(</span><span class="n">segLibFolder</span><span class="p">,</span> <span class="n">cellSize</span><span class="p">,</span> <span class="n">tiledLibFolder</span><span class="p">,</span> <span class="n">tileSize</span><span class="p">,</span> <span class="n">fileFormat</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Tile a library. Turn segment-based FSP-FPP relations to tile-based</span>
-<span class="sd">        Parameters:</span>
-<span class="sd">            segLibFolder: folder containing the segment-based library</span>
-<span class="sd">            cellSize: cell size in meters</span>
-<span class="sd">            tiledLibFolder: folder for the tiled library</span>
-<span class="sd">            tileSize: number of cells in a tile</span>
-<span class="sd">            fileFormat: &#39;snappy&#39; or &#39;mat&#39;. &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
-<span class="sd">        Return: metadata of the tiled library</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Tile a library. Turn segment-based FSP-FPP relations to tile-based. Note that &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            segLibFolder (str): folder containing the segment-based library.</span>
+<span class="sd">            cellSize (float): cell size in meters.</span>
+<span class="sd">            tiledLibFolder (str): folder for the tiled library.</span>
+<span class="sd">            tileSize (int): number of cells in a tile.</span>
+<span class="sd">            fileFormat (str): &#39;snappy&#39; or &#39;mat&#39;.</span>
+
+<span class="sd">        Return:</span>
+<span class="sd">            dict: metadata of the tiled library</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#     Parameters:</span>
+    <span class="c1">#         segLibFolder: folder containing the segment-based library</span>
+    <span class="c1">#         cellSize: cell size in meters</span>
+    <span class="c1">#         tiledLibFolder: folder for the tiled library</span>
+    <span class="c1">#         tileSize: number of cells in a tile</span>
+    <span class="c1">#         fileFormat: &#39;snappy&#39; or &#39;mat&#39;. &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
+    <span class="c1">#     Return: metadata of the tiled library</span>
+    <span class="c1"># &quot;&quot;&quot;</span>
     <span class="c1"># This function uses the fsp_info.csv file (under tiledLibFolder) to get FSP IDs</span>
     <span class="c1"># fileFormat: &#39;snappy&#39; or &#39;mat&#39;. &#39;snappy&#39; format needs to install the &#39;fastparquet&#39; python package</span>
     <span class="c1"># tileSize changed to the number of cells on May 27, 2024 to avoid partial cells within a tile and also works for GCS system</span>
