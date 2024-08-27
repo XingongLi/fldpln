@@ -5,7 +5,7 @@ scipy
 h5py
 shapely
 rasterio
-osgeo
+gdal
 rio_cogeo
 pyproj
 lxml
