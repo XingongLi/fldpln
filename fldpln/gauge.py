@@ -16,8 +16,8 @@ import tempfile
 from lxml import html
 import numpy as np
 import pandas as pd
-from osgeo import ogr
 import geopandas as gpd
+# from osgeo import ogr
 from pyproj import CRS
 import psycopg2
 import pandas.io.sql as psql
@@ -827,7 +827,8 @@ def GetAhpsGaugeStageFromWebServiceOld(ahpsIds):
     # NWS/NOAA/AHPS AWS feature service layers
     # fields in the features are available best through the shapefiles from https://water.weather.gov/ahps/download.php
     # Meaning of the WFS service ID: 0--Observed; 1-- forecast 1-day; ...; 14--forecast 14-day; 15--same as 14?
-    ahpsAwsWfsServices = ['https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/ahps_riv_gauges/MapServer/{}/query'.format(id) for id in range(16)]
+    # ahpsAwsWfsServices = ['https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/ahps_riv_gauges/MapServer/{}/query'.format(id) for id in range(16)]
+    ahpsAwsWfsServices = ['https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/riv_gauges/MapServer/{}/query'.format(id) for id in range(16)] # new service since 5/28/2024
     
     # Access observed stage
     sUrl = ahpsAwsWfsServices[0] # current obs.
