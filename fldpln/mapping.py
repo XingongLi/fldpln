@@ -20,7 +20,7 @@ import rasterio
 from rasterio.merge import merge # for some reason, cannot use it as rasterio.merge.merge()!
 from rasterio.io import MemoryFile
 
-from osgeo import ogr # import ogr # ok on desktop but not on laptop
+# from osgeo import ogr # import ogr # ok on desktop but not on laptop
 from osgeo import gdal # import gdal # ok on desktop but not on laptop
 
 from rio_cogeo.cogeo import cog_translate
