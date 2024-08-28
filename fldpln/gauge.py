@@ -23,7 +23,7 @@
 # import pandas.io.sql as psql
 
 # import the mapping module from THIS package
-from .mapping import * 
+# from .mapping import * 
 
 # Import file config.py which is used for connecting to the postgresql database for Kansas FIM Dashboard
 # from config import config 
