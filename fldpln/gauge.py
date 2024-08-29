@@ -4,23 +4,23 @@
 # 
 # # Some of the functions are moved to here from fldpln.py and fldpln_reorg.py
 # #
-# # imports from standard libraries
-# import math
-# import os
-# import tarfile
-# import requests
-# from datetime import datetime,timedelta # import this module after arcpy as arcpy has the same datetime object in it!
-# import tempfile
+# imports from standard libraries
+import math
+import os
+import tarfile
+import requests
+from datetime import datetime,timedelta # import this module after arcpy as arcpy has the same datetime object in it!
+import tempfile
 
-# # imports from 3rd party libraries
-# from lxml import html
-# import numpy as np
-# import pandas as pd
-# import geopandas as gpd
+# imports from 3rd party libraries
+from lxml import html
+import numpy as np
+import pandas as pd
+import geopandas as gpd
 # from osgeo import ogr
-# from pyproj import CRS
-# import psycopg2
-# import pandas.io.sql as psql
+from pyproj import CRS
+import psycopg2
+import pandas.io.sql as psql
 
 # import the mapping module from THIS package
 from .mapping import * 
@@ -210,6 +210,8 @@ def GetUsgsGaugeInfo(ids):
 # Get AHPS gauges. Get AHPS current observation (shapefile) and project it into UTM14N
 #
 def GetAhpsGauges(geobox,epsg=32614):
+    from osgeo import ogr
+
 # geobox--a geographic box of (minX,minY,maxX,maxY)
 # epsg--projected coordinate system, default to UTM14 for Kansas
     
@@ -545,6 +547,8 @@ def MergeUsgsAhpsGauges(usgsGauges, ahpsGauges, nearDist=350):
 # fcstLength is a number between 0 and 14 (inclusive) days. 0 means current observation
 #
 def GetAhpsGaugeForecast(scratchFolder,fcstLength,gaugeDatumFile):
+    from osgeo import ogr
+
     print('Downloading AHPS gauge data ...')
     
     if isinstance(fcstLength,int) and (fcstLength>=0) and (fcstLength<=14):
@@ -640,6 +644,8 @@ def GetAhpsGaugeForecast(scratchFolder,fcstLength,gaugeDatumFile):
 # Get AHPS gauge historical flood stages: 'Action','Flood','Moderate','Major'
 #
 def GetAhpsGaugeHistoricalFloodStages(scratchFolder,gaugeDatumFile):
+    from osgeo import ogr
+
     print('Downloading AHPS historical flood stages ...')
     
     # Clean out existing obs file
@@ -691,6 +697,8 @@ def GetAhpsGaugeHistoricalFloodStages(scratchFolder,gaugeDatumFile):
 # Prepare AHPS gauges for flood mapping 
 #
 def PrepareAhpsGaugeDatum(scratchFolder,libFolder,prjFileName,datumFile):
+    from osgeo import ogr
+
     print('Downloading AHPS gauge shapefile ...')
     
     # Clean out existing obs file
