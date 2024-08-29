@@ -10,11 +10,6 @@ import math
 import glob
 import shutil
 import json
-# for downloading segment-based library files
-import zipfile
-import urllib.request
-import re
-
 # imports from third-party libraries
 import numpy as np
 import pandas as pd
@@ -687,72 +682,3 @@ def GetStreamOrdersForFspsSegments(libFolder,strOrdShpFile,shpSegIdName,shpStrOr
     strOrdDf.to_csv(strOrdCsvFile,index=False)
 
     return fspDf, segDf, strOrdDf
-
-############################################################################################################################################
-def DownloadSegmentLibrary(segUrl, libName, localLibFolder ):
-    """ Download segment-based library from the web and unzip it. Not implemented yet! 
-        The zip file name may vary from library to library as the max DOF may be different for different libraries.
-        For example: SLIE_KS_AOI_spring_DTF_49ft_(15m).zip, SLIE_KS_AOI_ninnescah_DTF_33ft_(10m).zip.
-
-        Args:
-            segUrl (str): URL of the segment-based library.
-            libName (str): library name.
-            localLibFolder (str): local folder to store the library.
-        Return:
-            None
-    """
-
-    # Should use import requests instead of urllib.request
-
-    # # get the zipped segment library file name, 	
-    # #
-    # segUrl = segUrl+'/'+libName
-    # # remove space in the URL
-    # url = segUrl.replace(" ","%20")
-    # # create a request
-    # req = urllib.request.Request(url)
-    # # open and read the HTML page
-    # htmlPage = urllib.request.urlopen(req).read()
-    # # turn the HTML page from byte into string
-    # htmlPageStr = str(htmlPage)
-
-    # # get segment library zip file from the HTML page
-    # p1 = 'href=\"SLIE_KS_AOI_'+libName+'_DTF_\d{,3}ft_\(\d{,3}m\)\.zip\"'
-    # hrefStr = re.findall(p1,str(htmlPageStr))[0]
-    # p2 = 'SLIE_KS_AOI_'+libName+'_DTF_\d{,3}ft_\(\d{,3}m\)\.zip'
-    # zipFile = re.findall(p2,hrefStr)[0]
-    
-    # # create local folder if not existing
-    # os.makedirs(localLibFolder,exist_ok=True)
-
-    # # If you need to redownload for whatever reason
-    # if os.path.exists(os.path.join(localLibFolder, libName)):
-    #     shutil.rmtree(os.path.join(localLibFolder, libName))
-    # os.mkdir(os.path.join(localLibFolder, libName))
-
-    # # Download base library
-    # print(f'Downloading library {libName} ...')
-    # urllib.request.urlretrieve(segUrl+'/'+zipFile,os.path.join(localLibFolder, libName, zipFile))
-    
-    # # Download FSP info Excel file
-    # print("Downloading FSP Excel file ...")
-    # urllib.request.urlretrieve(segUrl+'/SLIE_KS_AOI_'+libName+'_fsp_info.xlsx', 
-    #     os.path.join(localLibFolder, libName, 'SLIE_KS_AOI_'+libName+'_fsp_info.xlsx'))
-
-    # # Download segment info Excel file
-    # print("Downloading segment Excel file ...") #	segment_network_info_spring.xlsx
-    # urllib.request.urlretrieve(segUrl+'/segment_network_info_'+libName+'.xlsx', 
-    #     os.path.join(localLibFolder, libName, 'segment_network_info_'+libName+'.xlsx'))
-
-    # # unzip library
-    # print("Unzipping ...")
-    # # both shutil and zipFile do NOT support "Deflated64" or "compression type 9"
-    # with zipfile.ZipFile(os.path.join(localLibFolder, libName, zipFile),'r') as zip_ref:
-    #     zip_ref.extractall(os.path.join(localLibFolder, libName)) 
-    # # shutil.unpack_archive(os.path.join(localLibFolder, libName, zipFile),os.path.join(localLibFolder, libName),'zip')
-
-    # # clean up folder
-    # os.remove(os.path.join(localLibFolder, libName, zipFile))
-    # print("Done for "+libName)
-
-    return

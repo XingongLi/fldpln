@@ -87,3 +87,4 @@ nav:
           - tile module: tile.md
           - mapping module: mapping.md
           - gauge module: gauge.md
+          - model module: model.md
