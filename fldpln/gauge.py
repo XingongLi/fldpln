@@ -2,25 +2,25 @@
 """
 
 # 
-# Some of the functions are moved to here from fldpln.py and fldpln_reorg.py
-#
-# imports from standard libraries
-import math
-import os
-import tarfile
-import requests
-from datetime import datetime,timedelta # import this module after arcpy as arcpy has the same datetime object in it!
-import tempfile
+# # Some of the functions are moved to here from fldpln.py and fldpln_reorg.py
+# #
+# # imports from standard libraries
+# import math
+# import os
+# import tarfile
+# import requests
+# from datetime import datetime,timedelta # import this module after arcpy as arcpy has the same datetime object in it!
+# import tempfile
 
-# imports from 3rd party libraries
-from lxml import html
-import numpy as np
-import pandas as pd
-import geopandas as gpd
-from osgeo import ogr
-from pyproj import CRS
-import psycopg2
-import pandas.io.sql as psql
+# # imports from 3rd party libraries
+# from lxml import html
+# import numpy as np
+# import pandas as pd
+# import geopandas as gpd
+# from osgeo import ogr
+# from pyproj import CRS
+# import psycopg2
+# import pandas.io.sql as psql
 
 # import the mapping module from THIS package
 from .mapping import * 

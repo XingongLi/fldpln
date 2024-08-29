@@ -21,7 +21,7 @@ from rasterio.merge import merge # for some reason, cannot use it as rasterio.me
 from rasterio.io import MemoryFile
 
 # from osgeo import ogr # import ogr # ok on desktop but not on laptop
-from osgeo import gdal # import gdal # ok on desktop but not on laptop
+# from osgeo import gdal # import gdal # ok on desktop but not on laptop
 
 from rio_cogeo.cogeo import cog_translate
 from rio_cogeo.profiles import cog_profiles
@@ -1964,6 +1964,7 @@ def MosaicGtifsBlob(mapContClient, gtifs, outGtif, keepTifs=False):
 # Functions to mosaic Geotifs
 #
 def MosaicGtifsUsingVirtualRaster(gtifs, outGtif):
+    from osgeo import gdal
 # Mosaic GeoTifs using GDAL virtual raster
 # Easiest way of mosaic very large Gtif. Based on the video at https://www.youtube.com/watch?v=sBBMKbAj8XE
 
