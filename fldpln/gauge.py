@@ -17,10 +17,11 @@ from lxml import html
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-# from osgeo import ogr
 from pyproj import CRS
-import psycopg2
 import pandas.io.sql as psql
+
+# from osgeo import ogr # ogr cannot be installed using pip. So we put it only in the functions that use it and leave it out here and in requirements.txt
+# import psycopg2 # psycopg2 cannot be installed on MacOs. So we put it only in the functions that use it and leave it out here and in requirements.txt
 
 # import the mapping module from THIS package
 from .mapping import * 
@@ -1132,6 +1133,8 @@ def GetGaugeStageFromGaugeFc(gaugeFcName, whichStage='Nowcast'):
 # whichStage: Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major
 # fields to return: stationid, x, y, stage_elevation, stage_time, status
 
+    import psycopg2 
+    
     #
     # connect to the db
     #
@@ -1185,6 +1188,8 @@ def GetGaugeStageFromPostgres(dbName, gaugeTableName, whichStage='Nowcast'):
 # whichStage: Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major
 # fields to return: stationid, x_utm14, y_utm14, stage_elevation, stage_time, status
 
+    import psycopg2
+    
     # connect to the db
     conn = psycopg2.connect(
         host="itprdkarsap.home.ku.edu",

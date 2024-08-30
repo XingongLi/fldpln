@@ -20,8 +20,7 @@ import rasterio
 from rasterio.merge import merge # for some reason, cannot use it as rasterio.merge.merge()!
 from rasterio.io import MemoryFile
 
-# from osgeo import ogr # import ogr # ok on desktop but not on laptop
-# from osgeo import gdal # import gdal # ok on desktop but not on laptop
+# from osgeo import gdal # gdal cannot be installed using pip. So we put it only in the functions that use it and leave it out here and in requirements.txt
 
 from rio_cogeo.cogeo import cog_translate
 from rio_cogeo.profiles import cog_profiles
