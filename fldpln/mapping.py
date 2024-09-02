@@ -2263,7 +2263,7 @@ def MosaicGtifsUsingVirtualRaster(gtifs, outGtif):
             None
     """
 
-    from osgeo import gdal # since gdal cannot be installed uisng pip, we leave the import here and it's up to the user to install gdal.
+    from osgeo import gdal # since gdal cannot be installed using pip, we leave the import here and it's up to the user to install gdal.
 
     # Create a XML-based virtual raster file for mosaicing
     vrtFolder = os.path.dirname(outGtif)
