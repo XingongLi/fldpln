@@ -18,10 +18,18 @@
 # The FLDPLN singleton class for using the fldpln_py Python package generated in MATLAB
 #
 class FLDPLN:
+    """ FLDPLN class for using the fldpln_py Python package generated in MATLAB.
+    """
 
     # implement the FLDPLN class as a Singleton class, i.e., only one instance for the class
     # see https://www.geeksforgeeks.org/singleton-pattern-in-python-a-complete-guide/
     def __new__(cls):
+        """ Create a new instance of the FLDPLN class.
+
+            Returns:
+                FLDPLN: An instance and the only instance of the FLDPLN class
+        """
+
         # import FLDPLN python package created by MATLAB
         import fldpln_py
 
@@ -46,6 +54,9 @@ class FLDPLN:
     
     # Calling destructor to terminate the reference to the library
     def __del__(self):
+        """ Destructor for the FLDPLN class to terminate the reference to the library.
+        """
+
         print('Terminate FLDPLN model python package.')
         self.fldpln_py_handle.terminate()
 
@@ -164,7 +175,7 @@ class FLDPLN:
             # parallelization settings
             paraIn = para
             if 'numcores' in para.keys():
-                # convert user input of core number to MATLAB data type, and keep other sting parameters
+                # convert user input of core number to MATLAB data type, and keep other string parameters
                 # paraIn = {"type": para['type'], "numcores": matlab.double([para['numcores']], size=(1, 1))}
                 paraIn["numcores"] = matlab.double([para['numcores']], size=(1, 1))
 
@@ -283,8 +294,8 @@ if __name__ == "__main__":
     mxht = 0 # max(dem+flood height) to cease flooding. enter 0 for no cap height
 
     # FLDPLN model efficiency parameters
-    # model type: choos one from {'hd', 'ram0', 'ram'}. 
-    mtype = 'ram' # choos either 'ram' (machine has RAM >= 64G) or 'hd' (uses least RAM)
+    # model type: choose one from {'hd', 'ram0', 'ram'}. 
+    mtype = 'ram' # choose either 'ram' (machine has RAM >= 64G) or 'hd' (uses least RAM)
     # parallelization setting: 'none', 'parfor', 'parfeval'; recommend either 'parfeval'
     para = {'type': 'parfeval'}
     # Can also set the number of cores. Will use max. cores if the attribute is NOT set
@@ -311,7 +322,7 @@ if __name__ == "__main__":
 
     # Outputs:
     # Output library folder
-    dirout = 'E:/fldpln/sites/wildcat_10m_3dep/seglib_py' # reformated library for tiling and mapping
+    dirout = 'E:/fldpln/sites/wildcat_10m_3dep/seglib_py' # reformatted library for tiling and mapping
     # dirout = 'E:/fldpln/sites/verdigris_10m/lib_fldsensing'
 
     # Format raw segment library
