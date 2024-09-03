@@ -607,15 +607,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#fldpln.fldpln.FLDPLN.__del__" class="md-nav__link">
-    <span class="md-ellipsis">
-      __del__()
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#fldpln.fldpln.FLDPLN.__new__" class="md-nav__link">
     <span class="md-ellipsis">
       __new__()
@@ -811,15 +802,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#fldpln.fldpln.FLDPLN.__del__" class="md-nav__link">
-    <span class="md-ellipsis">
-      __del__()
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#fldpln.fldpln.FLDPLN.__new__" class="md-nav__link">
     <span class="md-ellipsis">
       __new__()
@@ -899,11 +881,6 @@ FLDPLN        </code>
     <span class="c1"># implement the FLDPLN class as a Singleton class, i.e., only one instance for the class</span>
     <span class="c1"># see https://www.geeksforgeeks.org/singleton-pattern-in-python-a-complete-guide/</span>
     <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a new instance of the FLDPLN class.</span>
-
-<span class="sd">            Returns:</span>
-<span class="sd">                FLDPLN: An instance and the only instance of the FLDPLN class</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># import FLDPLN python package created by MATLAB</span>
         <span class="kn">import</span> <span class="nn">fldpln_py</span>
@@ -929,8 +906,6 @@ FLDPLN        </code>
 
     <span class="c1"># Calling destructor to terminate the reference to the library</span>
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot; Destructor for the FLDPLN class to terminate the reference to the library.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Terminate FLDPLN model python package.&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
@@ -1594,38 +1569,6 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
 
 
 
-  <div class="doc doc-object doc-method">
-
-
-
-<h3 id="fldpln.fldpln.FLDPLN.__del__" class="doc doc-heading">
-<code class="highlight language-python"><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
-
-  <span class="doc doc-properties">
-      <small class="doc doc-property doc-property-special"><code>special</code></small>
-  </span>
-
-<a href="#fldpln.fldpln.FLDPLN.__del__" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents ">
-
-      <p>Destructor for the FLDPLN class to terminate the reference to the library.</p>
-
-        <details class="quote">
-          <summary>Source code in <code>fldpln/fldpln.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Destructor for the FLDPLN class to terminate the reference to the library.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Terminate FLDPLN model python package.&#39;</span><span class="p">)</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
-</code></pre></div>
-        </details>
-    </div>
-
-  </div>
-
-
 
   <div class="doc doc-object doc-method">
 
@@ -1643,31 +1586,11 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
 
     <div class="doc doc-contents ">
 
-      <p>Create a new instance of the FLDPLN class.</p>
+      <p>Create and return a new object.  See help(type) for accurate signature.</p>
 
-<p><strong>Returns:</strong></p>
-<table>
-  <thead>
-    <tr>
-      <th>Type</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code>FLDPLN</code></td>
-      <td><p>An instance and the only instance of the FLDPLN class</p></td>
-    </tr>
-  </tbody>
-</table>
         <details class="quote">
           <summary>Source code in <code>fldpln/fldpln.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Create a new instance of the FLDPLN class.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            FLDPLN: An instance and the only instance of the FLDPLN class</span>
-<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># import FLDPLN python package created by MATLAB</span>
     <span class="kn">import</span> <span class="nn">fldpln_py</span>
