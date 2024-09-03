@@ -43,6 +43,7 @@ def CreateFolders(outFolder,scratchFolderName='scratch',outMapFolderName='maps',
             scratchFolderName (str): name of the folder for storing temporary files
             outMapFolderName (str): name of the folder for storing output maps, default is 'maps'
             removeExist (str): bool whether to remove existing folders, default is True
+
         Return: 
             tuple: folder for output maps, folder for temporary files.
     """
@@ -80,7 +81,8 @@ def NearestPoint(p1df, x1FieldName, y1FieldName, p2df, x2FieldName, y2FieldName,
             x2FieldName (str): the field name of x coordinates in p2df
             y2FieldName (str): the field name y coordinates in p2df
             distFieldName (str): the name of the distance field in the returned data frame, default is 'dist'
-            otherColumns (list): the names of other fields to be copied from p2df to the returned data frame,default is None
+            otherColumns (list): the names of other fields to be copied from p2df to the returned data frame, default is None.
+
         Return: 
             data frame: a data frame with the nearest points from p2df for each point in p1df.
     """
@@ -139,6 +141,7 @@ def NearestPointInPlace(p1df, x1FieldName, y1FieldName, p2df, x2FieldName, y2Fie
             y2FieldName (str): the field name y coordinates in p2df
             distFieldName (str): the name of the distance field in the returned data frame, default is 'dist'
             otherColumns (list): the names of other fields to be copied from p2df to the returned data frame, default is None
+
         Return:
             data frame: p1df with the nearest points from p2df.
     """
@@ -192,6 +195,7 @@ def SnapGauges2Fsps(libFolder,libNames,gauges,snapDist=350,gaugeXField='X',gauge
             gaugeXField (str): the field name of x coordinates in gauges, default is 'X'
             gaugeYField (str): the field name of y coordinates in gauges, default is 'Y'
             fspColumns (list): the names of FSP columns to be returned, default is ['FspId','FspX','FspY','FilledElev']
+
         Return:
             data frame: a data frame with the nearest FSPs for each gauge in each library.
     """
@@ -251,6 +255,7 @@ def SnapGauges2FspsBlob(libBlobSerClient,libName,gaugesDf,snapDist=350,gaugeIdFi
             gaugeIdField (str): the field name of gauge IDs in gauges, default is 'GaugeLID'
             gaugeXField (str): the field name of x coordinates in gauges, default is 'X'
             gaugeYField (str): the field name of y coordinates in gauges, default is 'Y'
+
         Return:
             data frame: a data frame with the nearest FSPs for each gauge in the library.
     """
@@ -327,8 +332,7 @@ def SnapGaugesToFsps(libFolder,libName,gauges,snapDist=250,gaugeIdField='GaugeLI
         Return:
             data frame: a data frame with the snapped gauges only.
     """
-# gauges -- can be a pandas DF or a text file. It must have the columns of 'X' and 'Y' in FSP's coordinate system
-    
+
     if isinstance(gauges,(str)):
         # assume gauges are a text file
         gaugesDf = pd.read_csv(gauges,index_col=False)
@@ -1679,14 +1683,14 @@ def MapFloodDepthWithTiles(libFolder,libName,fileFormat,outMapFolder,fspDof='Min
             libName (str): the name of the library
             fileFormat (str): the file format of the tile, 'snappy' or 'mat'
             outMapFolder (str): the folder where the mapped tiles will be saved
-            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'.
-                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'.
-                If it's a float, it's a constant stage for all the FSPs.
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'. 
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'. 
+                If it's a float, it's a constant stage for all the FSPs. 
                 If it's a data frame, it's a data frame of FSPs with DOF.
             aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None
-            
-            Return:
-                list: a list of mapped tile names as GeoTif files
+
+        Return:
+            list: a list of mapped tile names as GeoTif files.
     """
 
     # create the folder for generating tile maps
@@ -1735,14 +1739,14 @@ def MapFloodDepthWithTilesAsDag(libFolder,libName,fileFormat,outMapFolder,fspDof
             libName (str): the name of the library
             fileFormat (str): the file format of the tile, 'snappy' or 'mat'
             outMapFolder (str): the folder where the mapped tiles will be saved
-            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'.
-                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'.
-                If it's a float, it's a constant stage for all the FSPs.
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'. 
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'. 
+                If it's a float, it's a constant stage for all the FSPs. 
                 If it's a data frame, it's a data frame of FSPs with DOF.
             aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None
-            
-            Return:
-                tuple: a Directed Acyclic Graph (DAG) and the root node name
+
+        Return:
+            tuple: a Directed Acyclic Graph (DAG) and the root node name.
     """
  
     # create the folder for generating tile maps
@@ -1794,9 +1798,9 @@ def MapFloodDepthWithTilesBlob(libBlobSerClient,libName,fileFormat,mapContainerC
             libName (str): the name of the library
             fileFormat (str): the file format of the tile, 'snappy' or 'mat'
             mapContainerClient (ContainerClient): a ContainerClient object for the container to store the mapped tiles
-            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'.
-                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'.
-                If it's a float, it's a constant stage for all the FSPs.
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'. 
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'. 
+                If it's a float, it's a constant stage for all the FSPs. 
                 If it's a data frame, it's a data frame of FSPs with DOF.
             aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None
 
@@ -1851,9 +1855,9 @@ def MapFloodDepthWithTilesBlobAsDag(libBlobSerClient,libName,fileFormat,mapConta
             libName (str): the name of the library
             fileFormat (str): the file format of the tile, 'snappy' or 'mat'
             mapContainerClient (ContainerClient): a ContainerClient object for the container to store the mapped tiles
-            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'.
-                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'.
-                If it's a float, it's a constant stage for all the FSPs.
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'. 
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'. 
+                If it's a float, it's a constant stage for all the FSPs. 
                 If it's a data frame, it's a data frame of FSPs with DOF.
             aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None
 
@@ -1908,7 +1912,7 @@ def GetTileTifs(tifFiles):
     
         Args:
             tifFiles (list): a list of tile Geotif files
-            
+
         Return:
             list: a list of tile Geotif files
     """
@@ -2095,9 +2099,9 @@ def MosaicGtifs(outMapFolder,gtifs,mosaicTifName, keepTifs=False):
             gtifs (list): a list of tile GeoTifs to be mosaiced
             mosaicTifName (str): the name of the mosaiced GeoTif file
             keepTifs (bool): whether to keep the tile GeoTifs, default is False
-            
+
         Return:
-            str: the name of the mosaiced GeoTif
+            str: the name of the mosaiced GeoTif.
     """
 
     # open all the Gtifs
@@ -2170,7 +2174,7 @@ def MosaicGtifsBlob(mapContClient, gtifs, outGtif, keepTifs=False):
             keepTifs (bool): whether to keep the tile GeoTifs, default is False
 
         Return:
-            None
+            None: no return.
     """
   
     # open all the Gtifs
@@ -2260,7 +2264,7 @@ def MosaicGtifsUsingVirtualRaster(gtifs, outGtif):
             outGtif (str): the name of the mosaiced GeoTif file
 
         Return:
-            None
+            None: no return
     """
 
     from osgeo import gdal # since gdal cannot be installed using pip, we leave the import here and it's up to the user to install gdal.
@@ -2292,6 +2296,17 @@ def MosaicGtifsUsingVirtualRaster(gtifs, outGtif):
 # A function to download and unzip tiled libraries
 #
 def DownloadTiledLibrary(libUrl,libName,localLibFolder ):
+    """ Download and unzip tiled libraries.
+    
+        Args:
+            libUrl (str): the url of the library
+            libName (str): the name of the library
+            localLibFolder (str): the folder where the library will be saved
+
+        Return:
+            None: no return.
+    """
+
     # create local folder if not existing
     os.makedirs(localLibFolder,exist_ok=True)
 

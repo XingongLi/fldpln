@@ -306,7 +306,7 @@ def CalculateLibraryExtent(segLibFolder, cellSize):
             segLibFolder (str): folder containing the segment-based library.
             cellSize (float): cell size in meters.
         Return:
-            tuple: external border extent (minX, maxX,minY, maxY), segment extent data frame of ['MinX','MaxX','MinY','MaxY','FileName'] (FPP cell center)
+            tuple: external border extent (minX, maxX,minY, maxY), data frame of segment extent of ['MinX','MaxX','MinY','MaxY','FileName'] defined by FPP cell center.
     """
 
     # Get all the segment mat files in the library/watershed

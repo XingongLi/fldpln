@@ -36,7 +36,7 @@ def GetUsgsGauges(geobox, epsg=32614):
             geobox (list): a list of geographic box elements of [minX,minY,maxX,maxY].
             epsg (int): EPSG integer representing the projected coordinate system, default to UTM14 (epsg = 32614) for Kansas. 
 
-        Returns:
+        Return:
            data frame: a geo data frame of USGS gauges projected to the specified coordinate system.
     """
     
@@ -139,7 +139,7 @@ def GetUsgsGaugeInfo(ids):
         Args:
             ids (list): a list of USGS gauge IDs.
 
-        Returns:
+        Return:
             data frame: a data frame of USGS gauge information.
     """
 
@@ -224,7 +224,7 @@ def GetAhpsGauges(geobox,epsg=32614):
             geobox (list): a list of geographic box elements of [minX,minY,maxX,maxY]
             epsg (int): EPSG integer representing the projected coordinate system, default to UTM14 (epsg = 32614) for Kansas.
 
-        Returns:
+        Return:
             data frame: a data frame of AHPS gauges projected to the specified coordinate system.
     """
 
@@ -296,7 +296,7 @@ def GetAhpsGaugeDatumElevation(ahpsGaugeUrl):
         Args:
             ahpsGaugeUrl (str): URL of AHPS gauge web page.
 
-        Returns:
+        Return:
             tuple: vertical datum name (str), gauge stage datum elevation (float).
     """
 
@@ -338,7 +338,7 @@ def NGVD29ToNAVD88OrthoHeightAdjustment(lat,lon,inDatum,outDatum,inVertDatum='NG
             outVertDatum (str): output vertical datum name, default to NAVD88.
             orthoHt (float): orthometric height, default to 0.0.
 
-        Returns:
+        Return:
             float: vertical datum shift from NGVD29 to NAVD88.
     """
 
@@ -368,7 +368,7 @@ def MergeUsgsAhpsGauges(usgsGauges, ahpsGauges, nearDist=350):
             ahpsGauges (data frame): AHPS gauges data frame.
             nearDist (float): distance threshold for finding the nearest gauge, default to 350 meters.
 
-        Returns:
+        Return:
             data frame: a data frame of merged USGS and AHPS gauges.
     """
 
@@ -598,10 +598,10 @@ def GetAhpsGaugeForecast(scratchFolder,fcstLength,gaugeDatumFile):
     
         Args:
             scratchFolder (str): scratch folder to store downloaded files.
-            fcstLength (int): forecast length in days between 0 and 14 (inclusive) days. 0 means current observation.
+            fcstLength (int): forecast length in days between 0 and 14 days. 0 is current observation.
             gaugeDatumFile (str): file name of gauge datum information.
-            
-        Returns:
+
+        Return:
             data frame: a data frame of AHPS gauge forecast.
     """
 
@@ -708,7 +708,7 @@ def GetAhpsGaugeHistoricalFloodStages(scratchFolder,gaugeDatumFile):
             scratchFolder (str): scratch folder to store downloaded files.
             gaugeDatumFile (str): file name of gauge datum information.
 
-        Returns:
+        Return:
             data frame: a data frame of AHPS gauge historical flood stages.
     """
     
@@ -772,8 +772,8 @@ def PrepareAhpsGaugeDatum(scratchFolder,libFolder,prjFileName,datumFile):
             libFolder (str): library folder to store files.
             prjFileName (str): file name of projection information.
             datumFile (str): file name of gauge datum information.
-            
-        Returns:
+
+        Return:
             data frame: a data frame of AHPS gauges.
     """
 
@@ -847,10 +847,10 @@ def GetAhpsGaugeStageFromWebService(ahpsIds, fcstDays=0, histFloodType=None):
     
         Args:
             ahpsIds (list): a list of AHPS gauge IDs.
-            fcstDays (int): forecast days, 0-14 (inclusive), 0--current.
-            histFloodType (str): historical flood types: Major, Moderate, Flood, Action. default to None.
-            
-        Returns:
+            fcstDays (int): forecasted time in 0 to 14 days. 0 is current obersevation. default to 0.
+            histFloodType (str): historical flood types of Major, Moderate, Flood, Action. default to None.
+
+        Return:
             data frame: a data frame of AHPS gauge stage.
     """
 
@@ -955,8 +955,8 @@ def GetUsgsGaugeStageFromWebService(usgsIds, startDate='Now', endDate='MostRecen
             usgsIds (list): a list of USGS IDs.
             startDate (str): start date of the query. Default to 'Now'.
             endDate (str): end date of the query. Default to 'MostRecent'.
-            
-        Returns:
+
+        Return:
             data frame: a data frame of USGS gauge stage.
     """
 
@@ -1075,12 +1075,11 @@ def GetAhpsUsgsGaugeStageFromWebServices(gaugeIdOrgs, whichStage='Nowcast', peri
     """ Read AHPS/USGS gauge stage from their respective web services. 
     
         Args:
-            gaugeIdOrgs (data frame): a data frame with columns of ["stationid", "organization"]. stationid is either USGS, AHPS, or the combination of their gauge IDs. 
-            Organization is either USGS, AHPS or both.
+            gaugeIdOrgs (data frame): a data frame with columns of ["stationid", "organization"]. stationid is either USGS, AHPS, or the combination of their gauge IDs. Organization is either USGS, AHPS or both.
             whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major.
             periodInDays (int): period in days (0 - 14) for forecast. Default to 7.
 
-        Returns:
+        Return:
             data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time.
     """
 
@@ -1164,8 +1163,8 @@ def GetGaugeStageFromAhpsUsgsWebServices(gaugeFile, whichStage='Nowcast'):
         Args:
             gaugeFile (str): file name of gauge information.
             whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major. Default to 'Nowcast'.
-            
-        Returns:
+
+        Return:
             data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time, status.
     """
 
@@ -1242,8 +1241,8 @@ def GetGaugeStageFromGaugeFc(gaugeFcName, whichStage='Nowcast'):
         Args:
             gaugeFcName (str): gauge feature class name.
             whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major. Default to 'Nowcast'.
-            
-        Returns:
+
+        Return:
             data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time, status.
     """
 
@@ -1306,7 +1305,7 @@ def GetGaugeStageFromPostgres(dbName, gaugeTableName, whichStage='Nowcast'):
             gaugeTableName (str): gauge table name.
             whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major. Default to 'Nowcast'.
 
-        Returns:
+        Return:
             data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time, status.
     """
 
