@@ -15,10 +15,10 @@
         <link rel="canonical" href="https://xingongli.github.io/fldpln/fldpln/">
       
       
-        <link rel="prev" href="../examples/intro/">
+        <link rel="prev" href="../common/">
       
       
-        <link rel="next" href="../common/">
+        <link rel="next" href="../mapping/">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -503,6 +503,27 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../common/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    common module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -636,48 +657,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../common/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    common module
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../tile/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    tile module
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../mapping/" class="md-nav__link">
         
   
@@ -704,6 +683,27 @@
   
   <span class="md-ellipsis">
     gauge module
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tile/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    tile module
   </span>
   
 
@@ -885,10 +885,6 @@ FLDPLN        </code>
         <span class="c1"># import FLDPLN python package created by MATLAB</span>
         <span class="kn">import</span> <span class="nn">fldpln_py</span>
 
-        <span class="c1"># Import the matlab module only after you have imported </span>
-        <span class="c1"># MATLAB Compiler SDK generated Python modules.</span>
-        <span class="kn">import</span> <span class="nn">matlab</span>
-
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;instance&#39;</span><span class="p">):</span>
             <span class="c1"># first (and ONLY instance)</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FLDPLN</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> 
@@ -936,6 +932,8 @@ FLDPLN        </code>
 <span class="sd">                None: No return value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
+        <span class="kn">import</span> <span class="nn">matlab</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># generate stream segments</span>
             <span class="n">fdrfIn</span> <span class="o">=</span> <span class="n">fdrf</span>
@@ -961,6 +959,8 @@ FLDPLN        </code>
 <span class="sd">            Returns:</span>
 <span class="sd">                None: No return value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="kn">import</span> <span class="nn">matlab</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># write FSP and segment info CSV files</span>
@@ -1007,6 +1007,8 @@ FLDPLN        </code>
 <span class="sd">            Returns:</span>
 <span class="sd">                None: No return value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="kn">import</span> <span class="nn">matlab</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
@@ -1212,6 +1214,8 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
 <span class="sd">        Returns:</span>
 <span class="sd">            None: No return value</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">import</span> <span class="nn">matlab</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
@@ -1439,6 +1443,8 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
 <span class="sd">            None: No return value</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="kn">import</span> <span class="nn">matlab</span>
+
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># generate stream segments</span>
         <span class="n">fdrfIn</span> <span class="o">=</span> <span class="n">fdrf</span>
@@ -1539,6 +1545,8 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
 <span class="sd">            None: No return value</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+    <span class="kn">import</span> <span class="nn">matlab</span>
+
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># write FSP and segment info CSV files</span>
         <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
@@ -1594,10 +1602,6 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
 
     <span class="c1"># import FLDPLN python package created by MATLAB</span>
     <span class="kn">import</span> <span class="nn">fldpln_py</span>
-
-    <span class="c1"># Import the matlab module only after you have imported </span>
-    <span class="c1"># MATLAB Compiler SDK generated Python modules.</span>
-    <span class="kn">import</span> <span class="nn">matlab</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;instance&#39;</span><span class="p">):</span>
         <span class="c1"># first (and ONLY instance)</span>
