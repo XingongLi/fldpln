@@ -5,7 +5,7 @@
 
 import unittest
 
-from fldpln import fldpln
+from fldpln import model
 
 
 class TestFldpln(unittest.TestCase):

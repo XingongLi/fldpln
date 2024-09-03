@@ -83,7 +83,7 @@ nav:
         - examples/intro.ipynb
     - API Reference:
           - common module: common.md
-          - fldpln module: fldpln.md
           - gauge module: gauge.md
           - mapping module: mapping.md
+          - model module: model.md
           - tile module: tile.md

@@ -24,7 +24,6 @@ class FLDPLN:
     # implement the FLDPLN class as a Singleton class, i.e., only one instance for the class
     # see https://www.geeksforgeeks.org/singleton-pattern-in-python-a-complete-guide/
     def __new__(cls):
-
         # import FLDPLN python package created by MATLAB
         import fldpln_py
 
