@@ -24,11 +24,6 @@ class FLDPLN:
     # implement the FLDPLN class as a Singleton class, i.e., only one instance for the class
     # see https://www.geeksforgeeks.org/singleton-pattern-in-python-a-complete-guide/
     def __new__(cls):
-        """ Create a new instance of the FLDPLN class.
-
-            Returns:
-                FLDPLN: An instance and the only instance of the FLDPLN class
-        """
 
         # import FLDPLN python package created by MATLAB
         import fldpln_py
@@ -54,8 +49,6 @@ class FLDPLN:
     
     # Calling destructor to terminate the reference to the library
     def __del__(self):
-        """ Destructor for the FLDPLN class to terminate the reference to the library.
-        """
 
         print('Terminate FLDPLN model python package.')
         self.fldpln_py_handle.terminate()
