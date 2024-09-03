@@ -28,10 +28,6 @@ class FLDPLN:
         # import FLDPLN python package created by MATLAB
         import fldpln_py
 
-        # Import the matlab module only after you have imported 
-        # MATLAB Compiler SDK generated Python modules.
-        import matlab
-
         if not hasattr(cls, 'instance'):
             # first (and ONLY instance)
             cls.instance = super(FLDPLN, cls).__new__(cls) 
@@ -79,6 +75,8 @@ class FLDPLN:
                 None: No return value
         """
 
+        import matlab
+
         try:
             # generate stream segments
             fdrfIn = fdrf
@@ -104,6 +102,8 @@ class FLDPLN:
             Returns:
                 None: No return value
         """
+
+        import matlab
 
         try:
             # write FSP and segment info CSV files
@@ -150,6 +150,8 @@ class FLDPLN:
             Returns:
                 None: No return value
         """
+
+        import matlab
 
         try:
             bildirIn = bildir
@@ -207,9 +209,12 @@ class FLDPLN:
     #     print('Terminate the fldpln_py library.')
     #     self.fldpln_py_handle.terminate()
 
-#
+# end of class FLDPLN
+
+
+####################################################################################################
 # test the module        
-#
+####################################################################################################
 if __name__ == "__main__":
     import os
 
