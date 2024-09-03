@@ -1061,7 +1061,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            ahpsGaugeUrl (str): URL of AHPS gauge web page.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            tuple: vertical datum name (str), gauge stage datum elevation (float).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1128,7 +1128,7 @@
       <tr>
         <td><code>fcstLength</code></td>
         <td><code>int</code></td>
-        <td><p>forecast length in days between 0 and 14 (inclusive) days. 0 means current observation.</p></td>
+        <td><p>forecast length in days between 0 and 14 days. 0 is current observation.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
@@ -1161,10 +1161,10 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            scratchFolder (str): scratch folder to store downloaded files.</span>
-<span class="sd">            fcstLength (int): forecast length in days between 0 and 14 (inclusive) days. 0 means current observation.</span>
+<span class="sd">            fcstLength (int): forecast length in days between 0 and 14 days. 0 is current observation.</span>
 <span class="sd">            gaugeDatumFile (str): file name of gauge datum information.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of AHPS gauge forecast.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1331,7 +1331,7 @@
 <span class="sd">            scratchFolder (str): scratch folder to store downloaded files.</span>
 <span class="sd">            gaugeDatumFile (str): file name of gauge datum information.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of AHPS gauge historical flood stages.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1425,13 +1425,13 @@
       <tr>
         <td><code>fcstDays</code></td>
         <td><code>int</code></td>
-        <td><p>forecast days, 0-14 (inclusive), 0--current.</p></td>
+        <td><p>forecasted time in 0 to 14 days. 0 is current obersevation. default to 0.</p></td>
         <td><code>0</code></td>
       </tr>
       <tr>
         <td><code>histFloodType</code></td>
         <td><code>str</code></td>
-        <td><p>historical flood types: Major, Moderate, Flood, Action. default to None.</p></td>
+        <td><p>historical flood types of Major, Moderate, Flood, Action. default to None.</p></td>
         <td><code>None</code></td>
       </tr>
   </tbody>
@@ -1458,10 +1458,10 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            ahpsIds (list): a list of AHPS gauge IDs.</span>
-<span class="sd">            fcstDays (int): forecast days, 0-14 (inclusive), 0--current.</span>
-<span class="sd">            histFloodType (str): historical flood types: Major, Moderate, Flood, Action. default to None.</span>
+<span class="sd">            fcstDays (int): forecasted time in 0 to 14 days. 0 is current obersevation. default to 0.</span>
+<span class="sd">            histFloodType (str): historical flood types of Major, Moderate, Flood, Action. default to None.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of AHPS gauge stage.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1591,7 +1591,7 @@
 <span class="sd">            geobox (list): a list of geographic box elements of [minX,minY,maxX,maxY]</span>
 <span class="sd">            epsg (int): EPSG integer representing the projected coordinate system, default to UTM14 (epsg = 32614) for Kansas.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of AHPS gauges projected to the specified coordinate system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1689,7 +1689,7 @@
       <tr>
         <td><code>gaugeIdOrgs</code></td>
         <td><code>data frame</code></td>
-        <td><p>a data frame with columns of ["stationid", "organization"]. stationid is either USGS, AHPS, or the combination of their gauge IDs. </p></td>
+        <td><p>a data frame with columns of ["stationid", "organization"]. stationid is either USGS, AHPS, or the combination of their gauge IDs. Organization is either USGS, AHPS or both.</p></td>
         <td><em>required</em></td>
       </tr>
       <tr>
@@ -1727,12 +1727,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Read AHPS/USGS gauge stage from their respective web services. </span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            gaugeIdOrgs (data frame): a data frame with columns of [&quot;stationid&quot;, &quot;organization&quot;]. stationid is either USGS, AHPS, or the combination of their gauge IDs. </span>
-<span class="sd">            Organization is either USGS, AHPS or both.</span>
+<span class="sd">            gaugeIdOrgs (data frame): a data frame with columns of [&quot;stationid&quot;, &quot;organization&quot;]. stationid is either USGS, AHPS, or the combination of their gauge IDs. Organization is either USGS, AHPS or both.</span>
 <span class="sd">            whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major.</span>
 <span class="sd">            periodInDays (int): period in days (0 - 14) for forecast. Default to 7.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -1877,7 +1876,7 @@
 <span class="sd">            gaugeFile (str): file name of gauge information.</span>
 <span class="sd">            whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major. Default to &#39;Nowcast&#39;.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time, status.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2015,7 +2014,7 @@
 <span class="sd">            gaugeFcName (str): gauge feature class name.</span>
 <span class="sd">            whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major. Default to &#39;Nowcast&#39;.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time, status.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2144,7 +2143,7 @@
 <span class="sd">            gaugeTableName (str): gauge table name.</span>
 <span class="sd">            whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major. Default to &#39;Nowcast&#39;.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time, status.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2250,7 +2249,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            ids (list): a list of USGS gauge IDs.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of USGS gauge information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2402,7 +2401,7 @@
 <span class="sd">            startDate (str): start date of the query. Default to &#39;Now&#39;.</span>
 <span class="sd">            endDate (str): end date of the query. Default to &#39;MostRecent&#39;.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of USGS gauge stage.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2552,7 +2551,7 @@
 <span class="sd">            geobox (list): a list of geographic box elements of [minX,minY,maxX,maxY].</span>
 <span class="sd">            epsg (int): EPSG integer representing the projected coordinate system, default to UTM14 (epsg = 32614) for Kansas. </span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">           data frame: a geo data frame of USGS gauges projected to the specified coordinate system.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2723,7 +2722,7 @@
 <span class="sd">            ahpsGauges (data frame): AHPS gauges data frame.</span>
 <span class="sd">            nearDist (float): distance threshold for finding the nearest gauge, default to 350 meters.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of merged USGS and AHPS gauges.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2985,7 +2984,7 @@ NGS Latitude-longitude-height Service: https://www.ngs.noaa.gov/web_services/nca
 <span class="sd">            outVertDatum (str): output vertical datum name, default to NAVD88.</span>
 <span class="sd">            orthoHt (float): orthometric height, default to 0.0.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            float: vertical datum shift from NGVD29 to NAVD88.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -3088,7 +3087,7 @@ NGS Latitude-longitude-height Service: https://www.ngs.noaa.gov/web_services/nca
 <span class="sd">            prjFileName (str): file name of projection information.</span>
 <span class="sd">            datumFile (str): file name of gauge datum information.</span>
 
-<span class="sd">        Returns:</span>
+<span class="sd">        Return:</span>
 <span class="sd">            data frame: a data frame of AHPS gauges.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 

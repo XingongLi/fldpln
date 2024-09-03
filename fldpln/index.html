@@ -560,6 +560,75 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN" class="md-nav__link">
+    <span class="md-ellipsis">
+      FLDPLN
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FLDPLN">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.CreateSegmentLibrary" class="md-nav__link">
+    <span class="md-ellipsis">
+      CreateSegmentLibrary()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.FormatSegmentLibrary" class="md-nav__link">
+    <span class="md-ellipsis">
+      FormatSegmentLibrary()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.GenerateSegments" class="md-nav__link">
+    <span class="md-ellipsis">
+      GenerateSegments()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.WriteSegmentFspCsvFiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      WriteSegmentFspCsvFiles()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.__del__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __del__()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.__new__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __new__()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -695,6 +764,75 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN" class="md-nav__link">
+    <span class="md-ellipsis">
+      FLDPLN
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FLDPLN">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.CreateSegmentLibrary" class="md-nav__link">
+    <span class="md-ellipsis">
+      CreateSegmentLibrary()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.FormatSegmentLibrary" class="md-nav__link">
+    <span class="md-ellipsis">
+      FormatSegmentLibrary()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.GenerateSegments" class="md-nav__link">
+    <span class="md-ellipsis">
+      GenerateSegments()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.WriteSegmentFspCsvFiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      WriteSegmentFspCsvFiles()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.__del__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __del__()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.fldpln.FLDPLN.__new__" class="md-nav__link">
+    <span class="md-ellipsis">
+      __new__()
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -724,8 +862,857 @@
 <a id="fldpln.fldpln"></a>
     <div class="doc doc-contents first">
 
-      <p>Main module.</p>
+      <p>FLDPLN model module.</p>
 
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h2 id="fldpln.fldpln.FLDPLN" class="doc doc-heading">
+        <code>
+FLDPLN        </code>
+
+
+
+<a href="#fldpln.fldpln.FLDPLN" class="headerlink" title="Permanent link">&para;</a></h2>
+
+    <div class="doc doc-contents ">
+
+      <p>FLDPLN class for using the fldpln_py Python package generated in MATLAB.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>fldpln/fldpln.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">FLDPLN</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; FLDPLN class for using the fldpln_py Python package generated in MATLAB.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># implement the FLDPLN class as a Singleton class, i.e., only one instance for the class</span>
+    <span class="c1"># see https://www.geeksforgeeks.org/singleton-pattern-in-python-a-complete-guide/</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create a new instance of the FLDPLN class.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                FLDPLN: An instance and the only instance of the FLDPLN class</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># import FLDPLN python package created by MATLAB</span>
+        <span class="kn">import</span> <span class="nn">fldpln_py</span>
+
+        <span class="c1"># Import the matlab module only after you have imported </span>
+        <span class="c1"># MATLAB Compiler SDK generated Python modules.</span>
+        <span class="kn">import</span> <span class="nn">matlab</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;instance&#39;</span><span class="p">):</span>
+            <span class="c1"># first (and ONLY instance)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FLDPLN</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> 
+
+            <span class="c1"># initialize the fldpln_py library when the only instance is created</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Initialize FLDPLN model python package ...&#39;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">fldpln_py_handle</span> <span class="o">=</span> <span class="n">fldpln_py</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error initializing fldpln_py package</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span>
+
+    <span class="c1"># Calling destructor to terminate the reference to the library</span>
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Destructor for the FLDPLN class to terminate the reference to the library.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Terminate FLDPLN model python package.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+
+    <span class="c1"># Initialize the library</span>
+    <span class="c1"># def Initialize(self):</span>
+    <span class="c1">#     # Initialize MATLAB fldpln_py library and retrieve a handle to it</span>
+    <span class="c1">#     print(&#39;Initialize the fldpln_py library ...&#39;)</span>
+    <span class="c1">#     try:</span>
+    <span class="c1">#         self.fldpln_py_handle = fldpln_py.initialize()</span>
+
+    <span class="c1">#     except Exception as e:</span>
+    <span class="c1">#         print(&#39;Error initializing fldpln_py package\\n:{}&#39;.format(e))</span>
+    <span class="c1">#         exit(1)</span>
+
+    <span class="c1"># Generate stream segments for building library</span>
+    <span class="k">def</span> <span class="nf">GenerateSegments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fdrf</span><span class="p">,</span> <span class="n">facf</span><span class="p">,</span> <span class="n">strfac</span><span class="p">,</span> <span class="n">segfac</span><span class="p">,</span> <span class="n">seglen</span><span class="p">,</span> <span class="n">segdir</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Generate stream segments for building segment-based FLDPLN library</span>
+<span class="sd">            Args:</span>
+<span class="sd">                fdrf (str): Flow direction BIL file path</span>
+<span class="sd">                facf (str): Flow accumulation BIL file path</span>
+<span class="sd">                strfac (int): Stream flow accumulation threshold (in sq. miles) for identifying stream networks</span>
+<span class="sd">                segfac (int): Stream flow accumulation threshold (in sq. miles) used for creating segments along stream networks</span>
+<span class="sd">                seglen (int): Segment length threshold (in miles) used for creating segments along stream networks</span>
+<span class="sd">                segdir (str): Output directory for segment files</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                None: No return value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># generate stream segments</span>
+            <span class="n">fdrfIn</span> <span class="o">=</span> <span class="n">fdrf</span>
+            <span class="n">facfIn</span> <span class="o">=</span> <span class="n">facf</span>
+            <span class="n">strfacIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">strfac</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">segfacIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">segfac</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">seglenIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">seglen</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_generate_segments</span><span class="p">(</span><span class="n">fdrfIn</span><span class="p">,</span> <span class="n">facfIn</span><span class="p">,</span> <span class="n">strfacIn</span><span class="p">,</span> <span class="n">segfacIn</span><span class="p">,</span> <span class="n">seglenIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="c1"># Write segment and FSP as CSV files</span>
+    <span class="k">def</span> <span class="nf">WriteSegmentFspCsvFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">seg_list</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Write segment and FSP as CSV files for viewing or creating segment shapefile</span>
+<span class="sd">            Args:</span>
+<span class="sd">                bildir (str): BIL file directory</span>
+<span class="sd">                segdir (str): Segment file directory</span>
+<span class="sd">                seg_list (list): List of integer segment IDs to be exported. If empty, all segments will be exported</span>
+<span class="sd">                outdir (str): Output directory for the CSV files. If None, the output will be saved in the segment file directory</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                None: No return value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># write FSP and segment info CSV files</span>
+            <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
+            <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+
+            <span class="c1"># handle segment list</span>
+            <span class="n">segLstLen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seg_list</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">segLstLen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># empty list, all segments will be exported</span>
+                <span class="n">seg_listIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> 
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">seg_listIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">(</span><span class="n">seg_list</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">segLstLen</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+            <span class="c1"># prepare output folder</span>
+            <span class="k">if</span> <span class="n">outdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">outdirIn</span> <span class="o">=</span> <span class="n">segdirIn</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">outdirIn</span> <span class="o">=</span> <span class="n">outdir</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">ut_write_fsp_segment_csv_files</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">seg_listIn</span><span class="p">,</span> <span class="n">outdirIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="c1"># Create FLDPLN segment-based library</span>
+    <span class="k">def</span> <span class="nf">CreateSegmentLibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">filmskfile</span><span class="p">,</span> <span class="n">segshpfile</span><span class="p">,</span> <span class="n">fldmn</span><span class="p">,</span> <span class="n">fldmx</span><span class="p">,</span> <span class="n">dh</span><span class="p">,</span> <span class="n">mxht</span><span class="p">,</span> <span class="n">libdir</span><span class="p">,</span> <span class="n">mtype</span><span class="p">,</span> <span class="n">para</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Create segment-based FLDPLN library</span>
+<span class="sd">            Args:</span>
+<span class="sd">                bildir (str): BIL file directory</span>
+<span class="sd">                segdir (str): Segment file directory</span>
+<span class="sd">                filmskfile (str): Spatial mask BIL file path used to limit the modeling. If no mask, set to &#39;&#39;</span>
+<span class="sd">                segshpfile (str): A shapefile that contains the segments to be used in the library. If all segments are used, set to &#39;&#39;</span>
+<span class="sd">                fldmn (float): Minimum flood stage assumed, typically set to 1 centimeter or 0.0328084 foot depends on DEM&#39;s vertical unit</span>
+<span class="sd">                fldmx (float): Maximum stage modeled</span>
+<span class="sd">                dh (float): Vertical step size in DEM&#39;s vertical unit</span>
+<span class="sd">                mxht (float): max dem+flood height to cease flooding. Usually set 0 for no cap height</span>
+<span class="sd">                libdir (str): Output directory for the segment-based library</span>
+<span class="sd">                mtype (str): FLDPLN model type. Choose from {&#39;hd&#39;, &#39;ram0&#39;, &#39;ram&#39;}</span>
+<span class="sd">                para (dict): Dictionary containing parallelization settings when running the model.</span>
+<span class="sd">                    type (str): Parallelization type. Choose from {&#39;none&#39;, &#39;parfor&#39;, &#39;parfeval&#39;}</span>
+<span class="sd">                    numcores (int): Number of cores to use. Set to 0 to use all available cores</span>
+<span class="sd">                    worker_type (str): Type of workers, &#39;Processes&#39; or &#39;Threads&#39;. Default is &#39;Processes&#39; as MATLAB Runtime does not support &#39;Threads&#39;</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                None: No return value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
+            <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+            <span class="n">filmskfileIn</span> <span class="o">=</span> <span class="n">filmskfile</span>
+            <span class="n">segshpfileIn</span> <span class="o">=</span> <span class="n">segshpfile</span>
+            <span class="n">fldmnIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">fldmn</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">fldmxIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">fldmx</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">dhIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">dh</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">mxhtIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">mxht</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1"># default 0</span>
+            <span class="n">libdirIn</span> <span class="o">=</span> <span class="n">libdir</span>
+
+            <span class="c1"># model types: hd, ram0, ram</span>
+            <span class="n">mtypeIn</span> <span class="o">=</span> <span class="n">mtype</span>
+
+            <span class="c1"># parallelization settings</span>
+            <span class="n">paraIn</span> <span class="o">=</span> <span class="n">para</span>
+            <span class="k">if</span> <span class="s1">&#39;numcores&#39;</span> <span class="ow">in</span> <span class="n">para</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="c1"># convert user input of core number to MATLAB data type, and keep other string parameters</span>
+                <span class="c1"># paraIn = {&quot;type&quot;: para[&#39;type&#39;], &quot;numcores&quot;: matlab.double([para[&#39;numcores&#39;]], size=(1, 1))}</span>
+                <span class="n">paraIn</span><span class="p">[</span><span class="s2">&quot;numcores&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">para</span><span class="p">[</span><span class="s1">&#39;numcores&#39;</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+            <span class="c1"># create library</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_create_segment_library_v8</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">filmskfileIn</span><span class="p">,</span> <span class="n">segshpfileIn</span><span class="p">,</span> <span class="n">fldmnIn</span><span class="p">,</span> <span class="n">fldmxIn</span><span class="p">,</span> <span class="n">dhIn</span><span class="p">,</span> <span class="n">mxhtIn</span><span class="p">,</span> <span class="n">libdirIn</span><span class="p">,</span> <span class="n">mtypeIn</span><span class="p">,</span> <span class="n">paraIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="c1"># Reformat segment-based library for tiling and mapping</span>
+    <span class="k">def</span> <span class="nf">FormatSegmentLibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">libdir</span><span class="p">,</span> <span class="n">dirout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Reformat segment-based library for tiling and mapping</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                bildir (str): BIL file directory</span>
+<span class="sd">                segdir (str): Segment file directory</span>
+<span class="sd">                libdir (str): Raw segment-based library directory</span>
+<span class="sd">                dirout (str): Output directory for the reformatted library</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                None: No return value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
+            <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+            <span class="n">libdirIn</span> <span class="o">=</span> <span class="n">libdir</span>
+            <span class="n">diroutIn</span> <span class="o">=</span> <span class="n">dirout</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_format_segment_library</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">libdirIn</span><span class="p">,</span> <span class="n">diroutIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="c1"># # Terminate the library</span>
+    <span class="c1"># def Terminate(self):</span>
+    <span class="c1">#     print(&#39;Terminate the fldpln_py library.&#39;)</span>
+    <span class="c1">#     self.fldpln_py_handle.terminate()</span>
+</code></pre></div>
+        </details>
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="fldpln.fldpln.FLDPLN.CreateSegmentLibrary" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">CreateSegmentLibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">filmskfile</span><span class="p">,</span> <span class="n">segshpfile</span><span class="p">,</span> <span class="n">fldmn</span><span class="p">,</span> <span class="n">fldmx</span><span class="p">,</span> <span class="n">dh</span><span class="p">,</span> <span class="n">mxht</span><span class="p">,</span> <span class="n">libdir</span><span class="p">,</span> <span class="n">mtype</span><span class="p">,</span> <span class="n">para</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.fldpln.FLDPLN.CreateSegmentLibrary" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Create segment-based FLDPLN library</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>bildir</code></td>
+        <td><code>str</code></td>
+        <td><p>BIL file directory</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>segdir</code></td>
+        <td><code>str</code></td>
+        <td><p>Segment file directory</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>filmskfile</code></td>
+        <td><code>str</code></td>
+        <td><p>Spatial mask BIL file path used to limit the modeling. If no mask, set to ''</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>segshpfile</code></td>
+        <td><code>str</code></td>
+        <td><p>A shapefile that contains the segments to be used in the library. If all segments are used, set to ''</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>fldmn</code></td>
+        <td><code>float</code></td>
+        <td><p>Minimum flood stage assumed, typically set to 1 centimeter or 0.0328084 foot depends on DEM's vertical unit</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>fldmx</code></td>
+        <td><code>float</code></td>
+        <td><p>Maximum stage modeled</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>dh</code></td>
+        <td><code>float</code></td>
+        <td><p>Vertical step size in DEM's vertical unit</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>mxht</code></td>
+        <td><code>float</code></td>
+        <td><p>max dem+flood height to cease flooding. Usually set 0 for no cap height</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>libdir</code></td>
+        <td><code>str</code></td>
+        <td><p>Output directory for the segment-based library</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>mtype</code></td>
+        <td><code>str</code></td>
+        <td><p>FLDPLN model type. Choose from {'hd', 'ram0', 'ram'}</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>para</code></td>
+        <td><code>dict</code></td>
+        <td><p>Dictionary containing parallelization settings when running the model.
+type (str): Parallelization type. Choose from {'none', 'parfor', 'parfeval'}
+numcores (int): Number of cores to use. Set to 0 to use all available cores
+worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Processes' as MATLAB Runtime does not support 'Threads'</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>None</code></td>
+      <td><p>No return value</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>fldpln/fldpln.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">CreateSegmentLibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">filmskfile</span><span class="p">,</span> <span class="n">segshpfile</span><span class="p">,</span> <span class="n">fldmn</span><span class="p">,</span> <span class="n">fldmx</span><span class="p">,</span> <span class="n">dh</span><span class="p">,</span> <span class="n">mxht</span><span class="p">,</span> <span class="n">libdir</span><span class="p">,</span> <span class="n">mtype</span><span class="p">,</span> <span class="n">para</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Create segment-based FLDPLN library</span>
+<span class="sd">        Args:</span>
+<span class="sd">            bildir (str): BIL file directory</span>
+<span class="sd">            segdir (str): Segment file directory</span>
+<span class="sd">            filmskfile (str): Spatial mask BIL file path used to limit the modeling. If no mask, set to &#39;&#39;</span>
+<span class="sd">            segshpfile (str): A shapefile that contains the segments to be used in the library. If all segments are used, set to &#39;&#39;</span>
+<span class="sd">            fldmn (float): Minimum flood stage assumed, typically set to 1 centimeter or 0.0328084 foot depends on DEM&#39;s vertical unit</span>
+<span class="sd">            fldmx (float): Maximum stage modeled</span>
+<span class="sd">            dh (float): Vertical step size in DEM&#39;s vertical unit</span>
+<span class="sd">            mxht (float): max dem+flood height to cease flooding. Usually set 0 for no cap height</span>
+<span class="sd">            libdir (str): Output directory for the segment-based library</span>
+<span class="sd">            mtype (str): FLDPLN model type. Choose from {&#39;hd&#39;, &#39;ram0&#39;, &#39;ram&#39;}</span>
+<span class="sd">            para (dict): Dictionary containing parallelization settings when running the model.</span>
+<span class="sd">                type (str): Parallelization type. Choose from {&#39;none&#39;, &#39;parfor&#39;, &#39;parfeval&#39;}</span>
+<span class="sd">                numcores (int): Number of cores to use. Set to 0 to use all available cores</span>
+<span class="sd">                worker_type (str): Type of workers, &#39;Processes&#39; or &#39;Threads&#39;. Default is &#39;Processes&#39; as MATLAB Runtime does not support &#39;Threads&#39;</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: No return value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
+        <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+        <span class="n">filmskfileIn</span> <span class="o">=</span> <span class="n">filmskfile</span>
+        <span class="n">segshpfileIn</span> <span class="o">=</span> <span class="n">segshpfile</span>
+        <span class="n">fldmnIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">fldmn</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">fldmxIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">fldmx</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">dhIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">dh</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">mxhtIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">mxht</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1"># default 0</span>
+        <span class="n">libdirIn</span> <span class="o">=</span> <span class="n">libdir</span>
+
+        <span class="c1"># model types: hd, ram0, ram</span>
+        <span class="n">mtypeIn</span> <span class="o">=</span> <span class="n">mtype</span>
+
+        <span class="c1"># parallelization settings</span>
+        <span class="n">paraIn</span> <span class="o">=</span> <span class="n">para</span>
+        <span class="k">if</span> <span class="s1">&#39;numcores&#39;</span> <span class="ow">in</span> <span class="n">para</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="c1"># convert user input of core number to MATLAB data type, and keep other string parameters</span>
+            <span class="c1"># paraIn = {&quot;type&quot;: para[&#39;type&#39;], &quot;numcores&quot;: matlab.double([para[&#39;numcores&#39;]], size=(1, 1))}</span>
+            <span class="n">paraIn</span><span class="p">[</span><span class="s2">&quot;numcores&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">para</span><span class="p">[</span><span class="s1">&#39;numcores&#39;</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="c1"># create library</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_create_segment_library_v8</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">filmskfileIn</span><span class="p">,</span> <span class="n">segshpfileIn</span><span class="p">,</span> <span class="n">fldmnIn</span><span class="p">,</span> <span class="n">fldmxIn</span><span class="p">,</span> <span class="n">dhIn</span><span class="p">,</span> <span class="n">mxhtIn</span><span class="p">,</span> <span class="n">libdirIn</span><span class="p">,</span> <span class="n">mtypeIn</span><span class="p">,</span> <span class="n">paraIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="fldpln.fldpln.FLDPLN.FormatSegmentLibrary" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">FormatSegmentLibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">libdir</span><span class="p">,</span> <span class="n">dirout</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.fldpln.FLDPLN.FormatSegmentLibrary" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Reformat segment-based library for tiling and mapping</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>bildir</code></td>
+        <td><code>str</code></td>
+        <td><p>BIL file directory</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>segdir</code></td>
+        <td><code>str</code></td>
+        <td><p>Segment file directory</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>libdir</code></td>
+        <td><code>str</code></td>
+        <td><p>Raw segment-based library directory</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>dirout</code></td>
+        <td><code>str</code></td>
+        <td><p>Output directory for the reformatted library</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>None</code></td>
+      <td><p>No return value</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>fldpln/fldpln.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">FormatSegmentLibrary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">libdir</span><span class="p">,</span> <span class="n">dirout</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Reformat segment-based library for tiling and mapping</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bildir (str): BIL file directory</span>
+<span class="sd">            segdir (str): Segment file directory</span>
+<span class="sd">            libdir (str): Raw segment-based library directory</span>
+<span class="sd">            dirout (str): Output directory for the reformatted library</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: No return value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
+        <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+        <span class="n">libdirIn</span> <span class="o">=</span> <span class="n">libdir</span>
+        <span class="n">diroutIn</span> <span class="o">=</span> <span class="n">dirout</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_format_segment_library</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">libdirIn</span><span class="p">,</span> <span class="n">diroutIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="fldpln.fldpln.FLDPLN.GenerateSegments" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">GenerateSegments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fdrf</span><span class="p">,</span> <span class="n">facf</span><span class="p">,</span> <span class="n">strfac</span><span class="p">,</span> <span class="n">segfac</span><span class="p">,</span> <span class="n">seglen</span><span class="p">,</span> <span class="n">segdir</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.fldpln.FLDPLN.GenerateSegments" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Generate stream segments for building segment-based FLDPLN library</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>fdrf</code></td>
+        <td><code>str</code></td>
+        <td><p>Flow direction BIL file path</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>facf</code></td>
+        <td><code>str</code></td>
+        <td><p>Flow accumulation BIL file path</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>strfac</code></td>
+        <td><code>int</code></td>
+        <td><p>Stream flow accumulation threshold (in sq. miles) for identifying stream networks</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>segfac</code></td>
+        <td><code>int</code></td>
+        <td><p>Stream flow accumulation threshold (in sq. miles) used for creating segments along stream networks</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>seglen</code></td>
+        <td><code>int</code></td>
+        <td><p>Segment length threshold (in miles) used for creating segments along stream networks</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>segdir</code></td>
+        <td><code>str</code></td>
+        <td><p>Output directory for segment files</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>None</code></td>
+      <td><p>No return value</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>fldpln/fldpln.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GenerateSegments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fdrf</span><span class="p">,</span> <span class="n">facf</span><span class="p">,</span> <span class="n">strfac</span><span class="p">,</span> <span class="n">segfac</span><span class="p">,</span> <span class="n">seglen</span><span class="p">,</span> <span class="n">segdir</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Generate stream segments for building segment-based FLDPLN library</span>
+<span class="sd">        Args:</span>
+<span class="sd">            fdrf (str): Flow direction BIL file path</span>
+<span class="sd">            facf (str): Flow accumulation BIL file path</span>
+<span class="sd">            strfac (int): Stream flow accumulation threshold (in sq. miles) for identifying stream networks</span>
+<span class="sd">            segfac (int): Stream flow accumulation threshold (in sq. miles) used for creating segments along stream networks</span>
+<span class="sd">            seglen (int): Segment length threshold (in miles) used for creating segments along stream networks</span>
+<span class="sd">            segdir (str): Output directory for segment files</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: No return value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># generate stream segments</span>
+        <span class="n">fdrfIn</span> <span class="o">=</span> <span class="n">fdrf</span>
+        <span class="n">facfIn</span> <span class="o">=</span> <span class="n">facf</span>
+        <span class="n">strfacIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">strfac</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">segfacIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">segfac</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">seglenIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">seglen</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_generate_segments</span><span class="p">(</span><span class="n">fdrfIn</span><span class="p">,</span> <span class="n">facfIn</span><span class="p">,</span> <span class="n">strfacIn</span><span class="p">,</span> <span class="n">segfacIn</span><span class="p">,</span> <span class="n">seglenIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="fldpln.fldpln.FLDPLN.WriteSegmentFspCsvFiles" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">WriteSegmentFspCsvFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">seg_list</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.fldpln.FLDPLN.WriteSegmentFspCsvFiles" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Write segment and FSP as CSV files for viewing or creating segment shapefile</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>bildir</code></td>
+        <td><code>str</code></td>
+        <td><p>BIL file directory</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>segdir</code></td>
+        <td><code>str</code></td>
+        <td><p>Segment file directory</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>seg_list</code></td>
+        <td><code>list</code></td>
+        <td><p>List of integer segment IDs to be exported. If empty, all segments will be exported</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>outdir</code></td>
+        <td><code>str</code></td>
+        <td><p>Output directory for the CSV files. If None, the output will be saved in the segment file directory</p></td>
+        <td><code>None</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>None</code></td>
+      <td><p>No return value</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>fldpln/fldpln.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">WriteSegmentFspCsvFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">seg_list</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Write segment and FSP as CSV files for viewing or creating segment shapefile</span>
+<span class="sd">        Args:</span>
+<span class="sd">            bildir (str): BIL file directory</span>
+<span class="sd">            segdir (str): Segment file directory</span>
+<span class="sd">            seg_list (list): List of integer segment IDs to be exported. If empty, all segments will be exported</span>
+<span class="sd">            outdir (str): Output directory for the CSV files. If None, the output will be saved in the segment file directory</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: No return value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># write FSP and segment info CSV files</span>
+        <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
+        <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+
+        <span class="c1"># handle segment list</span>
+        <span class="n">segLstLen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">seg_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">segLstLen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># empty list, all segments will be exported</span>
+            <span class="n">seg_listIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> 
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">seg_listIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">(</span><span class="n">seg_list</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">segLstLen</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="c1"># prepare output folder</span>
+        <span class="k">if</span> <span class="n">outdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outdirIn</span> <span class="o">=</span> <span class="n">segdirIn</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outdirIn</span> <span class="o">=</span> <span class="n">outdir</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">ut_write_fsp_segment_csv_files</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">seg_listIn</span><span class="p">,</span> <span class="n">outdirIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="fldpln.fldpln.FLDPLN.__del__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+  </span>
+
+<a href="#fldpln.fldpln.FLDPLN.__del__" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Destructor for the FLDPLN class to terminate the reference to the library.</p>
+
+        <details class="quote">
+          <summary>Source code in <code>fldpln/fldpln.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Destructor for the FLDPLN class to terminate the reference to the library.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Terminate FLDPLN model python package.&#39;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h3 id="fldpln.fldpln.FLDPLN.__new__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span></code>
+
+  <span class="doc doc-properties">
+      <small class="doc doc-property doc-property-special"><code>special</code></small>
+      <small class="doc doc-property doc-property-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#fldpln.fldpln.FLDPLN.__new__" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Create a new instance of the FLDPLN class.</p>
+
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>FLDPLN</code></td>
+      <td><p>An instance and the only instance of the FLDPLN class</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>fldpln/fldpln.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Create a new instance of the FLDPLN class.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FLDPLN: An instance and the only instance of the FLDPLN class</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># import FLDPLN python package created by MATLAB</span>
+    <span class="kn">import</span> <span class="nn">fldpln_py</span>
+
+    <span class="c1"># Import the matlab module only after you have imported </span>
+    <span class="c1"># MATLAB Compiler SDK generated Python modules.</span>
+    <span class="kn">import</span> <span class="nn">matlab</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;instance&#39;</span><span class="p">):</span>
+        <span class="c1"># first (and ONLY instance)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FLDPLN</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> 
+
+        <span class="c1"># initialize the fldpln_py library when the only instance is created</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Initialize FLDPLN model python package ...&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">fldpln_py_handle</span> <span class="o">=</span> <span class="n">fldpln_py</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error initializing fldpln_py package</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+  </div>
 
     </div>
 
