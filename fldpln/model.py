@@ -1,24 +1,23 @@
-"""FLDPLN model module.
+""" The FLDPLN model module. This module implements the FLDPLN singleton class which exposes the MATLAB functions in the fldpln_py package/library created by MATLAB. 
+    In essence, the FLDPLN class hides the conversion from Python variables to MATLAB data types in those functions. 
 """
+
 # 
-# This class module exposes the MATLAB functions in the fldpln_py package/library which is created by MATLAB.
-# In essence, it hides the conversion from Python variables to MATLAB data types in those functions. 
-#
 # Compared with the module implementation in fldplnpy0.py, implementing it as a singleton class has the following advantages:
 # 1. It hide the fldpln_py_handle variable into the instance instead of exposing it as a module variable which can reduce potential conflict and over-writing
 # 2. It hides the initialization and termination steps in the constructor and destructor so that the object behaviors more like a typical/normal object
 #
 
 # # import FLDPLN python package created by MATLAB
-# import fldpln_py
+# import fldpln_py # commented as it cannot be installed using pip
 # # MATLAB Compiler SDK generated Python modules. Import the matlab module only after you have imported other packages
-# import matlab
+# import matlab # commented as it cannot be installed using pip
 
 #
 # The FLDPLN singleton class for using the fldpln_py Python package generated in MATLAB
 #
 class FLDPLN:
-    """ FLDPLN class for using the fldpln_py Python package generated in MATLAB.
+    """ A singleton class for using the fldpln_py Python package generated in MATLAB.
     """
 
     # implement the FLDPLN class as a Singleton class, i.e., only one instance for the class
