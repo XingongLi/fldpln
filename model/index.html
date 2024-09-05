@@ -844,7 +844,8 @@
 <a id="fldpln.model"></a>
     <div class="doc doc-contents first">
 
-      <p>FLDPLN model module.</p>
+      <p>The FLDPLN model module. This module implements the FLDPLN singleton class which exposes the MATLAB functions in the fldpln_py package/library created by MATLAB. 
+In essence, the FLDPLN class hides the conversion from Python variables to MATLAB data types in those functions. </p>
 
 
 
@@ -870,12 +871,12 @@ FLDPLN        </code>
 
     <div class="doc doc-contents ">
 
-      <p>FLDPLN class for using the fldpln_py Python package generated in MATLAB.</p>
+      <p>A singleton class for using the fldpln_py Python package generated in MATLAB.</p>
 
         <details class="quote">
           <summary>Source code in <code>fldpln/model.py</code></summary>
           <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">FLDPLN</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; FLDPLN class for using the fldpln_py Python package generated in MATLAB.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; A singleton class for using the fldpln_py Python package generated in MATLAB.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># implement the FLDPLN class as a Singleton class, i.e., only one instance for the class</span>
