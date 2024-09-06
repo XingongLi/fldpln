@@ -14,4 +14,8 @@
 
 ## Features
 
--   TODO
+-   Four modules to create and map FLDPLN library
+-   model module provides the FLDPLN class and methods for creating segment-based FLDPLN library
+-   tile module provides functions for tiling segment-based library for parallel mapping
+-   mapping module provides functions for generating special and flood event inundation maps
+-   gauge module provides functions for preparing gauges for use in flood mapping
