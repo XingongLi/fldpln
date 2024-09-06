@@ -661,6 +661,15 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#fldpln.model.FLDPLN.GenerateStreamOrder" class="md-nav__link">
+    <span class="md-ellipsis">
+      GenerateStreamOrder()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#fldpln.model.FLDPLN.WriteSegmentFspCsvFiles" class="md-nav__link">
     <span class="md-ellipsis">
       WriteSegmentFspCsvFiles()
@@ -787,6 +796,15 @@
   <a href="#fldpln.model.FLDPLN.GenerateSegments" class="md-nav__link">
     <span class="md-ellipsis">
       GenerateSegments()
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fldpln.model.FLDPLN.GenerateStreamOrder" class="md-nav__link">
+    <span class="md-ellipsis">
+      GenerateStreamOrder()
     </span>
   </a>
   
@@ -948,13 +966,14 @@ FLDPLN        </code>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 
     <span class="c1"># Write segment and FSP as CSV files</span>
-    <span class="k">def</span> <span class="nf">WriteSegmentFspCsvFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">seg_list</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">WriteSegmentFspCsvFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">seg_list</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fileType</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; Write segment and FSP as CSV files for viewing or creating segment shapefile</span>
 <span class="sd">            Args:</span>
 <span class="sd">                bildir (str): BIL file directory</span>
 <span class="sd">                segdir (str): Segment file directory</span>
 <span class="sd">                seg_list (list): List of integer segment IDs to be exported. If empty, all segments will be exported</span>
 <span class="sd">                outdir (str): Output directory for the CSV files. If None, the output will be saved in the segment file directory</span>
+<span class="sd">                fileType (str): FSP output file type. Choose from {&#39;mat&#39;, &#39;csv&#39;}. default is &#39;csv&#39;</span>
 
 <span class="sd">            Returns:</span>
 <span class="sd">                None: No return value</span>
@@ -980,7 +999,7 @@ FLDPLN        </code>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">outdirIn</span> <span class="o">=</span> <span class="n">outdir</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">ut_write_fsp_segment_csv_files</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">seg_listIn</span><span class="p">,</span> <span class="n">outdirIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">ut_write_fsp_segment_csv_files</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">seg_listIn</span><span class="p">,</span> <span class="n">outdirIn</span><span class="p">,</span> <span class="n">fileType</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -1060,6 +1079,28 @@ FLDPLN        </code>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">GenerateStreamOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">segshp</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Generate stream order for the segments</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                bildir (str): BIL file directory</span>
+<span class="sd">                segdir (str): Segment file directory</span>
+<span class="sd">                segshp (str): Selected segment shapefile</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                None: No return value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
+            <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+            <span class="n">segshpIn</span> <span class="o">=</span> <span class="n">segshp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_generate_stream_order</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">segshpIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
 
     <span class="c1"># # Terminate the library</span>
     <span class="c1"># def Terminate(self):</span>
@@ -1469,8 +1510,98 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
 
 
 
+<h3 id="fldpln.model.FLDPLN.GenerateStreamOrder" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">GenerateStreamOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">segshp</span><span class="p">)</span></code>
+
+
+<a href="#fldpln.model.FLDPLN.GenerateStreamOrder" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents ">
+
+      <p>Generate stream order for the segments</p>
+
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>bildir</code></td>
+        <td><code>str</code></td>
+        <td><p>BIL file directory</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>segdir</code></td>
+        <td><code>str</code></td>
+        <td><p>Segment file directory</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>segshp</code></td>
+        <td><code>str</code></td>
+        <td><p>Selected segment shapefile</p></td>
+        <td><em>required</em></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>None</code></td>
+      <td><p>No return value</p></td>
+    </tr>
+  </tbody>
+</table>
+        <details class="quote">
+          <summary>Source code in <code>fldpln/model.py</code></summary>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">GenerateStreamOrder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">segshp</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Generate stream order for the segments</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bildir (str): BIL file directory</span>
+<span class="sd">            segdir (str): Segment file directory</span>
+<span class="sd">            segshp (str): Selected segment shapefile</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None: No return value</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
+        <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+        <span class="n">segshpIn</span> <span class="o">=</span> <span class="n">segshp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_generate_stream_order</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">segshpIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+</code></pre></div>
+        </details>
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
 <h3 id="fldpln.model.FLDPLN.WriteSegmentFspCsvFiles" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">WriteSegmentFspCsvFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">seg_list</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">WriteSegmentFspCsvFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">seg_list</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fileType</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">)</span></code>
 
 
 <a href="#fldpln.model.FLDPLN.WriteSegmentFspCsvFiles" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -1514,6 +1645,12 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
         <td><p>Output directory for the CSV files. If None, the output will be saved in the segment file directory</p></td>
         <td><code>None</code></td>
       </tr>
+      <tr>
+        <td><code>fileType</code></td>
+        <td><code>str</code></td>
+        <td><p>FSP output file type. Choose from {'mat', 'csv'}. default is 'csv'</p></td>
+        <td><code>&#39;csv&#39;</code></td>
+      </tr>
   </tbody>
 </table>
 <p><strong>Returns:</strong></p>
@@ -1533,13 +1670,14 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
 </table>
         <details class="quote">
           <summary>Source code in <code>fldpln/model.py</code></summary>
-          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">WriteSegmentFspCsvFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">seg_list</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+          <div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">WriteSegmentFspCsvFiles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bildir</span><span class="p">,</span> <span class="n">segdir</span><span class="p">,</span> <span class="n">seg_list</span><span class="p">,</span> <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fileType</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; Write segment and FSP as CSV files for viewing or creating segment shapefile</span>
 <span class="sd">        Args:</span>
 <span class="sd">            bildir (str): BIL file directory</span>
 <span class="sd">            segdir (str): Segment file directory</span>
 <span class="sd">            seg_list (list): List of integer segment IDs to be exported. If empty, all segments will be exported</span>
 <span class="sd">            outdir (str): Output directory for the CSV files. If None, the output will be saved in the segment file directory</span>
+<span class="sd">            fileType (str): FSP output file type. Choose from {&#39;mat&#39;, &#39;csv&#39;}. default is &#39;csv&#39;</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            None: No return value</span>
@@ -1565,7 +1703,7 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
         <span class="k">else</span><span class="p">:</span>
             <span class="n">outdirIn</span> <span class="o">=</span> <span class="n">outdir</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">ut_write_fsp_segment_csv_files</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">seg_listIn</span><span class="p">,</span> <span class="n">outdirIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">ut_write_fsp_segment_csv_files</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">seg_listIn</span><span class="p">,</span> <span class="n">outdirIn</span><span class="p">,</span> <span class="n">fileType</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
