@@ -41,7 +41,7 @@ conda install -c conda-forge mamba
 
 ### Create the environment and install packages using a YAML file
 
-The fldpln pyhton environment has been exported as a YAML configuration file. So we can replicate the environment on a different machine using the YAML file. In the base environment, navigate to the folder where the .yaml file is saved, and run the following conda or mamba command to create the fldpln env using the file:
+The fldpln python environment has been exported as a YAML configuration file. So we can replicate the environment on a different machine using the YAML file. In the base environment, navigate to the folder where the .yaml file is saved, and run the following conda or mamba command to create the fldpln env using the file:
 ```
 mamba env create -f fldpln_windows.yaml
 ```
@@ -57,9 +57,9 @@ Solving the environment and installing all the packages might take a surprisingl
 
 Currently, there are two python packages are needed for using the FLDPLN model. The first is the fldpln_py package which is a wrapper for the FLDPLN model implemented in MATLAB. The second is the fldpln package, which contains modules for running the FLDPLN model and for tiling and mapping FLDPLN libraries.  
 
-### Install the FLDPLN Model Python Package
+### Install the fldpln_py Python Package
 
-The FLDPLN model is developed in MATLAB and compiled into the fldpln_py Python package. The compiled Python package can be installed on both Windows or Unix systems (though not tested on Unix system yet) with the MATLAB Runtime installed. Note that the MATLAB Runtime is required but free to run the compiled Python package.
+The FLDPLN model is developed in MATLAB and compiled into the fldpln_py Python package. The MATLAB compiled Python package can be installed on both Windows or Unix systems (though not tested on Unix system yet) with the MATLAB Runtime installed. Note that the MATLAB Runtime is required but free to run the compiled Python package.
 
 #### Install MATLAB Runtime and fldpln_py Python Package
 

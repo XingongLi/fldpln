@@ -89,13 +89,14 @@ class FLDPLN:
             print('Error occurred during program execution\\n:{}'.format(e))
 
     # Write segment and FSP as CSV files
-    def WriteSegmentFspCsvFiles(self,bildir, segdir, seg_list, outdir=None):
+    def WriteSegmentFspCsvFiles(self,bildir, segdir, seg_list, outdir=None, fileType='csv'):
         """ Write segment and FSP as CSV files for viewing or creating segment shapefile
             Args:
                 bildir (str): BIL file directory
                 segdir (str): Segment file directory
                 seg_list (list): List of integer segment IDs to be exported. If empty, all segments will be exported
                 outdir (str): Output directory for the CSV files. If None, the output will be saved in the segment file directory
+                fileType (str): FSP output file type. Choose from {'mat', 'csv'}. default is 'csv'
 
             Returns:
                 None: No return value
@@ -121,7 +122,7 @@ class FLDPLN:
             else:
                 outdirIn = outdir
 
-            self.fldpln_py_handle.ut_write_fsp_segment_csv_files(bildirIn, segdirIn, seg_listIn, outdirIn, nargout=0)
+            self.fldpln_py_handle.ut_write_fsp_segment_csv_files(bildirIn, segdirIn, seg_listIn, outdirIn, fileType, nargout=0)
             
         except Exception as e:
             print('Error occurred during program execution\\n:{}'.format(e))
@@ -202,6 +203,28 @@ class FLDPLN:
         except Exception as e:
             print('Error occurred during program execution\\n:{}'.format(e))
 
+    def GenerateStreamOrder(self, bildir, segdir, segshp):
+        """ Generate stream order for the segments
+
+            Args:
+                bildir (str): BIL file directory
+                segdir (str): Segment file directory
+                segshp (str): Selected segment shapefile
+
+            Returns:
+                None: No return value
+        """
+
+        try:
+            bildirIn = bildir
+            segdirIn = segdir
+            segshpIn = segshp
+            self.fldpln_py_handle.rp_generate_stream_order(bildirIn, segdirIn, segshpIn, nargout=0)
+            
+        except Exception as e:
+            print('Error occurred during program execution\\n:{}'.format(e))
+
+
     # # Terminate the library
     # def Terminate(self):
     #     print('Terminate the fldpln_py library.')
@@ -250,7 +273,7 @@ if __name__ == "__main__":
     #
     seg_list = [] # for all the segments
     # seg_list = [1,2,3] # for a subset of segments
-    fldpln.WriteSegmentFspCsvFiles(bildir, segdir, seg_list, segdir)
+    fldpln.WriteSegmentFspCsvFiles(bildir, segdir, seg_list, segdir, 'mat')
 
     #
     # Create segment-based library
@@ -323,6 +346,19 @@ if __name__ == "__main__":
 
     # Format raw segment library
     fldpln.FormatSegmentLibrary(bildir, segdir, libdir, dirout)
+
+    #
+    # Generate stream order for the selected segments
+    #
+    # BIL file directory
+    bildir = 'E:/fldpln/sites/wildcat_10m_3dep/bil' # Wildcat
+    # segment file directory
+    segdir = 'E:/fldpln/sites/wildcat_10m_3dep/segs_py'
+    # Selected segment shapefile
+    segshp = 'E:/fldpln/sites/wildcat_10m_3dep/segment_shapefiles/wildcat_segments.shp' # Wildcat
+
+    # Generate stream order
+    fldpln.GenerateStreamOrder(bildir, segdir, segshp)
 
     #
     # Note that the fldpln_py library is automatically terminated when the FLDPLN object destroyed at the end of the script!
