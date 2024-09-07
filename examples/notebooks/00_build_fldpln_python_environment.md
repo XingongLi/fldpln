@@ -1,17 +1,3 @@
----
-jupytext:
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.11.5
-kernelspec:
-  display_name: Python 3
-  language: python
-  name: python3
----
-
-
 # Build a Python Environment for Using the FLDPLN Model
 
 In order to use the FLDPLN model, we need to have a Python environment with the necessary packages installed. This document provides information on how to build the "fldpln" Python environment and how to use it in various development/programming environments including local and cloud JupyterLab and in Visual Studio Code (VSC). 
@@ -121,7 +107,3 @@ VSC also supports Jupyter notebooks. But this needs the ipython kernel package b
   ```
   mamba install -c conda-forge ipykernel
   ```
-
-## What's next?
-
-•	How to hide __new__() from API reference?
