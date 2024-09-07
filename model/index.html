@@ -1012,6 +1012,10 @@ FLDPLN        </code>
 <span class="sd">                segdir (str): Segment file directory</span>
 <span class="sd">                filmskfile (str): Spatial mask BIL file path used to limit the modeling. If no mask, set to &#39;&#39;</span>
 <span class="sd">                segshpfile (str): A shapefile that contains the segments to be used in the library. If all segments are used, set to &#39;&#39;</span>
+<span class="sd">                segshpfile (dict): Dictionary containing the shapefile information</span>
+<span class="sd">                    file (str): Shapefile path that contains the select subset of segments, set to &#39;&#39; if all segments are used</span>
+<span class="sd">                    segid_field (str): Field name in the shapefile that contains the segment ID</span>
+<span class="sd">                    seg_fldmx_field (str): Field name in the shapefile that contains the fldmx value. Set to &#39;&#39; if all segments use the same fldmx</span>
 <span class="sd">                fldmn (float): Minimum flood stage assumed, typically set to 1 centimeter or 0.0328084 foot depends on DEM&#39;s vertical unit</span>
 <span class="sd">                fldmx (float): Maximum stage modeled</span>
 <span class="sd">                dh (float): Vertical step size in DEM&#39;s vertical unit</span>
@@ -1171,6 +1175,15 @@ FLDPLN        </code>
         <td><em>required</em></td>
       </tr>
       <tr>
+        <td><code>segshpfile</code></td>
+        <td><code>dict</code></td>
+        <td><p>Dictionary containing the shapefile information
+file (str): Shapefile path that contains the select subset of segments, set to '' if all segments are used
+segid_field (str): Field name in the shapefile that contains the segment ID
+seg_fldmx_field (str): Field name in the shapefile that contains the fldmx value. Set to '' if all segments use the same fldmx</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
         <td><code>fldmn</code></td>
         <td><code>float</code></td>
         <td><p>Minimum flood stage assumed, typically set to 1 centimeter or 0.0328084 foot depends on DEM's vertical unit</p></td>
@@ -1241,6 +1254,10 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
 <span class="sd">            segdir (str): Segment file directory</span>
 <span class="sd">            filmskfile (str): Spatial mask BIL file path used to limit the modeling. If no mask, set to &#39;&#39;</span>
 <span class="sd">            segshpfile (str): A shapefile that contains the segments to be used in the library. If all segments are used, set to &#39;&#39;</span>
+<span class="sd">            segshpfile (dict): Dictionary containing the shapefile information</span>
+<span class="sd">                file (str): Shapefile path that contains the select subset of segments, set to &#39;&#39; if all segments are used</span>
+<span class="sd">                segid_field (str): Field name in the shapefile that contains the segment ID</span>
+<span class="sd">                seg_fldmx_field (str): Field name in the shapefile that contains the fldmx value. Set to &#39;&#39; if all segments use the same fldmx</span>
 <span class="sd">            fldmn (float): Minimum flood stage assumed, typically set to 1 centimeter or 0.0328084 foot depends on DEM&#39;s vertical unit</span>
 <span class="sd">            fldmx (float): Maximum stage modeled</span>
 <span class="sd">            dh (float): Vertical step size in DEM&#39;s vertical unit</span>
