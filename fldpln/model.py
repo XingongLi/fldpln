@@ -135,6 +135,10 @@ class FLDPLN:
                 segdir (str): Segment file directory
                 filmskfile (str): Spatial mask BIL file path used to limit the modeling. If no mask, set to ''
                 segshpfile (str): A shapefile that contains the segments to be used in the library. If all segments are used, set to ''
+                segshpfile (dict): Dictionary containing the shapefile information
+                    file (str): Shapefile path that contains the select subset of segments, set to '' if all segments are used
+                    segid_field (str): Field name in the shapefile that contains the segment ID
+                    seg_fldmx_field (str): Field name in the shapefile that contains the fldmx value. Set to '' if all segments use the same fldmx
                 fldmn (float): Minimum flood stage assumed, typically set to 1 centimeter or 0.0328084 foot depends on DEM's vertical unit
                 fldmx (float): Maximum stage modeled
                 dh (float): Vertical step size in DEM's vertical unit
