@@ -908,8 +908,8 @@ FLDPLN        </code>
             <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FLDPLN</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> 
 
             <span class="c1"># initialize the fldpln_py library when the only instance is created</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Initialize FLDPLN model python package ...&#39;</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Initialize the FLDPLN model ...&#39;</span><span class="p">)</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">fldpln_py_handle</span> <span class="o">=</span> <span class="n">fldpln_py</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
@@ -922,7 +922,7 @@ FLDPLN        </code>
     <span class="c1"># Calling destructor to terminate the reference to the library</span>
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Terminate FLDPLN model python package.&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Terminate the FLDPLN model ...&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
 
     <span class="c1"># Initialize the library</span>
@@ -1088,7 +1088,7 @@ FLDPLN        </code>
             <span class="n">libdirIn</span> <span class="o">=</span> <span class="n">libdir</span>
             <span class="n">diroutIn</span> <span class="o">=</span> <span class="n">dirout</span>
 
-            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Format segment-based library ...&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reformat segment-based library ...&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_format_segment_library</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">libdirIn</span><span class="p">,</span> <span class="n">diroutIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
@@ -1118,12 +1118,6 @@ FLDPLN        </code>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
-
-
-    <span class="c1"># # Terminate the library</span>
-    <span class="c1"># def Terminate(self):</span>
-    <span class="c1">#     print(&#39;Terminate the fldpln_py library.&#39;)</span>
-    <span class="c1">#     self.fldpln_py_handle.terminate()</span>
 </code></pre></div>
         </details>
 
@@ -1412,7 +1406,7 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
         <span class="n">libdirIn</span> <span class="o">=</span> <span class="n">libdir</span>
         <span class="n">diroutIn</span> <span class="o">=</span> <span class="n">dirout</span>
 
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Format segment-based library ...&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Reformat segment-based library ...&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_format_segment_library</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">libdirIn</span><span class="p">,</span> <span class="n">diroutIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
@@ -1789,8 +1783,8 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
         <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">FLDPLN</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> 
 
         <span class="c1"># initialize the fldpln_py library when the only instance is created</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Initialize FLDPLN model python package ...&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Initialize the FLDPLN model ...&#39;</span><span class="p">)</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">fldpln_py_handle</span> <span class="o">=</span> <span class="n">fldpln_py</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
