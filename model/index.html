@@ -911,6 +911,7 @@ FLDPLN        </code>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Initialize FLDPLN model python package ...&#39;</span><span class="p">)</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">fldpln_py_handle</span> <span class="o">=</span> <span class="n">fldpln_py</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error initializing fldpln_py package</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -960,7 +961,10 @@ FLDPLN        </code>
             <span class="n">segfacIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">segfac</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
             <span class="n">seglenIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">seglen</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
             <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Generate segments ...&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_generate_segments</span><span class="p">(</span><span class="n">fdrfIn</span><span class="p">,</span> <span class="n">facfIn</span><span class="p">,</span> <span class="n">strfacIn</span><span class="p">,</span> <span class="n">segfacIn</span><span class="p">,</span> <span class="n">seglenIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -999,7 +1003,9 @@ FLDPLN        </code>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">outdirIn</span> <span class="o">=</span> <span class="n">outdir</span>
 
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Write FSP and segment files ...&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">ut_write_fsp_segment_csv_files</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">seg_listIn</span><span class="p">,</span> <span class="n">outdirIn</span><span class="p">,</span> <span class="n">fileType</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -1055,7 +1061,9 @@ FLDPLN        </code>
                 <span class="n">paraIn</span><span class="p">[</span><span class="s2">&quot;numcores&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">para</span><span class="p">[</span><span class="s1">&#39;numcores&#39;</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
             <span class="c1"># create library</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Create segment-based library ...&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_create_segment_library_v8</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">filmskfileIn</span><span class="p">,</span> <span class="n">segshpfileIn</span><span class="p">,</span> <span class="n">fldmnIn</span><span class="p">,</span> <span class="n">fldmxIn</span><span class="p">,</span> <span class="n">dhIn</span><span class="p">,</span> <span class="n">mxhtIn</span><span class="p">,</span> <span class="n">libdirIn</span><span class="p">,</span> <span class="n">mtypeIn</span><span class="p">,</span> <span class="n">paraIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -1079,7 +1087,10 @@ FLDPLN        </code>
             <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
             <span class="n">libdirIn</span> <span class="o">=</span> <span class="n">libdir</span>
             <span class="n">diroutIn</span> <span class="o">=</span> <span class="n">dirout</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Format segment-based library ...&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_format_segment_library</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">libdirIn</span><span class="p">,</span> <span class="n">diroutIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -1100,7 +1111,10 @@ FLDPLN        </code>
             <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
             <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
             <span class="n">segshpIn</span> <span class="o">=</span> <span class="n">segshp</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Generate stream order ...&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_generate_stream_order</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">segshpIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -1297,7 +1311,9 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
             <span class="n">paraIn</span><span class="p">[</span><span class="s2">&quot;numcores&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">para</span><span class="p">[</span><span class="s1">&#39;numcores&#39;</span><span class="p">]],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 
         <span class="c1"># create library</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Create segment-based library ...&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_create_segment_library_v8</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">filmskfileIn</span><span class="p">,</span> <span class="n">segshpfileIn</span><span class="p">,</span> <span class="n">fldmnIn</span><span class="p">,</span> <span class="n">fldmxIn</span><span class="p">,</span> <span class="n">dhIn</span><span class="p">,</span> <span class="n">mxhtIn</span><span class="p">,</span> <span class="n">libdirIn</span><span class="p">,</span> <span class="n">mtypeIn</span><span class="p">,</span> <span class="n">paraIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -1395,7 +1411,10 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
         <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
         <span class="n">libdirIn</span> <span class="o">=</span> <span class="n">libdir</span>
         <span class="n">diroutIn</span> <span class="o">=</span> <span class="n">dirout</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Format segment-based library ...&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_format_segment_library</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">libdirIn</span><span class="p">,</span> <span class="n">diroutIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -1511,7 +1530,10 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
         <span class="n">segfacIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">segfac</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">seglenIn</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">([</span><span class="n">seglen</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Generate segments ...&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_generate_segments</span><span class="p">(</span><span class="n">fdrfIn</span><span class="p">,</span> <span class="n">facfIn</span><span class="p">,</span> <span class="n">strfacIn</span><span class="p">,</span> <span class="n">segfacIn</span><span class="p">,</span> <span class="n">seglenIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -1601,7 +1623,10 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
         <span class="n">bildirIn</span> <span class="o">=</span> <span class="n">bildir</span>
         <span class="n">segdirIn</span> <span class="o">=</span> <span class="n">segdir</span>
         <span class="n">segshpIn</span> <span class="o">=</span> <span class="n">segshp</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Generate stream order ...&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">rp_generate_stream_order</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">segshpIn</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -1720,7 +1745,9 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
         <span class="k">else</span><span class="p">:</span>
             <span class="n">outdirIn</span> <span class="o">=</span> <span class="n">outdir</span>
 
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Write FSP and segment files ...&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fldpln_py_handle</span><span class="o">.</span><span class="n">ut_write_fsp_segment_csv_files</span><span class="p">(</span><span class="n">bildirIn</span><span class="p">,</span> <span class="n">segdirIn</span><span class="p">,</span> <span class="n">seg_listIn</span><span class="p">,</span> <span class="n">outdirIn</span><span class="p">,</span> <span class="n">fileType</span><span class="p">,</span> <span class="n">nargout</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error occurred during program execution</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
@@ -1765,6 +1792,7 @@ worker_type (str): Type of workers, 'Processes' or 'Threads'. Default is 'Proces
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Initialize FLDPLN model python package ...&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">cls</span><span class="o">.</span><span class="n">instance</span><span class="o">.</span><span class="n">fldpln_py_handle</span> <span class="o">=</span> <span class="n">fldpln_py</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Done!&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error initializing fldpln_py package</span><span class="se">\\</span><span class="s1">n:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
