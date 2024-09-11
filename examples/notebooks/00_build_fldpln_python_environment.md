@@ -43,8 +43,7 @@ The FLDPLN model is originally developed in MATLAB and compiled into the fldpln_
 
 #### Install MATLAB Runtime
 
-Two installers are available to install MATLAB Runtime and the fldpln_py package.
-The smaller installer (named fldpln_py_Installer_web.exe by default), download MATLAB Runtime on-the-fly during the installation and the larger installer (fldpln_py_Installer_mcr.exe) has the Runtime included in the installer. Whichever installer is used, it will install the MATLAB Runtime and also unpack and save the fldpln_py package under the installation folder, typically under folder C:\Program Files\fldpln_py.
+Two kind of installers are available to install MATLAB Runtime and the fldpln_py package. The [smaller installer](https://github.com/XingongLi/fldpln/blob/main/fldpln_py/fldpln_py_Installer_web.exe) is available on Github download MATLAB Runtime on-the-fly during the installation and the [larger installer](https://itprdkarsap.home.ku.edu/download/fldpln/fldpln_py_installer_mcr.exe) available on KU KBS-KARS server has the Runtime included in the installer. Whichever installer is used, it will install the MATLAB Runtime and also unpack and save the fldpln_py package under the installation folder, typically under folder C:\Program Files\fldpln_py.
 
 Note that the installer for Windows automatically sets the MATLAB Runtime path during installation, but on Linux or macOS you must add the Runtime manually. See [here](https://www.mathworks.com/help/compiler_sdk/cxx/mcr-path-settings-for-run-time-deployment.html) for more information.
 

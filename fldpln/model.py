@@ -34,6 +34,7 @@ class FLDPLN:
             print('Initialize FLDPLN model python package ...')
             try:
                 cls.instance.fldpln_py_handle = fldpln_py.initialize()
+                print('Done!')
             
             except Exception as e:
                 print('Error initializing fldpln_py package\\n:{}'.format(e))
@@ -83,7 +84,10 @@ class FLDPLN:
             segfacIn = matlab.double([segfac], size=(1, 1))
             seglenIn = matlab.double([seglen], size=(1, 1))
             segdirIn = segdir
+
+            print('Generate segments ...')
             self.fldpln_py_handle.rp_generate_segments(fdrfIn, facfIn, strfacIn, segfacIn, seglenIn, segdirIn, nargout=0)
+            print('Done!')
             
         except Exception as e:
             print('Error occurred during program execution\\n:{}'.format(e))
@@ -122,7 +126,9 @@ class FLDPLN:
             else:
                 outdirIn = outdir
 
+            print('Write FSP and segment files ...')
             self.fldpln_py_handle.ut_write_fsp_segment_csv_files(bildirIn, segdirIn, seg_listIn, outdirIn, fileType, nargout=0)
+            print('Done!')
             
         except Exception as e:
             print('Error occurred during program execution\\n:{}'.format(e))
@@ -178,7 +184,9 @@ class FLDPLN:
                 paraIn["numcores"] = matlab.double([para['numcores']], size=(1, 1))
 
             # create library
+            print('Create segment-based library ...')
             self.fldpln_py_handle.rp_create_segment_library_v8(bildirIn, segdirIn, filmskfileIn, segshpfileIn, fldmnIn, fldmxIn, dhIn, mxhtIn, libdirIn, mtypeIn, paraIn, nargout=0)
+            print('Done!')
 
         except Exception as e:
             print('Error occurred during program execution\\n:{}'.format(e))
@@ -202,7 +210,10 @@ class FLDPLN:
             segdirIn = segdir
             libdirIn = libdir
             diroutIn = dirout
+
+            print('Format segment-based library ...')
             self.fldpln_py_handle.rp_format_segment_library(bildirIn, segdirIn, libdirIn, diroutIn, nargout=0)
+            print('Done!')
 
         except Exception as e:
             print('Error occurred during program execution\\n:{}'.format(e))
@@ -223,7 +234,10 @@ class FLDPLN:
             bildirIn = bildir
             segdirIn = segdir
             segshpIn = segshp
+
+            print('Generate stream order ...')
             self.fldpln_py_handle.rp_generate_stream_order(bildirIn, segdirIn, segshpIn, nargout=0)
+            print('Done!')
             
         except Exception as e:
             print('Error occurred during program execution\\n:{}'.format(e))
