@@ -31,8 +31,8 @@ class FLDPLN:
             cls.instance = super(FLDPLN, cls).__new__(cls) 
 
             # initialize the fldpln_py library when the only instance is created
-            print('Initialize FLDPLN model python package ...')
             try:
+                print('Initialize the FLDPLN model ...')
                 cls.instance.fldpln_py_handle = fldpln_py.initialize()
                 print('Done!')
             
@@ -45,7 +45,7 @@ class FLDPLN:
     # Calling destructor to terminate the reference to the library
     def __del__(self):
 
-        print('Terminate FLDPLN model python package.')
+        print('Terminate the FLDPLN model ...')
         self.fldpln_py_handle.terminate()
 
     # Initialize the library
@@ -211,7 +211,7 @@ class FLDPLN:
             libdirIn = libdir
             diroutIn = dirout
 
-            print('Format segment-based library ...')
+            print('Reformat segment-based library ...')
             self.fldpln_py_handle.rp_format_segment_library(bildirIn, segdirIn, libdirIn, diroutIn, nargout=0)
             print('Done!')
 
@@ -241,12 +241,6 @@ class FLDPLN:
             
         except Exception as e:
             print('Error occurred during program execution\\n:{}'.format(e))
-
-
-    # # Terminate the library
-    # def Terminate(self):
-    #     print('Terminate the fldpln_py library.')
-    #     self.fldpln_py_handle.terminate()
 
 # end of class FLDPLN
 
