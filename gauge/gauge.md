@@ -1,3 +1,0 @@
-# gauge module
-
-::: fldpln.gauge

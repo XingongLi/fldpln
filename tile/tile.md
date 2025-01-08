@@ -1,3 +1,0 @@
-# tile module
-
-::: fldpln.tile

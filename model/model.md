@@ -1,4 +1,0 @@
- 
-# model module
-
-::: fldpln.model
