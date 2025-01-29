@@ -15,10 +15,9 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 from pyproj import CRS
-import pandas.io.sql as psql
 
-# from osgeo import ogr # ogr cannot be installed using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
-# import psycopg2 # psycopg2 cannot be installed on MacOs. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
+# ogr cannot be installed using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
+# from osgeo import ogr 
 
 # import the mapping module from THIS package
 from .mapping import * 
