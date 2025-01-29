@@ -1,9 +1,6 @@
-"""Module for handling gauge data for flood mapping
+""" Module for handling USGS and AHPS gauge data for flood inundation mapping.
 """
 
-# 
-# # Some of the functions are moved to here from fldpln.py and fldpln_reorg.py
-# #
 # imports from standard libraries
 import math
 import os
@@ -17,10 +14,11 @@ from lxml import html
 import numpy as np
 import pandas as pd
 import geopandas as gpd
-# from osgeo import ogr
 from pyproj import CRS
-import psycopg2
 import pandas.io.sql as psql
+
+# from osgeo import ogr # ogr cannot be installed using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
+# import psycopg2 # psycopg2 cannot be installed on MacOs. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
 
 # import the mapping module from THIS package
 from .mapping import * 
@@ -29,11 +27,14 @@ from .mapping import *
 # Get USGS gauges. This function get USGS gauges within a box and project them
 #
 def GetUsgsGauges(geobox, epsg=32614):
-    """Get USGS gauges within a box and project them
-        Parameters:
-            geobox: a geographic box of (minX,minY,maxX,maxY)
-            epsg: projected coordinate system, default to UTM14 (epsg=32614) for Kansas
-        Returns: a dataframe of USGS gauges
+    """ Get USGS gauges within a box and project them to a specified coordinate system.
+
+        Args:
+            geobox (list): a list of geographic box elements of [minX,minY,maxX,maxY].
+            epsg (int): EPSG integer representing the projected coordinate system, default to UTM14 (epsg = 32614) for Kansas. 
+
+        Return:
+           data frame: a geo data frame of USGS gauges projected to the specified coordinate system.
     """
     
     # USGS site/gauge table fields:
@@ -130,7 +131,14 @@ def GetUsgsGauges(geobox, epsg=32614):
 # Get USGS gauge information with DF of gauge IDs
 #
 def GetUsgsGaugeInfo(ids):
-# ids-- a list of USGS IDs
+    """ Get USGS gauge information with a list of gauge IDs.
+    
+        Args:
+            ids (list): a list of USGS gauge IDs.
+
+        Return:
+            data frame: a data frame of USGS gauge information.
+    """
 
     # USGS site/gauge table fields:
     #  agency_cd       -- Agency
@@ -207,11 +215,18 @@ def GetUsgsGaugeInfo(ids):
 # Get AHPS gauges. Get AHPS current observation (shapefile) and project it into UTM14N
 #
 def GetAhpsGauges(geobox,epsg=32614):
-    from osgeo import ogr
+    """ Get AHPS gauges within a box and project them to a specified coordinate system.
 
-# geobox--a geographic box of (minX,minY,maxX,maxY)
-# epsg--projected coordinate system, default to UTM14 for Kansas
-    
+        Args:
+            geobox (list): a list of geographic box elements of [minX,minY,maxX,maxY]
+            epsg (int): EPSG integer representing the projected coordinate system, default to UTM14 (epsg = 32614) for Kansas.
+
+        Return:
+            data frame: a data frame of AHPS gauges projected to the specified coordinate system.
+    """
+
+    from osgeo import ogr # ogr cannot be installed using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
+  
     with tempfile.TemporaryDirectory() as scratchFolder:
         print('Downloading AHPS gauge shapefile ...')
         
@@ -273,6 +288,14 @@ def GetAhpsGauges(geobox,epsg=32614):
 # Retrieve gauge stage datum elevation and vertical datum name from AHPS web HTML page
 #
 def GetAhpsGaugeDatumElevation(ahpsGaugeUrl):
+    """ Retrieve gauge stage datum elevation and vertical datum name from AHPS web HTML page.
+
+        Args:
+            ahpsGaugeUrl (str): URL of AHPS gauge web page.
+
+        Return:
+            tuple: vertical datum name (str), gauge stage datum elevation (float).
+    """
 
     # request the html page
     response = requests.get(ahpsGaugeUrl)
@@ -300,8 +323,21 @@ def GetAhpsGaugeDatumElevation(ahpsGaugeUrl):
 # Calculate vertical datum shift between NGVD29 and NAVD88 using NGS web service
 #
 def NGVD29ToNAVD88OrthoHeightAdjustment(lat,lon,inDatum,outDatum,inVertDatum='NGVD29',outVertDatum='NAVD88',orthoHt=0.0):
-    # NGS Latitude-longitude-height Service
-    # https://www.ngs.noaa.gov/web_services/ncat/lat-long-height-service.shtml
+    """ Calculate vertical datum shift between NGVD29 and NAVD88 using NGS web service. 
+        NGS Latitude-longitude-height Service: https://www.ngs.noaa.gov/web_services/ncat/lat-long-height-service.shtml
+
+        Args:
+            lat (float): latitude of the gauge.
+            lon (float): longitude of the gauge.
+            inDatum (str): input datum name.
+            outDatum (str): output datum name.
+            inVertDatum (str): input vertical datum name, default to NGVD29.
+            outVertDatum (str): output vertical datum name, default to NAVD88.
+            orthoHt (float): orthometric height, default to 0.0.
+
+        Return:
+            float: vertical datum shift from NGVD29 to NAVD88.
+    """
 
     # ngsUrl = f'https://geodesy.noaa.gov/api/ncat/llh?lat={lat}&lon={lon}&inDatum={inDatum}&outDatum={outDatum}&inVertDatum={inVertDatum}&outVertDatum={outVertDatum}&orthoHt={orthoHt}'
     ngsUrl = 'https://geodesy.noaa.gov/api/ncat/llh'
@@ -319,9 +355,20 @@ def NGVD29ToNAVD88OrthoHeightAdjustment(lat,lon,inDatum,outDatum,inVertDatum='NG
     return destOrthoht
 
 #
-# Merge USGs and AHPS gauges
+# Merge USGS and AHPS gauges
 #
 def MergeUsgsAhpsGauges(usgsGauges, ahpsGauges, nearDist=350):
+    """ Merge USGS and AHPS gauges based on the nearest neighbor that is within a specified distance.
+
+        Args:
+            usgsGauges (data frame): USGS gauges data frame.
+            ahpsGauges (data frame): AHPS gauges data frame.
+            nearDist (float): distance threshold for finding the nearest gauge, default to 350 meters.
+
+        Return:
+            data frame: a data frame of merged USGS and AHPS gauges.
+    """
+
     distFieldName='dist'
     # find the nearest AHPS gauge for each USGS gauge. Note that multiple USGS gauges have the same nearest AHPS gauge!
     usgsNearGauges = NearestPoint(usgsGauges, 'x', 'y', ahpsGauges, 'x', 'y', distFieldName=distFieldName,otherColumns=['GaugeLID'])
@@ -544,8 +591,19 @@ def MergeUsgsAhpsGauges(usgsGauges, ahpsGauges, nearDist=350):
 # fcstLength is a number between 0 and 14 (inclusive) days. 0 means current observation
 #
 def GetAhpsGaugeForecast(scratchFolder,fcstLength,gaugeDatumFile):
-    from osgeo import ogr
+    """ Get AHPS gauge forecast for a specified number of future days.
+    
+        Args:
+            scratchFolder (str): scratch folder to store downloaded files.
+            fcstLength (int): forecast length in days between 0 and 14 days. 0 is current observation.
+            gaugeDatumFile (str): file name of gauge datum information.
 
+        Return:
+            data frame: a data frame of AHPS gauge forecast.
+    """
+
+    from osgeo import ogr # ogr cannot be installed using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
+  
     print('Downloading AHPS gauge data ...')
     
     if isinstance(fcstLength,int) and (fcstLength>=0) and (fcstLength<=14):
@@ -641,8 +699,18 @@ def GetAhpsGaugeForecast(scratchFolder,fcstLength,gaugeDatumFile):
 # Get AHPS gauge historical flood stages: 'Action','Flood','Moderate','Major'
 #
 def GetAhpsGaugeHistoricalFloodStages(scratchFolder,gaugeDatumFile):
-    from osgeo import ogr
+    """ Get AHPS gauge historical flood stages: 'Action','Flood','Moderate','Major'.
 
+        Args:
+            scratchFolder (str): scratch folder to store downloaded files.
+            gaugeDatumFile (str): file name of gauge datum information.
+
+        Return:
+            data frame: a data frame of AHPS gauge historical flood stages.
+    """
+    
+    from osgeo import ogr # ogr cannot be installed using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
+  
     print('Downloading AHPS historical flood stages ...')
     
     # Clean out existing obs file
@@ -694,8 +762,20 @@ def GetAhpsGaugeHistoricalFloodStages(scratchFolder,gaugeDatumFile):
 # Prepare AHPS gauges for flood mapping 
 #
 def PrepareAhpsGaugeDatum(scratchFolder,libFolder,prjFileName,datumFile):
-    from osgeo import ogr
+    """ Prepare AHPS gauge datum.
+    
+        Args:
+            scratchFolder (str): scratch folder to store downloaded files.
+            libFolder (str): library folder to store files.
+            prjFileName (str): file name of projection information.
+            datumFile (str): file name of gauge datum information.
 
+        Return:
+            data frame: a data frame of AHPS gauges.
+    """
+
+    from osgeo import ogr # ogr cannot be installed using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
+  
     print('Downloading AHPS gauge shapefile ...')
     
     # Clean out existing obs file
@@ -760,8 +840,16 @@ def PrepareAhpsGaugeDatum(scratchFolder,libFolder,prjFileName,datumFile):
 # Get AHPS gauge stage from web service
 #
 def GetAhpsGaugeStageFromWebService(ahpsIds, fcstDays=0, histFloodType=None):
-# fcstDays: forecast days, 0-14, 0--current
-# histFloodType: historical flood types, Major, Moderate, Flood, Action
+    """ Get AHPS gauge stage from web service.
+    
+        Args:
+            ahpsIds (list): a list of AHPS gauge IDs.
+            fcstDays (int): forecasted time in 0 to 14 days. 0 is current obersevation. default to 0.
+            histFloodType (str): historical flood types of Major, Moderate, Flood, Action. default to None.
+
+        Return:
+            data frame: a data frame of AHPS gauge stage.
+    """
 
     # # NWS/AHPS local WFS layers. NOT working
     # ahpsWfsServices = ['https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Observations/ahps_riv_gauges/MapServer/{}/query'.format(id) for id in range(16)]
@@ -819,49 +907,56 @@ def GetAhpsGaugeStageFromWebService(ahpsIds, fcstDays=0, histFloodType=None):
 
     return df
 
-#
-# Get AHPS gauge stage from web service
-#
-def GetAhpsGaugeStageFromWebServiceOld(ahpsIds):
+# #
+# # Get AHPS gauge stage from web service
+# #
+# def GetAhpsGaugeStageFromWebServiceOld(ahpsIds):
    
-    # # NWS/AHPS local WFS layers. NOT working
-    # ahpsWfsServices = ['https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Observations/ahps_riv_gauges/MapServer/{}/query'.format(id) for id in range(16)]
-    # # Select a WFS service
-    # sUrl = ahpsWfsServices[0]
+#     # # NWS/AHPS local WFS layers. NOT working
+#     # ahpsWfsServices = ['https://idpgis.ncep.noaa.gov/arcgis/rest/services/NWS_Observations/ahps_riv_gauges/MapServer/{}/query'.format(id) for id in range(16)]
+#     # # Select a WFS service
+#     # sUrl = ahpsWfsServices[0]
 
-    # NWS/NOAA/AHPS AWS feature service layers
-    # fields in the features are available best through the shapefiles from https://water.weather.gov/ahps/download.php
-    # Meaning of the WFS service ID: 0--Observed; 1-- forecast 1-day; ...; 14--forecast 14-day; 15--same as 14?
-    # ahpsAwsWfsServices = ['https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/ahps_riv_gauges/MapServer/{}/query'.format(id) for id in range(16)]
-    ahpsAwsWfsServices = ['https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/riv_gauges/MapServer/{}/query'.format(id) for id in range(16)] # new service since 5/28/2024
+#     # NWS/NOAA/AHPS AWS feature service layers
+#     # fields in the features are available best through the shapefiles from https://water.weather.gov/ahps/download.php
+#     # Meaning of the WFS service ID: 0--Observed; 1-- forecast 1-day; ...; 14--forecast 14-day; 15--same as 14?
+#     # ahpsAwsWfsServices = ['https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/ahps_riv_gauges/MapServer/{}/query'.format(id) for id in range(16)]
+#     ahpsAwsWfsServices = ['https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/riv_gauges/MapServer/{}/query'.format(id) for id in range(16)] # new service since 5/28/2024
     
-    # Access observed stage
-    sUrl = ahpsAwsWfsServices[0] # current obs.
+#     # Access observed stage
+#     sUrl = ahpsAwsWfsServices[0] # current obs.
 
-    # creating the query strings and request a json response from the site
-    whereClause = " OR ".join([f"gaugelid='{x}'" for x in ahpsIds])
-    # query parameters
-    payload = {'where': whereClause, 'outFields':'*','f':'pjson'} # pjson = plain JSON?
+#     # creating the query strings and request a json response from the site
+#     whereClause = " OR ".join([f"gaugelid='{x}'" for x in ahpsIds])
+#     # query parameters
+#     payload = {'where': whereClause, 'outFields':'*','f':'pjson'} # pjson = plain JSON?
 
-    # send request
-    response = requests.get(sUrl, params=payload, verify=False) # trust the service
-    # print(response.request.url)
+#     # send request
+#     response = requests.get(sUrl, params=payload, verify=False) # trust the service
+#     # print(response.request.url)
  
-    # get the features and put them into a dataframe
-    features = response.json()['features']
-    attributes = [x['attributes'] for x in features]
-    df = pd.DataFrame(attributes)[['gaugelid','observed','obstime','status']]
-    df = df.rename(columns={'gaugelid':'stationid','observed':'stage_ft','obstime':'stage_time'})
-    return df
+#     # get the features and put them into a dataframe
+#     features = response.json()['features']
+#     attributes = [x['attributes'] for x in features]
+#     df = pd.DataFrame(attributes)[['gaugelid','observed','obstime','status']]
+#     df = df.rename(columns={'gaugelid':'stationid','observed':'stage_ft','obstime':'stage_time'})
+#     return df
 
 #
 # Get USGS gauge stage from web service
 #
 def GetUsgsGaugeStageFromWebService(usgsIds, startDate='Now', endDate='MostRecent'):
-# usgsIds: a list of USGS IDs
-# periodInDays: an integer indicates the time period (in days) from now to periodInDays before. Default to 7 days.
+    """ Get USGS gauge stage from web service. USGS Instantaneous Values Service URL: https://waterservices.usgs.gov/rest/IV-Test-Tool.html
+    
+        Args:
+            usgsIds (list): a list of USGS IDs.
+            startDate (str): start date of the query. Default to 'Now'.
+            endDate (str): end date of the query. Default to 'MostRecent'.
 
-    # USGS Instantaneous Values Service URL: https://waterservices.usgs.gov/rest/IV-Test-Tool.html
+        Return:
+            data frame: a data frame of USGS gauge stage.
+    """
+
     # base URL
     ivUrl = r'https://waterservices.usgs.gov/nwis/iv'
     # For stream gauges:
@@ -938,47 +1033,52 @@ def GetUsgsGaugeStageFromWebService(usgsIds, startDate='Now', endDate='MostRecen
 
     return df
 
-#
-# Get USGS gauge stage from web service
-#
-def GetUsgsGaugeStageFromWebServiceOld(usgsIds):
+# #
+# # Get USGS gauge stage from web service
+# #
+# def GetUsgsGaugeStageFromWebServiceOld(usgsIds):
     
-    # USGS Instantaneous Values Service URL: https://waterservices.usgs.gov/rest/IV-Test-Tool.html
-    ivUrl = r'https://waterservices.usgs.gov/nwis/iv' #/?format=json&indent=on&sites={}&parameterCd=00065&siteStatus=all'
-    # prepare parameters
-    idstr = ",".join(usgsIds)
-    params = {'format':'json', 'sites':idstr, 'parameterCd':'00065','siteStatus':'all'} 
+#     # USGS Instantaneous Values Service URL: https://waterservices.usgs.gov/rest/IV-Test-Tool.html
+#     ivUrl = r'https://waterservices.usgs.gov/nwis/iv' #/?format=json&indent=on&sites={}&parameterCd=00065&siteStatus=all'
+#     # prepare parameters
+#     idstr = ",".join(usgsIds)
+#     params = {'format':'json', 'sites':idstr, 'parameterCd':'00065','siteStatus':'all'} 
 
-    # prepare query 
-    # print('querying the USGS web service')
-    response = requests.get(ivUrl, params=params, verify=False)
-    # print(response.request.url)
-    response = response.json()['value']['timeSeries']
+#     # prepare query 
+#     # print('querying the USGS web service')
+#     response = requests.get(ivUrl, params=params, verify=False)
+#     # print(response.request.url)
+#     response = response.json()['value']['timeSeries']
 
-    # extracting information from the web service json response
-    cols = ['stationid','stage_ft', 'stage_time']
-    df =pd.DataFrame(columns=cols)
-    for row in response:
-        # site_name = row['sourceInfo']['siteName']
-        site_code = row['sourceInfo']['siteCode'][0]['value']
-        gauge_height = row['values'][0]['value'][0]['value'] # assume each gauge only has one value. But some gauge (for example, 06891080, KANSAS R AT LAWRENCE, KS) has TWO values, one above the dam and one below the dam
-        obs_time     = row['values'][0]['value'][0]['dateTime']
-        # add the nearest point to the nearest point DF
-        t = pd.DataFrame([[site_code, gauge_height,obs_time]], columns=cols)
-        # df = df.append(t,ignore_index=False)
-        df = pd.concat([df, t],ignore_index=False)
+#     # extracting information from the web service json response
+#     cols = ['stationid','stage_ft', 'stage_time']
+#     df =pd.DataFrame(columns=cols)
+#     for row in response:
+#         # site_name = row['sourceInfo']['siteName']
+#         site_code = row['sourceInfo']['siteCode'][0]['value']
+#         gauge_height = row['values'][0]['value'][0]['value'] # assume each gauge only has one value. But some gauge (for example, 06891080, KANSAS R AT LAWRENCE, KS) has TWO values, one above the dam and one below the dam
+#         obs_time     = row['values'][0]['value'][0]['dateTime']
+#         # add the nearest point to the nearest point DF
+#         t = pd.DataFrame([[site_code, gauge_height,obs_time]], columns=cols)
+#         # df = df.append(t,ignore_index=False)
+#         df = pd.concat([df, t],ignore_index=False)
     
-    return df
+#     return df
 
 #
 # read AHPS/USGS gauge stage from their respective web services
 #
 def GetAhpsUsgsGaugeStageFromWebServices(gaugeIdOrgs, whichStage='Nowcast', periodInDays=7):
-# gaugeIdOrgs: a DF with columns of ["stationid", "organization"]. 
-#               stationid is either USGS, AHPS, or the combination of their gauge IDs
-#               organization is either USGS, AHPS or both.
-# whichStage: Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major
-# fields to return: stationid, x, y, stage_elevation, stage_time
+    """ Read AHPS/USGS gauge stage from their respective web services. 
+    
+        Args:
+            gaugeIdOrgs (data frame): a data frame with columns of ["stationid", "organization"]. stationid is either USGS, AHPS, or the combination of their gauge IDs. Organization is either USGS, AHPS or both.
+            whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major.
+            periodInDays (int): period in days (0 - 14) for forecast. Default to 7.
+
+        Return:
+            data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time.
+    """
 
     # get gauge id of each organization and put them into 4 gauge ID groups
     ahpsIds = [] # only AHPS gauges
@@ -1055,8 +1155,15 @@ def GetAhpsUsgsGaugeStageFromWebServices(gaugeIdOrgs, whichStage='Nowcast', peri
 # read gauge stage from AHPS or USGS web services
 #
 def GetGaugeStageFromAhpsUsgsWebServices(gaugeFile, whichStage='Nowcast'):
-# whichStage: Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major
-# fields to return: stationid, x, y, stage_elevation, stage_time, status
+    """ Read gauge stage from AHPS or USGS web services.
+    
+        Args:
+            gaugeFile (str): file name of gauge information.
+            whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major. Default to 'Nowcast'.
+
+        Return:
+            data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time, status.
+    """
 
     # read gauge file
     gauges = pd.read_excel(gaugeFile, sheet_name='Sheet1')

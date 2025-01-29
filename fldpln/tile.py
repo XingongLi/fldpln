@@ -306,7 +306,7 @@ def CalculateLibraryExtent(segLibFolder, cellSize):
             segLibFolder (str): folder containing the segment-based library.
             cellSize (float): cell size in meters.
         Return:
-            tuple: external border extent (minX, maxX,minY, maxY), segment extent data frame of ['MinX','MaxX','MinY','MaxY','FileName'] (FPP cell center)
+            tuple: external border extent (minX, maxX,minY, maxY), data frame of segment extent of ['MinX','MaxX','MinY','MaxY','FileName'] defined by FPP cell center.
     """
 
     # Get all the segment mat files in the library/watershed
@@ -381,7 +381,7 @@ def ReadMatFile(matFile, varName):
 # Functions--clean up and calculate FSP and segment downstream distance
 ############################################################################################################################################
 
-def CalculateFspSegmentDownstreamDistance(libFolder,libName):
+def CalculateFspSegmentDownstreamDistance(libFolder):
     """ Cleanup segments (some segments don't exist in FSPs) and save library FSP and segment information as two csv files (fsp_info.csv & segment_info.csv). 
         It reads in the SpatialReference.prj and save it in CellSizeSpatialReference.json. For stage interpolation, it also calculates FSP and segment 
         downstream distance (i.e., distance to library outlet(s)) which involves:
@@ -394,8 +394,7 @@ def CalculateFspSegmentDownstreamDistance(libFolder,libName):
         Note that FSPs and segments are based on raster cell centers. Segment and its downstream segment has a gap (1 cell or sqrt(2) cell).
 
         Args:
-            libFolder (str): folder containing the library.
-            libName (str): library name.
+            libFolder (str): folder containing the tiled library.
 
         Return:
             tuple: FSP data frame. segment data frame.
@@ -406,8 +405,8 @@ def CalculateFspSegmentDownstreamDistance(libFolder,libName):
     #
     # fspInfoColumnNames = ['FspX','FspY','SegId','FilledElev'], columns 'DsDist' will be calculated by this function
     # segInfoColumnNames = ['SegId','CellCount','DsSegId', 'StFac','EdFac'], columns 'Length','DsDist' will be added by this function
-    fspInfoFile = os.path.join(libFolder, libName, fspInfoFileName)
-    segInfoFile = os.path.join(libFolder, libName, segInfoFileName)
+    fspInfoFile = os.path.join(libFolder, fspInfoFileName)
+    segInfoFile = os.path.join(libFolder, segInfoFileName)
  
 
     # read in FSP ID and coordinates

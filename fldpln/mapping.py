@@ -20,8 +20,7 @@ import rasterio
 from rasterio.merge import merge # for some reason, cannot use it as rasterio.merge.merge()!
 from rasterio.io import MemoryFile
 
-# from osgeo import ogr # import ogr # ok on desktop but not on laptop
-# from osgeo import gdal # import gdal # ok on desktop but not on laptop
+# from osgeo import gdal # gdal cannot be installed using pip. So we move it to the functions that use it and DO NOT add it in requirements.txt. It's user's responsibility to install it.
 
 from rio_cogeo.cogeo import cog_translate
 from rio_cogeo.profiles import cog_profiles
@@ -34,16 +33,19 @@ from .common import *
 ############################################################################################################################################
 
 #
-# Build folder for storing temporary file and output maps
+# Create folders for storing temporary file and output maps
 #
 def CreateFolders(outFolder,scratchFolderName='scratch',outMapFolderName='maps',removeExist=True):
-    """ Create folders for storing temporary files and output maps
-        Parameters:
-            outFolder: output folder
-            scratchFolderName: name of the folder for storing temporary files
-            outMapFolderName: name of the folder for storing output maps
-            removeExist: bool whether to remove existing folders
-        Returns: folder names for storing output maps and temporary files
+    """ Create folders for storing temporary files and output maps.
+
+        Args:
+            outFolder (str): output folder
+            scratchFolderName (str): name of the folder for storing temporary files
+            outMapFolderName (str): name of the folder for storing output maps, default is 'maps'
+            removeExist (str): bool whether to remove existing folders, default is True
+
+        Return: 
+            tuple: folder for output maps, folder for temporary files.
     """
     # create output folder if it doesn't exist
     os.makedirs(outFolder, exist_ok=True)
@@ -66,10 +68,24 @@ def CreateFolders(outFolder,scratchFolderName='scratch',outMapFolderName='maps',
 
 #
 # Join two sets of points by nearest distance
-# The returned DF will have, in addition to p1df fields, a new distance field (i.e., distFieldName), plus other fields (i.e., otherColumns) copied from p2df
-# Note that this function DOESN'T change p1df!
 #
 def NearestPoint(p1df, x1FieldName, y1FieldName, p2df, x2FieldName, y2FieldName, distFieldName='dist',otherColumns=None):
+    """ Join two sets of points by nearest distance. The returned data frame will have, in addition to p1df fields, a new distance field (i.e., distFieldName), 
+        plus other fields (i.e., otherColumns) copied from p2df.
+
+        Args:
+            p1df (data frame): the first set of points as a pandas DataFrame
+            x1FieldName (str): the field name of y coordinates in p1df
+            y1FieldName (str): the field name of y coordinates in p1df
+            p2df (data frame): the second set of points as a pandas DataFrame
+            x2FieldName (str): the field name of x coordinates in p2df
+            y2FieldName (str): the field name y coordinates in p2df
+            distFieldName (str): the name of the distance field in the returned data frame, default is 'dist'
+            otherColumns (list): the names of other fields to be copied from p2df to the returned data frame, default is None.
+
+        Return: 
+            data frame: a data frame with the nearest points from p2df for each point in p1df.
+    """
     # # make sure the input DFs have unique index so that deltaX, deltaY and p2df['Dist'] = deltaX*deltaX + deltaY*deltaY can work
     p1df.reset_index(inplace=True)
     p2df.reset_index(inplace=True)
@@ -110,12 +126,26 @@ def NearestPoint(p1df, x1FieldName, y1FieldName, p2df, x2FieldName, y2FieldName,
     return p1df
 
 #
-# Join two sets of points by nearest distance
-# p1df will have a new distance field (i.e., distFieldName), plus other fields (i.e., otherColumns) copied from p2df
-# Note that this function changes p1df. This is the only difference between this function and NearestPoint()!
-# Not fully tested and might have bugs!
-#
+# Join two sets of points by nearest distance in place (i.e., change p1df)
+# 
 def NearestPointInPlace(p1df, x1FieldName, y1FieldName, p2df, x2FieldName, y2FieldName, distFieldName='dist', otherColumns=None):
+    """ Join two sets of points by nearest distance. p1df will have a new distance field (i.e., distFieldName), plus other fields (i.e., otherColumns) copied from p2df.
+        Note that this function changes p1df. This is the only difference between this function and NearestPoint()! This is the only difference between this function and NearestPoint()!
+
+        Args:
+            p1df (data frame): the first set of points as a pandas DataFrame
+            x1FieldName (str): the field name of y coordinates in p1df
+            y1FieldName (str): the field name of y coordinates in p1df
+            p2df (data frame): the second set of points as a pandas DataFrame
+            x2FieldName (str): the field name of x coordinates in p2df
+            y2FieldName (str): the field name y coordinates in p2df
+            distFieldName (str): the name of the distance field in the returned data frame, default is 'dist'
+            otherColumns (list): the names of other fields to be copied from p2df to the returned data frame, default is None
+
+        Return:
+            data frame: p1df with the nearest points from p2df.
+    """
+    
     # # make sure the input DFs have unique index so that deltaX, deltaY and p2df['Dist'] = deltaX*deltaX + deltaY*deltaY can work
     p1df.reset_index(inplace=True)
     p2df.reset_index(inplace=True)
@@ -152,11 +182,24 @@ def NearestPointInPlace(p1df, x1FieldName, y1FieldName, p2df, x2FieldName, y2Fie
 
 #
 # Find the nearest FSP to each gauge in each library
-# Note that multiple FSPs from different libraries might be snapped to the same gauge!
 #
 def SnapGauges2Fsps(libFolder,libNames,gauges,snapDist=350,gaugeXField='X',gaugeYField='Y',fspColumns=['FspId','FspX','FspY','FilledElev']):
-# gauges -- can be a pandas DF or a text file. It must have the columns of 'X' and 'Y' in FSP's coordinate system
-    
+    """ Snap gauges to library FSPs. The function will return a data frame with the nearest FSPs for each gauge in each library. 
+        Note that multiple FSPs from different libraries might be snapped to the same gauge!
+
+        Args:
+            libFolder (str): the folder where the libraries are located
+            libNames (list): a list of library names that the gauges will be snapped to
+            gauges (str or data frame): a text file or a pandas DF of gauges. It must have the columns of 'X' and 'Y' in FSP's coordinate system
+            snapDist (float): the distance to snap gauges to FSPs, default is 350
+            gaugeXField (str): the field name of x coordinates in gauges, default is 'X'
+            gaugeYField (str): the field name of y coordinates in gauges, default is 'Y'
+            fspColumns (list): the names of FSP columns to be returned, default is ['FspId','FspX','FspY','FilledElev']
+
+        Return:
+            data frame: a data frame with the nearest FSPs for each gauge in each library.
+    """
+   
     if isinstance(gauges,(str)):
         # assume gauges are a text file
         allGaugesDf = pd.read_csv(gauges,index_col=False)
@@ -199,9 +242,23 @@ def SnapGauges2Fsps(libFolder,libNames,gauges,snapDist=350,gaugeXField='X',gauge
     return snappedGauges
 
 #
-# Snap gauges to library FSPs. NOT CHECKED YET
+# Snap gauges to library FSPs on Microsoft Planetary Computer (MPC) using Azure Blob Storage.
 #
 def SnapGauges2FspsBlob(libBlobSerClient,libName,gaugesDf,snapDist=350,gaugeIdField='GaugeLID',gaugeXField='X',gaugeYField='Y'):
+    """ Snap gauges to library FSPs on Microsoft Planetary Computer (MPC) using Azure Blob Storage. The function has NOT been checked yet!
+
+        Args:
+            libBlobSerClient (BlobServiceClient): a blob service client
+            libName (str): the name of the library that the gauges will be snapped to
+            gaugesDf (data frame): a pandas DF of gauges. It must have the columns of 'X' and 'Y' in FSP's coordinate system
+            snapDist (float): the distance to snap gauges to FSPs, default is 350
+            gaugeIdField (str): the field name of gauge IDs in gauges, default is 'GaugeLID'
+            gaugeXField (str): the field name of x coordinates in gauges, default is 'X'
+            gaugeYField (str): the field name of y coordinates in gauges, default is 'Y'
+
+        Return:
+            data frame: a data frame with the nearest FSPs for each gauge in the library.
+    """
 # gauges -- a pandas DF. It must have the columns of 'X' and 'Y' in FSP's coordinate system
     
     # create a container client, assuming the container already exists
@@ -258,11 +315,24 @@ def SnapGauges2FspsBlob(libBlobSerClient,libName,gaugesDf,snapDist=350,gaugeIdFi
     return snappedGauges
 
 #
-# Snap gauges to library FSPs
+# Snap gauges to library FSPs. What's different from SnapGauges2Fsps() is that this function returns the snapped gauges only?
 #
 def SnapGaugesToFsps(libFolder,libName,gauges,snapDist=250,gaugeIdField='GaugeLID',gaugeXField='X',gaugeYField='Y'):
-# gauges -- can be a pandas DF or a text file. It must have the columns of 'X' and 'Y' in FSP's coordinate system
-    
+    """ Snap gauges to library FSPs. The function will return a data frame with the snapped gauges only.
+
+        Args:
+            libFolder (str): the folder where the libraries are located
+            libName (str): the name of the library that the gauges will be snapped to
+            gauges (str or data frame): a text file or a pandas data frame of gauges. It must have the columns of 'X' and 'Y' in FSP's coordinate system
+            snapDist (float): the distance to snap gauges to FSPs, default is 250
+            gaugeIdField (str): the field name of gauge IDs in gauges, default is 'GaugeLID'
+            gaugeXField (str): the field name of x coordinates in gauges, default is 'X'
+            gaugeYField (str): the field name of y coordinates in gauges, default is 'Y'
+
+        Return:
+            data frame: a data frame with the snapped gauges only.
+    """
+
     if isinstance(gauges,(str)):
         # assume gauges are a text file
         gaugesDf = pd.read_csv(gauges,index_col=False)
@@ -313,8 +383,21 @@ def SnapGaugesToFsps(libFolder,libName,gauges,snapDist=250,gaugeIdField='GaugeLI
 # Snap gauges to library FSPs
 #
 def SnapGaugesToFspsBlob(libBlobSerClient,libName,gaugesDf,snapDist=250,gaugeIdField='GaugeLID',gaugeXField='X',gaugeYField='Y'):
-# gauges -- a pandas DF. It must have the columns of 'X' and 'Y' in FSP's coordinate system
-    
+    """ Snap gauges to library FSPs on Microsoft Planetary Computer (MPC) using Azure Blob Storage. The function is has NOT been checked yet!
+
+        Args:
+            libBlobSerClient (BlobServiceClient): a blob service client
+            libName (str): the name of the library that the gauges will be snapped to
+            gaugesDf (data frame): a pandas DF of gauges. It must have the columns of 'X' and 'Y' in FSP's coordinate system
+            snapDist (float): the distance to snap gauges to FSPs, default is 250
+            gaugeIdField (str): the field name of gauge IDs in gauges, default is 'GaugeLID'
+            gaugeXField (str): the field name of x coordinates in gauges, default is 'X'
+            gaugeYField (str): the field name of y coordinates in gauges, default is 'Y'
+
+        Return:
+            data frame: a data frame with the snapped gauges only.
+    """
+
     # create a container client, assuming the container already exists
     container_client = libBlobSerClient.get_container_client(container=libName)
 
@@ -376,6 +459,22 @@ def SnapGaugesToFspsBlob(libBlobSerClient,libName,gaugesDf,snapDist=250,gaugeIdF
 # This function assumes gx1 < gx2 and ge1<=ge2, and fx>=gx1 and fx<=gx2
 #
 def InterpBetweenTwoGauges(fx, fe, gx1, ge1, gy1, gx2, ge2, gy2, weightingType='V'):
+    """ Interpolate FSP DOF (Depth of Flow, i.e., FSP stage) based on FSP's elevation (fe) or distance (fx) between two gauges.
+
+        Args:
+            fx (float or vector of float): FSP's distance from downstream outlet.
+            fe (float or vector of float): FSP's elevation. Can be a vector
+            gx1 (float): gauge1's distance from downstream outlet
+            ge1 (float): gauge1's elevation
+            gy1 (float): gauge1's DOF
+            gx2 (float): gauge2's distance from downstream outlet
+            ge2 (float): gauge2's elevation
+            gy2 (float): gauge2's DOF
+            weightingType (str): 'V' for vertical distance-based or 'H' for horizontal distance-based, default is 'V'
+
+        Return:
+            float or vector of float: interpolated DOF at fx
+"""
     if weightingType == 'H':
         # distance-based (hirizontal) linear interpolation
         fy = gy1+(fx-gx1)/(gx2-gx1)*(gy2-gy1)
@@ -391,12 +490,25 @@ def InterpBetweenTwoGauges(fx, fe, gx1, ge1, gy1, gx2, ge2, gy2, weightingType='
     return fy
 
 #
-# Interpolate FSP DOF using the DOFs observaed at a list of gauges
+# Interpolate FSP DOF using the DOFs observed at a list of gauges
 #
 # fx, fe -- FSP distance from downstream outlet and FSP filled DEM elevation
 # gx, ge, gy --  gauge distance from downstream outlet, filled DEM elevation and DOF
 #
 def InterpDofWithGauges(fx,fe,gx,ge,gy,weightingType='V'):
+    """ Interpolate FSP DOF (Depth of Flow, i.e., FSP stage) using the DOFs observed at a list of gauges.
+
+        Args:
+            fx (vector of float): FSP's distance from downstream outlet.
+            fe (vector of float): FSP's elevation.
+            gx (vector of float): gauge's distance from downstream outlet.
+            ge (vector of float): gauge's elevation.
+            gy (vector of float): gauge's DOF.
+            weightingType (str): 'V' for vertical distance-based or 'H' for horizontal distance-based, default is 'V'
+
+        Return:
+            vector of float: interpolated DOF at fx    
+    """
     # initialize the return vector as NAN
     fy = np.empty(fx.size)
     fy[:] = np.nan
@@ -420,10 +532,20 @@ def InterpDofWithGauges(fx,fe,gx,ge,gy,weightingType='V'):
 # Different from EstimateFspDofFromGauge(), this function assumes gauge FSPs already have their DOF calculated!
 #
 def InterpolateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.0328084,weightingType='V'):
-# gaugeFspDf--A DF of gauge FSPs (i.e., FSPs to which gauges are snapped). 
-#       It should have at least 4 columns['lib_name','FspX','FspY','Dof'].
-# minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
-# weightingType--V (vertical distance-based) or H (horizontal, i.e. horizontal distance-based)
+    """ Interpolate FSP DOF (Depth of Flow, i.e., FSP stage) from observed gauge DOFs using distance-(horizontal) or 
+        elevation-based (vertical) linear interpolation. Different from EstimateFspDofFromGauge(), 
+        this function assumes gauge FSPs already have their DOF calculated!
+
+        Args:
+            libFolder (str): the folder where the libraries are located
+            libName (str): the name of the library that the gauges will be snapped to
+            gaugeFspDf (data frame): a data frame of gauge FSPs (i.e., FSPs to which gauges are snapped). It should have at least 4 columns ['lib_name','FspX','FspY','Dof'].
+            minGaugeDof (float): min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot
+            weightingType (str): 'V' for vertical distance-based or 'H' for horizontal distance-based, default is 'V'
+
+        Return:
+            data frame: a data frame with interpolated FSP DOFs.
+    """
     
     # select the gauge FSPs in the library
     gaugeFspDf = gaugeFspDf[gaugeFspDf['lib_name']==libName]
@@ -548,11 +670,20 @@ def InterpolateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.032808
 # distance-(horizontal) or elevation-based (vertical) linear interpolation
 #
 def EstimateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.0328084,weightingType='V'):
-# gaugeFspDf--A DF of gauge FSPs (i.e., FSPs to which gauges are snapped). 
-#       It should have at least 4 columns['stage_elevation','lib_name','FspX','FspY'].
-# minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
-# weightingType--V (vertical distance-based) or H (horizontal, i.e. horizontal distance-based)
-    
+    """ Estimate/interpolate FSP DOF (Depth of Flow, i.e., FSP stage) from observed gauge DOFs using 
+        distance-(horizontal) or elevation-based (vertical) linear interpolation.
+
+        Args:
+            libFolder (str): the folder where the libraries are located
+            libName (str): the name of the library that the gauges will be snapped to
+            gaugeFspDf (data frame): a data frame of gauge FSPs (i.e., FSPs to which gauges are snapped). It should have at least 4 columns ['stage_elevation','lib_name','FspX','FspY'].
+            minGaugeDof (float): min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot
+            weightingType (str): 'V' for vertical distance-based or 'H' for horizontal distance-based, default is 'V'
+
+        Return:
+            data frame: a data frame with interpolated FSP DOFs.
+    """
+
     # select the gauge FSPs in the library
     gaugeFspDf = gaugeFspDf[gaugeFspDf['lib_name']==libName]
 
@@ -677,270 +808,279 @@ def EstimateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.0328084,w
     # return interpolated DOF for the FSPs
     return fspDof
 
-#
-# Estimate/interpolate FSP Depth of Flow (i.e., FSP stage) from gauge DOF
-#
-def EstimateFspDofFromGaugeOld(libFolder,libName,gaugeFspDf,minGaugeDof=0.0328084):
-# gaugeFspDf--A DF of gauge FSPs (i.e., FSPs to which gauges are snapped). 
-#       It should have at least 4 columns['stage_elevation','lib_name','FspX','FspY'].
-# minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
+# #
+# # Estimate/interpolate FSP Depth of Flow (i.e., FSP stage) from gauge DOF
+# #
+# def EstimateFspDofFromGaugeOld(libFolder,libName,gaugeFspDf,minGaugeDof=0.0328084):
+# # gaugeFspDf--A DF of gauge FSPs (i.e., FSPs to which gauges are snapped). 
+# #       It should have at least 4 columns['stage_elevation','lib_name','FspX','FspY'].
+# # minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
     
-    # select the gauge FSPs in the library
-    gaugeFspDf = gaugeFspDf[gaugeFspDf['lib_name']==libName]
+#     # select the gauge FSPs in the library
+#     gaugeFspDf = gaugeFspDf[gaugeFspDf['lib_name']==libName]
 
-    # read in FSP and stream order network files
-    fspFile = os.path.join(libFolder, libName, fspInfoFileName)
-    strOrdFile = os.path.join(libFolder, libName, strOrdNetFileName)
-    fspDf = pd.read_csv(fspFile) 
-    strOrdDf = pd.read_csv(strOrdFile) 
+#     # read in FSP and stream order network files
+#     fspFile = os.path.join(libFolder, libName, fspInfoFileName)
+#     strOrdFile = os.path.join(libFolder, libName, strOrdNetFileName)
+#     fspDf = pd.read_csv(fspFile) 
+#     strOrdDf = pd.read_csv(strOrdFile) 
+# 
+#     # Get gauge stream order for interpolation by stream orders
+#     gaugeFspDf = pd.merge(gaugeFspDf,fspDf,how='inner',on=['FspX','FspY'])[['FspX','FspY','StrOrd','DsDist','SegId','FilledElev','stage_elevation']]
+#     # print(gaugeFspDf)
 
-    # Get gauge stream order for interpolation by stream orders
-    gaugeFspDf = pd.merge(gaugeFspDf,fspDf,how='inner',on=['FspX','FspY'])[['FspX','FspY','StrOrd','DsDist','SegId','FilledElev','stage_elevation']]
-    # print(gaugeFspDf)
+#     # calculate gauge FSP's DOF
+#     gaugeFspDf['Dof'] = gaugeFspDf['stage_elevation'] - gaugeFspDf['FilledElev']
+#     # reset gauge FSP DOF, if it's < 0 or nodata, to minGaugeDof
+#     gaugeFspDf.loc[(gaugeFspDf['Dof']<=minGaugeDof)|gaugeFspDf['Dof'].isna(),['Dof']] = minGaugeDof
+#     # print(gaugeFspDf)
 
-    # calculate gauge FSP's DOF
-    gaugeFspDf['Dof'] = gaugeFspDf['stage_elevation'] - gaugeFspDf['FilledElev']
-    # reset gauge FSP DOF, if it's < 0 or nodata, to minGaugeDof
-    gaugeFspDf.loc[(gaugeFspDf['Dof']<=minGaugeDof)|gaugeFspDf['Dof'].isna(),['Dof']] = minGaugeDof
-    # print(gaugeFspDf)
+#     # create an empty DF to store interpolated FSP DOFs
+#     fspDof = pd.DataFrame(columns=['FspId','FspX','FspY','DsDist','Dof'])
+#     # interpolate DoF for each stream order from low to high (low order means high priority!)
+#     # get the stream orders with gauges on them
+#     strOrds = gaugeFspDf['StrOrd'].drop_duplicates().sort_values().tolist()
+#     if len(strOrds)==0:
+#         print('No stream found for the gauges!')
+#         return None
 
-    # create an empty DF to store interpolated FSP DOFs
-    fspDof = pd.DataFrame(columns=['FspId','FspX','FspY','DsDist','Dof'])
-    # interpolate DoF for each stream order from low to high (low order means high priority!)
-    # get the stream orders with gauges on them
-    strOrds = gaugeFspDf['StrOrd'].drop_duplicates().sort_values().tolist()
-    if len(strOrds)==0:
-        print('No stream found for the gauges!')
-        return None
+#     for ord in strOrds:
+#         # gauges on the stream order
+#         gaugeOrd = gaugeFspDf[gaugeFspDf['StrOrd']==ord].sort_values('DsDist')
 
-    for ord in strOrds:
-        # gauges on the stream order
-        gaugeOrd = gaugeFspDf[gaugeFspDf['StrOrd']==ord].sort_values('DsDist')
-
-        #
-        # create the upstream ending gauge assuming a level water elevation at the gauge
-        #
-        # get upstream gauge's segment IDs
-        t = gaugeOrd.tail(1)[['SegId','FilledElev','Dof','FspX','FspY']].values.flatten().tolist()
-        upSegId, gElev, dof, gx,gy = t 
-        # get segment FSPs and find the level-off FSP
-        t = fspDf[fspDf['SegId']==upSegId].copy() # tell pandas we want a copy to avoid "SettingWithCopyWarning"
-        t['Dof'] = gElev+dof-t['FilledElev']
-        t = t[t['Dof']>=0].sort_values('DsDist').tail(1)[['FspX','FspY','DsDist','Dof']]
-        # check if the ending gauge is the gauge itself
-        tx,ty = t.iat[0,0], t.iat[0,1]
-        # same as: tx,ty = t[['FspX','FspY']].values.flatten().tolist()
-        if (gx==tx) and (gy==ty):
-            # the gauge is the ending gauge.
-            usEndGauge = pd.DataFrame() # an empty DF
-        else:
-            usEndGauge = t
-        # print(usEndGauge)
+#         #
+#         # create the upstream ending gauge assuming a level water elevation at the gauge
+#         #
+#         # get upstream gauge's segment IDs
+#         t = gaugeOrd.tail(1)[['SegId','FilledElev','Dof','FspX','FspY']].values.flatten().tolist()
+#         upSegId, gElev, dof, gx,gy = t 
+#         # get segment FSPs and find the level-off FSP
+#         t = fspDf[fspDf['SegId']==upSegId].copy() # tell pandas we want a copy to avoid "SettingWithCopyWarning"
+#         t['Dof'] = gElev+dof-t['FilledElev']
+#         t = t[t['Dof']>=0].sort_values('DsDist').tail(1)[['FspX','FspY','DsDist','Dof']]
+#         # check if the ending gauge is the gauge itself
+#         tx,ty = t.iat[0,0], t.iat[0,1]
+#         # same as: tx,ty = t[['FspX','FspY']].values.flatten().tolist()
+#         if (gx==tx) and (gy==ty):
+#             # the gauge is the ending gauge.
+#             usEndGauge = pd.DataFrame() # an empty DF
+#         else:
+#             usEndGauge = t
+#         # print(usEndGauge)
         
-        #
-        # create downstream ending gauge
-        #
-        # get the downstream order and junction FSP's coordinates
-        t = strOrdDf[strOrdDf['StrOrd']==ord][['DsStrOrd','JunctionFspX', 'JunctionFspY']].values.flatten().tolist()
-        dsStrOrd,fspx,fspy = t 
+#         #
+#         # create downstream ending gauge
+#         #
+#         # get the downstream order and junction FSP's coordinates
+#         t = strOrdDf[strOrdDf['StrOrd']==ord][['DsStrOrd','JunctionFspX', 'JunctionFspY']].values.flatten().tolist()
+#         dsStrOrd,fspx,fspy = t 
 
-        # whether there is a junction/confluence gauge
-        if dsStrOrd !=0:
-            # there is a downstream order. see whether the junction's DOF has an interpolated DOF
-            juncDf = fspDof[(fspDof['FspX']==fspx) &(fspDof['FspY']==fspy)]
-            if len(juncDf) != 0:
-                # Junction has DOF. Create downstream ending gauge with the junction FSP
-                dsEndGauge = juncDf[['FspX','FspY','DsDist','Dof']]
-            else:
-                juncDf = None
+#         # whether there is a junction/confluence gauge
+#         if dsStrOrd !=0:
+#             # there is a downstream order. see whether the junction's DOF has an interpolated DOF
+#             juncDf = fspDof[(fspDof['FspX']==fspx) &(fspDof['FspY']==fspy)]
+#             if len(juncDf) != 0:
+#                 # Junction has DOF. Create downstream ending gauge with the junction FSP
+#                 dsEndGauge = juncDf[['FspX','FspY','DsDist','Dof']]
+#             else:
+#                 juncDf = None
 
-        # No downstream order or junction FSP
-        if (dsStrOrd == 0) or (juncDf is None):
-            # Create downstream ending gauge with the last FSP in the segment
-            # get the downstream and upstream segment IDs
-            dsSegId, gx,gy = gaugeOrd.head(1)[['SegId','FspX','FspY']].values.flatten().tolist()
-            # get the first FSP on the downstream segment
-            t = fspDf[fspDf['SegId']==dsSegId].tail(1)[['FspX','FspY','DsDist']]
-            # check if the ending gauge is the gauge itself
-            tx,ty = t.iat[0,0], t.iat[0,1]
-            # same as: tx,ty = t[['FspX','FspY']].values.flatten().tolist()
-            if (gx==tx) and (gy==ty):
-                # the gauge is the ending gauge.
-                dsEndGauge = pd.DataFrame() # an empty DF
-            else:
-                dsEndGauge = t
-                dsEndGauge['Dof']=0
-        # print(dsEndGauge)
+#         # No downstream order or junction FSP
+#         if (dsStrOrd == 0) or (juncDf is None):
+#             # Create downstream ending gauge with the last FSP in the segment
+#             # get the downstream and upstream segment IDs
+#             dsSegId, gx,gy = gaugeOrd.head(1)[['SegId','FspX','FspY']].values.flatten().tolist()
+#             # get the first FSP on the downstream segment
+#             t = fspDf[fspDf['SegId']==dsSegId].tail(1)[['FspX','FspY','DsDist']]
+#             # check if the ending gauge is the gauge itself
+#             tx,ty = t.iat[0,0], t.iat[0,1]
+#             # same as: tx,ty = t[['FspX','FspY']].values.flatten().tolist()
+#             if (gx==tx) and (gy==ty):
+#                 # the gauge is the ending gauge.
+#                 dsEndGauge = pd.DataFrame() # an empty DF
+#             else:
+#                 dsEndGauge = t
+#                 dsEndGauge['Dof']=0
+#         # print(dsEndGauge)
                   
-        # put all the gauges together
-        gaugeOrd = gaugeOrd[['FspX','FspY','DsDist','Dof']]
-        # gaugeOrd = gaugeOrd.append(usEndGauge)
-        # gaugeOrd = gaugeOrd.append(dsEndGauge)
-        gaugeOrd = pd.concat([gaugeOrd,usEndGauge])
-        gaugeOrd = pd.concat([gaugeOrd,dsEndGauge])
-        # print(f"Gauges with DOFs on stream order ({ord}): \n",gaugeOrd)
+#         # put all the gauges together
+#         gaugeOrd = gaugeOrd[['FspX','FspY','DsDist','Dof']]
+#         # gaugeOrd = gaugeOrd.append(usEndGauge)
+#         # gaugeOrd = gaugeOrd.append(dsEndGauge)
+#         gaugeOrd = pd.concat([gaugeOrd,usEndGauge])
+#         gaugeOrd = pd.concat([gaugeOrd,dsEndGauge])
+#         # print(f"Gauges with DOFs on stream order ({ord}): \n",gaugeOrd)
         
-        # calculate the min and max downstream distance
-        minDist = gaugeOrd['DsDist'].min()
-        maxDist = gaugeOrd['DsDist'].max()
+#         # calculate the min and max downstream distance
+#         minDist = gaugeOrd['DsDist'].min()
+#         maxDist = gaugeOrd['DsDist'].max()
 
-        # select the FSPs on the stream order
-        fspOrd = fspDf[fspDf['StrOrd']==ord][['FspId','FspX','FspY','DsDist']]
-        fspOrd = fspOrd[(fspOrd['DsDist']>=minDist) & (fspOrd['DsDist']<=maxDist)]
+#         # select the FSPs on the stream order
+#         fspOrd = fspDf[fspDf['StrOrd']==ord][['FspId','FspX','FspY','DsDist']]
+#         fspOrd = fspOrd[(fspOrd['DsDist']>=minDist) & (fspOrd['DsDist']<=maxDist)]
 
-        # interpolate DOF for the FSPs with the gauges
-        gaugeOrd = gaugeOrd.sort_values('DsDist') # for using np.interp(), x must be ascending!
-        fspOrd['Dof'] = np.interp(fspOrd['DsDist'], gaugeOrd['DsDist'], gaugeOrd['Dof'].astype(np.float64))
-        # print(fspOrd)
+#         # interpolate DOF for the FSPs with the gauges
+#         gaugeOrd = gaugeOrd.sort_values('DsDist') # for using np.interp(), x must be ascending!
+#         fspOrd['Dof'] = np.interp(fspOrd['DsDist'], gaugeOrd['DsDist'], gaugeOrd['Dof'].astype(np.float64))
+#         # print(fspOrd)
 
-        # append the interpolated SFPs
-        # fspDof = fspDof.append(fspOrd,ignore_index=True)
-        fspDof = pd.concat([fspDof,fspOrd],ignore_index=True)
-        # print(fspDof)
+#         # append the interpolated SFPs
+#         # fspDof = fspDof.append(fspOrd,ignore_index=True)
+#         fspDof = pd.concat([fspDof,fspOrd],ignore_index=True)
+#         # print(fspDof)
     
-    # select and rename columns
-    fspDof = fspDof[['FspId','Dof']]
-    # print(fspDof)
+#     # select and rename columns
+#     fspDof = fspDof[['FspId','Dof']]
+#     # print(fspDof)
 
-    # return interpolated DOF for the FSPs
-    return fspDof
+#     # return interpolated DOF for the FSPs
+#     return fspDof
 
-#
-# Estimate FSP Depth of Flow (DoF), i.e., FSP stage from gauges
-#
-def EstimateFspDofFromGaugeReallyOld(libFolder,libName,gaugeDf,gaugeElevField,minGaugeDof=0.0328084):
-# gaugeElevField --  field in gaugeDf that stores gauge's water surface elevation
-# gaugeDf--A DF with snapped FSP columns ['FspX','FspY','FspFilledElev','Dist']
-# minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
+# #
+# # Estimate FSP Depth of Flow (DoF), i.e., FSP stage from gauges
+# #
+# def EstimateFspDofFromGaugeReallyOld(libFolder,libName,gaugeDf,gaugeElevField,minGaugeDof=0.0328084):
+# # gaugeElevField --  field in gaugeDf that stores gauge's water surface elevation
+# # gaugeDf--A DF with snapped FSP columns ['FspX','FspY','FspFilledElev','Dist']
+# # minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
     
-    # calculate FSP DOF
-    gaugeDf['Dof'] = gaugeDf[gaugeElevField] - gaugeDf['FspFilledElev']
-    # reset DOF, if it's < 0 or nodata, to minGaugeDof
-    gaugeDf.loc[(gaugeDf['Dof']<=minGaugeDof)|gaugeDf['Dof'].isna(),['Dof']] = minGaugeDof
-    # print(gaugeDf)
+#     # calculate FSP DOF
+#     gaugeDf['Dof'] = gaugeDf[gaugeElevField] - gaugeDf['FspFilledElev']
+#     # reset DOF, if it's < 0 or nodata, to minGaugeDof
+#     gaugeDf.loc[(gaugeDf['Dof']<=minGaugeDof)|gaugeDf['Dof'].isna(),['Dof']] = minGaugeDof
+#     # print(gaugeDf)
 
-    # read in FSP and stream order network files
-    fspFile = os.path.join(libFolder, libName, fspInfoFileName)
-    strOrdFile = os.path.join(libFolder, libName, strOrdNetFileName)
-    fspDf = pd.read_csv(fspFile) 
-    strOrdDf = pd.read_csv(strOrdFile) 
+#     # read in FSP and stream order network files
+#     fspFile = os.path.join(libFolder, libName, fspInfoFileName)
+#     strOrdFile = os.path.join(libFolder, libName, strOrdNetFileName)
+#     fspDf = pd.read_csv(fspFile) 
+#     strOrdDf = pd.read_csv(strOrdFile) 
 
-    # Get gauge stream order for interpolation by stream orders
-    gaugeDf = pd.merge(gaugeDf,fspDf,how='inner',on=['FspX','FspY'])[['FspX','FspY','Dof','StrOrd','DsDist','SegId','FilledElev']]
-    # print(gaugeDf)
+#     # Get gauge stream order for interpolation by stream orders
+#     gaugeDf = pd.merge(gaugeDf,fspDf,how='inner',on=['FspX','FspY'])[['FspX','FspY','Dof','StrOrd','DsDist','SegId','FilledElev']]
+#     # print(gaugeDf)
 
-    # create an empty DF to store interpolated FSP DOFs
-    fspDof = pd.DataFrame(columns=['FspId','FspX','FspY','DsDist','Dof'])
-    # interpolate DoF for each stream order from low to high (low order means high priority!)
-    # get the stream orders with gauges on them
-    strOrds = gaugeDf['StrOrd'].drop_duplicates().sort_values().tolist()
-    if len(strOrds)==0:
-        print('No stream found for the gauges!')
-        return None
+#     # create an empty DF to store interpolated FSP DOFs
+#     fspDof = pd.DataFrame(columns=['FspId','FspX','FspY','DsDist','Dof'])
+#     # interpolate DoF for each stream order from low to high (low order means high priority!)
+#     # get the stream orders with gauges on them
+#     strOrds = gaugeDf['StrOrd'].drop_duplicates().sort_values().tolist()
+#     if len(strOrds)==0:
+#         print('No stream found for the gauges!')
+#         return None
 
-    for ord in strOrds:
-        # gauges on the stream order
-        gaugeOrd = gaugeDf[gaugeDf['StrOrd']==ord].sort_values('DsDist')
+#     for ord in strOrds:
+#         # gauges on the stream order
+#         gaugeOrd = gaugeDf[gaugeDf['StrOrd']==ord].sort_values('DsDist')
 
-        #
-        # create the upstream ending gauge assuming a level water elevation at the gauge
-        #
-        # get upstream gauge's segment IDs
-        t = gaugeOrd.tail(1)[['SegId','FilledElev','Dof','FspX','FspY']].values.flatten().tolist()
-        upSegId, gElev, dof, gx,gy = t 
-        # get segment FSPs and find the level-off FSP
-        t = fspDf[fspDf['SegId']==upSegId].copy() # tell pandas we want a copy to avoid "SettingWithCopyWarning"
-        t['Dof'] = gElev+dof-t['FilledElev']
-        t = t[t['Dof']>=0].sort_values('DsDist').tail(1)[['FspX','FspY','DsDist','Dof']]
-        # check if the ending gauge is the gauge itself
-        tx,ty = t.iat[0,0], t.iat[0,1]
-        # same as: tx,ty = t[['FspX','FspY']].values.flatten().tolist()
-        if (gx==tx) and (gy==ty):
-            # the gauge is the ending gauge.
-            usEndGauge = pd.DataFrame() # an empty DF
-        else:
-            usEndGauge = t
-        # print(usEndGauge)
+#         #
+#         # create the upstream ending gauge assuming a level water elevation at the gauge
+#         #
+#         # get upstream gauge's segment IDs
+#         t = gaugeOrd.tail(1)[['SegId','FilledElev','Dof','FspX','FspY']].values.flatten().tolist()
+#         upSegId, gElev, dof, gx,gy = t 
+#         # get segment FSPs and find the level-off FSP
+#         t = fspDf[fspDf['SegId']==upSegId].copy() # tell pandas we want a copy to avoid "SettingWithCopyWarning"
+#         t['Dof'] = gElev+dof-t['FilledElev']
+#         t = t[t['Dof']>=0].sort_values('DsDist').tail(1)[['FspX','FspY','DsDist','Dof']]
+#         # check if the ending gauge is the gauge itself
+#         tx,ty = t.iat[0,0], t.iat[0,1]
+#         # same as: tx,ty = t[['FspX','FspY']].values.flatten().tolist()
+#         if (gx==tx) and (gy==ty):
+#             # the gauge is the ending gauge.
+#             usEndGauge = pd.DataFrame() # an empty DF
+#         else:
+#             usEndGauge = t
+#         # print(usEndGauge)
         
-        #
-        # create downstream ending gauge
-        #
-        # get the downstream order and junction FSP's coordinates
-        t = strOrdDf[strOrdDf['StrOrd']==ord][['DsStrOrd','JunctionFspX', 'JunctionFspY']].values.flatten().tolist()
-        dsStrOrd,fspx,fspy = t 
+#         #
+#         # create downstream ending gauge
+#         #
+#         # get the downstream order and junction FSP's coordinates
+#         t = strOrdDf[strOrdDf['StrOrd']==ord][['DsStrOrd','JunctionFspX', 'JunctionFspY']].values.flatten().tolist()
+#         dsStrOrd,fspx,fspy = t 
 
-        # whether there is a junction/confluence gauge
-        if dsStrOrd !=0:
-            # there is a downstream order. see whether the junction's DOF has an interpolated DOF
-            juncDf = fspDof[(fspDof['FspX']==fspx) &(fspDof['FspY']==fspy)]
-            if len(juncDf) != 0:
-                # Junction has DOF. Create downstream ending gauge with the junction FSP
-                dsEndGauge = juncDf[['FspX','FspY','DsDist','Dof']]
-            else:
-                juncDf = None
+#         # whether there is a junction/confluence gauge
+#         if dsStrOrd !=0:
+#             # there is a downstream order. see whether the junction's DOF has an interpolated DOF
+#             juncDf = fspDof[(fspDof['FspX']==fspx) &(fspDof['FspY']==fspy)]
+#             if len(juncDf) != 0:
+#                 # Junction has DOF. Create downstream ending gauge with the junction FSP
+#                 dsEndGauge = juncDf[['FspX','FspY','DsDist','Dof']]
+#             else:
+#                 juncDf = None
 
-        # No downstream order or junction FSP
-        if (dsStrOrd == 0) or (juncDf is None):
-            # Create downstream ending gauge with the last FSP in the segment
-            # get the downstream and upstream segment IDs
-            dsSegId, gx,gy = gaugeOrd.head(1)[['SegId','FspX','FspY']].values.flatten().tolist()
-            # get the first FSP on the downstream segment
-            t = fspDf[fspDf['SegId']==dsSegId].tail(1)[['FspX','FspY','DsDist']]
-            # check if the ending gauge is the gauge itself
-            tx,ty = t.iat[0,0], t.iat[0,1]
-            # same as: tx,ty = t[['FspX','FspY']].values.flatten().tolist()
-            if (gx==tx) and (gy==ty):
-                # the gauge is the ending gauge.
-                dsEndGauge = pd.DataFrame() # an empty DF
-            else:
-                dsEndGauge = t
-                dsEndGauge['Dof']=0
-        # print(dsEndGauge)
+#         # No downstream order or junction FSP
+#         if (dsStrOrd == 0) or (juncDf is None):
+#             # Create downstream ending gauge with the last FSP in the segment
+#             # get the downstream and upstream segment IDs
+#             dsSegId, gx,gy = gaugeOrd.head(1)[['SegId','FspX','FspY']].values.flatten().tolist()
+#             # get the first FSP on the downstream segment
+#             t = fspDf[fspDf['SegId']==dsSegId].tail(1)[['FspX','FspY','DsDist']]
+#             # check if the ending gauge is the gauge itself
+#             tx,ty = t.iat[0,0], t.iat[0,1]
+#             # same as: tx,ty = t[['FspX','FspY']].values.flatten().tolist()
+#             if (gx==tx) and (gy==ty):
+#                 # the gauge is the ending gauge.
+#                 dsEndGauge = pd.DataFrame() # an empty DF
+#             else:
+#                 dsEndGauge = t
+#                 dsEndGauge['Dof']=0
+#         # print(dsEndGauge)
                   
-        # put all the gauges together
-        gaugeOrd = gaugeOrd[['FspX','FspY','DsDist','Dof']]
-        # gaugeOrd = gaugeOrd.append(usEndGauge)
-        # gaugeOrd = gaugeOrd.append(dsEndGauge)
-        gaugeOrd = pd.concat([gaugeOrd,usEndGauge])
-        gaugeOrd = pd.concat([gaugeOrd,dsEndGauge])
-        # print(f"Gauges with DOFs on stream order ({ord}): \n",gaugeOrd)
+#         # put all the gauges together
+#         gaugeOrd = gaugeOrd[['FspX','FspY','DsDist','Dof']]
+#         # gaugeOrd = gaugeOrd.append(usEndGauge)
+#         # gaugeOrd = gaugeOrd.append(dsEndGauge)
+#         gaugeOrd = pd.concat([gaugeOrd,usEndGauge])
+#         gaugeOrd = pd.concat([gaugeOrd,dsEndGauge])
+#         # print(f"Gauges with DOFs on stream order ({ord}): \n",gaugeOrd)
         
-        # calculate the min and max downstream distance
-        minDist = gaugeOrd['DsDist'].min()
-        maxDist = gaugeOrd['DsDist'].max()
+#         # calculate the min and max downstream distance
+#         minDist = gaugeOrd['DsDist'].min()
+#         maxDist = gaugeOrd['DsDist'].max()
 
-        # select the FSPs on the stream order
-        fspOrd = fspDf[fspDf['StrOrd']==ord][['FspId','FspX','FspY','DsDist']]
-        fspOrd = fspOrd[(fspOrd['DsDist']>=minDist) & (fspOrd['DsDist']<=maxDist)]
+#         # select the FSPs on the stream order
+#         fspOrd = fspDf[fspDf['StrOrd']==ord][['FspId','FspX','FspY','DsDist']]
+#         fspOrd = fspOrd[(fspOrd['DsDist']>=minDist) & (fspOrd['DsDist']<=maxDist)]
 
-        # interpolate DOF for the FSPs with the gauges
-        gaugeOrd = gaugeOrd.sort_values('DsDist') # for using np.interp(), x must be ascending!
-        fspOrd['Dof'] = np.interp(fspOrd['DsDist'], gaugeOrd['DsDist'], gaugeOrd['Dof'].astype(np.float64))
-        # print(fspOrd)
+#         # interpolate DOF for the FSPs with the gauges
+#         gaugeOrd = gaugeOrd.sort_values('DsDist') # for using np.interp(), x must be ascending!
+#         fspOrd['Dof'] = np.interp(fspOrd['DsDist'], gaugeOrd['DsDist'], gaugeOrd['Dof'].astype(np.float64))
+#         # print(fspOrd)
 
-        # append the interpolated SFPs
-        # fspDof = fspDof.append(fspOrd,ignore_index=True)
-        fspDof = pd.concat([fspDof,fspOrd],ignore_index=True)
-        # print(fspDof)
+#         # append the interpolated SFPs
+#         # fspDof = fspDof.append(fspOrd,ignore_index=True)
+#         fspDof = pd.concat([fspDof,fspOrd],ignore_index=True)
+#         # print(fspDof)
     
-    # select and rename columns
-    fspDof = fspDof[['FspId','Dof']]
-    # print(fspDof)
+#     # select and rename columns
+#     fspDof = fspDof[['FspId','Dof']]
+#     # print(fspDof)
 
-    # reset DOF if it's less than minGaugeDof
-    fspDof.loc[(fspDof['Dof']<=minGaugeDof),['Dof']] = minGaugeDof
+#     # reset DOF if it's less than minGaugeDof
+#     fspDof.loc[(fspDof['Dof']<=minGaugeDof),['Dof']] = minGaugeDof
 
-    # return interpolated DOF for the FSPs
-    return fspDof
+#     # return interpolated DOF for the FSPs
+#     return fspDof
 
 #
 # Estimate FSP Depth of Flow (DoF), i.e., FSP stage from gauges
 #
 def EstimateFspDofFromGaugeBlob(libBlobSerClient,libName,gaugeDf,gaugeElevField,minGaugeDof=0.0328084):
-# gaugeElevField --  field in gaugeDf that stores gauge's water surface elevation
-# gaugeDf--A DF with snapped FSP columns ['FspX','FspY','FspFilledElev','Dist']
-# minGaugeDof--min DOF a gauge should have, by default is 1 cm = 0.0328083989501312 foot. Negative may occur as incorrect gauge datum
-    
+    """ Estimate FSP Depth of Flow (DoF), i.e., FSP stage from gauges on Microsoft Planetary Computer using Azure Blob Storage.
+
+        Args:
+            libBlobSerClient (BlobServiceClient): a BlobServiceClient object
+            libName (str): the name of the library that the gauges will be snapped to
+            gaugeDf (data frame): a data frame of gauges. It should have at least 4 columns ['FspX','FspY','FspFilledElev','Dist']
+            gaugeElevField (str): the field in gaugeDf that stores gauge's water surface elevation
+            minGaugeDof (float): min DOF a gauge should have, default is 1 cm = 0.0328083989501312 foot. Negative DOF may occur as incorrect gauge datum
+
+        Return:
+            data frame: a data frame with interpolated FSP DOFs.
+    """
+
     # calculate FSP DOF
     gaugeDf['Dof'] = gaugeDf[gaugeElevField] - gaugeDf['FspFilledElev']
     # reset DOF, if it's < 0, to minGaugeDof
@@ -1092,7 +1232,21 @@ def EstimateFspDofFromGaugeBlob(libBlobSerClient,libName,gaugeDf,gaugeElevField,
 # Decide tiles need to be mapped
 # 
 def Tiles2Map(libFolder,libName,fspDof='MinDtf',aoiExtent=None):
-# Find the tiles need to be mapped for the library
+    """ Decide the tiles need to be mapped for the library.
+
+        Args:
+            libFolder (str): the folder where the libraries are stored
+            libName (str): the name of the library
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'.
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'.
+                If it's a float, it's a constant stage for all the FSPs.
+                If it's a data frame, it's a data frame of FSPs with DOF.
+            aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None.
+
+        Return:
+            tuple: a list of tile IDs, a list of tile FPP extents
+    """
+
     #
     # Read in the fsp-tile index and tile index files for selecting tiles for mapping
     #
@@ -1175,7 +1329,21 @@ def Tiles2Map(libFolder,libName,fspDof='MinDtf',aoiExtent=None):
 # Decide tiles need to be mapped
 # 
 def Tiles2MapBlob(libBlobSerClient,libName,fspDof='MinDtf',aoiExtent=None):
-# Find the tiles need to be mapped for the library
+    """ Decide the tiles need to be mapped for the library on Microsoft Planetary Computer using Azure Blob Storage.
+
+        Args:
+            libBlobSerClient (BlobServiceClient): a BlobServiceClient object
+            libName (str): the name of the library
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'.
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'.
+                If it's a float, it's a constant stage for all the FSPs.
+                If it's a data frame, it's a data frame of FSPs with DOF.
+            aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None.
+
+        Return:
+            tuple: a list of tile IDs, a list of tile FPP extents
+    """
+
     #
     # Read in the fsp-tile index and tile index files for selecting tiles for ampping
     #
@@ -1285,7 +1453,26 @@ def Tiles2MapBlob(libBlobSerClient,libName,fspDof='MinDtf',aoiExtent=None):
 # Map flood depth with tiled library based on FSP DOF and AOI extent
 # 
 def MapOneTile(libFolder,libName,tid,fppExtent,cellSize,libSr,fileFormat,outMapFolder,fspDof='MinDtf',aoiExtent=None):
-# Map one tile as a GeoTif file   
+    """ Map one tile as a GeoTif file based on FSP DOF and AOI extent
+
+        Args:
+            libFolder (str): the folder where the libraries are stored
+            libName (str): the name of the library
+            tid (int): the tile ID
+            fppExtent (list): the extent of the FPPs in the tile [minX,maxX,minY,maxY]
+            cellSize (float): the cell size of the raster
+            libSr (str): the spatial reference of the library
+            fileFormat (str): the file format of the tile, 'snappy' or 'mat'
+            outMapFolder (str): the folder where the mapped tiles will be saved
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'.
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'.
+                If it's a float, it's a constant stage for all the FSPs.
+                If it's a data frame, it's a data frame of FSPs with DOF.
+            aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None 
+
+        Return:
+            str: the name of the mapped tile as a GeoTif file
+    """
 
     # print('Mapping tile: ', tid)
     # print('Read tile file ...')
@@ -1360,7 +1547,26 @@ def MapOneTile(libFolder,libName,tid,fppExtent,cellSize,libSr,fileFormat,outMapF
 # Map flood depth with tiled library based on FSP DOF and AOI extent using blob
 # 
 def MapOneTileBlob(libBlobSerClient,libName,tid,fppExtent,cellSize,libSr,fileFormat,mapContainerClient,fspDof='MinDtf',aoiExtent=None):
-# Map one tile as a GeoTif file   
+    """ Map one tile as a GeoTif file based on FSP DOF and AOI extent on Microsoft Planetary Computer using Azure Blob Storage.
+
+        Args:
+            libBlobSerClient (BlobServiceClient): a BlobServiceClient object
+            libName (str): the name of the library
+            tid (int): the tile ID
+            fppExtent (list): the extent of the FPPs in the tile [minX,maxX,minY,maxY]
+            cellSize (float): the cell size of the raster
+            libSr (str): the spatial reference of the library
+            fileFormat (str): the file format of the tile, 'snappy' or 'mat'
+            mapContainerClient (ContainerClient): a ContainerClient object for the container to store the mapped tiles
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'.
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'.
+                If it's a float, it's a constant stage for all the FSPs.
+                If it's a data frame, it's a data frame of FSPs with DOF.
+            aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY], default is None
+
+        Return:
+            str: the name of the mapped tile as a GeoTif file
+    """
 
     # create a container client, assuming the container already exists
     container_client = libBlobSerClient.get_container_client(container=libName)
@@ -1470,12 +1676,23 @@ def MapOneTileBlob(libBlobSerClient,libName,tid,fppExtent,cellSize,libSr,fileFor
 # Map flood depth with tiled library based on FSP DOF and AOI extent
 # 
 def MapFloodDepthWithTiles(libFolder,libName,fileFormat,outMapFolder,fspDof='MinDtf',aoiExtent=None):
-# fileFormat--'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
-# fspDof--Cab be 'MinDtf', 'NumOfFsps', 'Depression', a float number, and a DF of FSPs with DOF. 
-#         When fspDof is a DF, it must have 3 columns ['FspX','FspY','Dof'] storing FSP's coordinates and DOF
-# aoiExtent--rectangle area interested, further limits the tiles decided by the FSPs' DOF. Can be None or a list of [minX,maxX,minY,maxY], default is None.
-# keepTileMaps--false or true, default is false
-# 
+    """ Map flood depth with tiled library based on FSP DOF and AOI extent
+    
+        Args:
+            libFolder (str): the folder where the libraries are stored
+            libName (str): the name of the library
+            fileFormat (str): the file format of the tile, 'snappy' or 'mat'
+            outMapFolder (str): the folder where the mapped tiles will be saved
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'. 
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'. 
+                If it's a float, it's a constant stage for all the FSPs. 
+                If it's a data frame, it's a data frame of FSPs with DOF.
+            aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None
+
+        Return:
+            list: a list of mapped tile names as GeoTif files.
+    """
+
     # create the folder for generating tile maps
     os.makedirs(outMapFolder,exist_ok=True)
 
@@ -1515,12 +1732,23 @@ def MapFloodDepthWithTiles(libFolder,libName,fileFormat,outMapFolder,fspDof='Min
 # Map flood depth with tiled library based on FSP DOF and AOI extent
 # 
 def MapFloodDepthWithTilesAsDag(libFolder,libName,fileFormat,outMapFolder,fspDof='MinDtf',aoiExtent=None):
-# fileFormat--'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
-# fspDof--Cab be 'MinDtf', 'NumOfFsps', 'Depression', a float number, and a DF of FSPs with DOF. 
-#         When fspDof is a DF, it must have 3 columns ['FspX','FspY','Dof'] storing FSP's coordinates and DOF
-# aoiExtent--rectangle area interested, further limits the tiles decided by the FSPs' DOF. Can be None or a list of [minX,maxX,minY,maxY], default is None.
-# keepTileMaps--false or true, default is false
-# 
+    """ Map flood depth with tiled library based on FSP DOF and AOI extent as a Directed Acyclic Graph (DAG)
+    
+        Args:
+            libFolder (str): the folder where the libraries are stored
+            libName (str): the name of the library
+            fileFormat (str): the file format of the tile, 'snappy' or 'mat'
+            outMapFolder (str): the folder where the mapped tiles will be saved
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'. 
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'. 
+                If it's a float, it's a constant stage for all the FSPs. 
+                If it's a data frame, it's a data frame of FSPs with DOF.
+            aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None
+
+        Return:
+            tuple: a Directed Acyclic Graph (DAG) and the root node name.
+    """
+ 
     # create the folder for generating tile maps
     os.makedirs(outMapFolder,exist_ok=True)
 
@@ -1563,11 +1791,23 @@ def MapFloodDepthWithTilesAsDag(libFolder,libName,fileFormat,outMapFolder,fspDof
 # Map flood depth with tiled library based on FSP DOF and AOI extent using data in Azure Blob Storage
 # 
 def MapFloodDepthWithTilesBlob(libBlobSerClient,libName,fileFormat,mapContainerClient,fspDof='MinDtf',aoiExtent=None):
-# fileFormat--'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
-# fspDof--Cab be 'MinDtf', 'NumOfFsps', 'Depression', a float number, and a DF of FSPs with DOF. 
-#         When fspDof is a DF, it must have 3 columns ['FspX','FspY','Dof'] storing FSP's coordinates and DOF
-# aoiExtent--rectangle area interested, further limits the tiles decided by the FSPs' DOF. Can be None or a list of [minX,maxX,minY,maxY], default is None.
-# 
+    """ Map flood depth with tiled library based on FSP DOF and AOI extent on Microsoft Planetary Computer using data in Azure Blob Storage.
+    
+        Args:
+            libBlobSerClient (BlobServiceClient): a BlobServiceClient object
+            libName (str): the name of the library
+            fileFormat (str): the file format of the tile, 'snappy' or 'mat'
+            mapContainerClient (ContainerClient): a ContainerClient object for the container to store the mapped tiles
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'. 
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'. 
+                If it's a float, it's a constant stage for all the FSPs. 
+                If it's a data frame, it's a data frame of FSPs with DOF.
+            aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None
+
+        Return:
+            list: a list of mapped tile names as GeoTif files
+    """
+
     #
     # Read lib meta data file
     #    
@@ -1607,11 +1847,24 @@ def MapFloodDepthWithTilesBlob(libBlobSerClient,libName,fileFormat,mapContainerC
 # Map flood depth with tiled library based on FSP DOF and AOI extent using data in Azure Blob Storage
 # 
 def MapFloodDepthWithTilesBlobAsDag(libBlobSerClient,libName,fileFormat,mapContainerClient,fspDof='MinDtf',aoiExtent=None):
-# fileFormat--'snappy' or 'mat'. 'snappy' format needs to install the 'fastparquet' python package
-# fspDof--Cab be 'MinDtf', 'NumOfFsps', 'Depression', a float number, and a DF of FSPs with DOF. 
-#         When fspDof is a DF, it must have 3 columns ['FspX','FspY','Dof'] storing FSP's coordinates and DOF
-# aoiExtent--rectangle area interested, further limits the tiles decided by the FSPs' DOF. Can be None or a list of [minX,maxX,minY,maxY], default is None.
-# 
+    """ Map flood depth with tiled library based on FSP DOF and AOI extent on Microsoft Planetary Computer using data in Azure Blob Storage 
+        as a Directed Acyclic Graph (DAG).
+    
+        Args:
+            libBlobSerClient (BlobServiceClient): a BlobServiceClient object
+            libName (str): the name of the library
+            fileFormat (str): the file format of the tile, 'snappy' or 'mat'
+            mapContainerClient (ContainerClient): a ContainerClient object for the container to store the mapped tiles
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'. 
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'. 
+                If it's a float, it's a constant stage for all the FSPs. 
+                If it's a data frame, it's a data frame of FSPs with DOF.
+            aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None
+
+        Return:
+            tuple: a Directed Acyclic Graph (DAG) and the root node name
+    """
+
     #
     # Read lib meta data file
     #    
@@ -1655,6 +1908,15 @@ def MapFloodDepthWithTilesBlobAsDag(libBlobSerClient,libName,fileFormat,mapConta
 # place holder function to get tile Geotif files
 #
 def GetTileTifs(tifFiles):
+    """ Get tile Geotif files
+    
+        Args:
+            tifFiles (list): a list of tile Geotif files
+
+        Return:
+            list: a list of tile Geotif files
+    """
+
     tileTifs = []
     for tif in tifFiles:
         if not(tif is None):
@@ -1666,15 +1928,23 @@ def GetTileTifs(tifFiles):
 # returns a np array as the map
 #
 def TileFspFppRelations2Array(fspFppRels, fppExtent, cellSize, fspDof='MinDtf', aoiExtent=None, noData=-9999):
-# The minimum bounding extent of the FPPs in the relations is always used when create the map for the tile!
-#
-# FspFppRels-- a dataframe of FSP-FPP relations which have the columns of ["FspId", "FppCol", "FppRow", "Dtf", "FilledDepth"] from a tile
-# fppExtent--a list of [minX, maxX, minY, maxY], FPP's external extent of the tile and is also used to locate FPP's columns and rows in map coordinate
-# fspDof--Cab be 'MinDtf', 'NumOfFsps', 'Depression', a float number, and a DF of FSP depth of flow, i.e., FSP stage. 
-#         When fspDof is a table, it must have 3 columns ['FspX','FspY','Dof'] storing the coordinates and "Depth of Flow" for the FSPs
-# aoiExtent--None or a rectabgle extent of [minX, maxX, minY, maxY] that INTERSECTs with the fppExtent
+    """ Turn a dataframe of FSP-FPP relations to a 2D array of flood depth. 
+        The minimum bounding extent of the FPPs in the relations is always used when create the map for the tile!
+    
+        Args:
+            fspFppRels (data frame): a dataframe of FSP-FPP relations which have the columns of ["FspId", "FppCol", "FppRow", "Dtf", "FilledDepth"] from a tile
+            fppExtent (list): a list of [minX, maxX, minY, maxY], FPP's external extent of the tile and is also used to locate FPP's columns and rows in map coordinate
+            cellSize (float): the cell size of the raster
+            fspDof (str, float, or data frame): the FSP DOF for mapping flood depth. default is 'MinDtf'.
+                If it's a string, it can be 'MinDtf', 'NumOfFsps', or 'Depression'.
+                If it's a float, it's a constant stage for all the FSPs.
+                If it's a data frame, it's a data frame of FSPs with DOF.
+            aoiExtent (list): the extent of the area of interest [minX,maxX,minY,maxY]. default is None
+            noData (int): the no data value, default is -9999
 
-# Returns: dtfArray, noData, mapMinX, mapMinY
+        Return:
+            tuple: a tuple of the np array as the map, the no data value, the minimum X value, and the minimum Y value
+    """
 
     tdf = fspFppRels
     # print('Number of FSP-FPP relations:', len(tdf))
@@ -1820,8 +2090,19 @@ def TileFspFppRelations2Array(fspFppRels, fppExtent, cellSize, fspDof='MinDtf', 
 # Functions to mosaic GeoTifs to replace arcpy-based mosaic function
 #
 def MosaicGtifs(outMapFolder,gtifs,mosaicTifName, keepTifs=False):
-# Mosaic a list of Gtifs into one Gtif using rasterio.merge module. See https://medium.com/spatial-data-science/how-to-mosaic-merge-raster-data-in-python-fb18e44f3c8
-# This func may cause memory overflow as the merge() first creates the mosaiced array in memory!
+    """ Mosaic a list of GeoTifs into one GeoTif file using rasterio.merge module.
+        See https://medium.com/spatial-data-science/how-to-mosaic-merge-raster-data-in-python-fb18e44f3c8.
+        This func may cause memory overflow as the merge() first creates the mosaiced array in memory!
+    
+        Args:
+            outMapFolder (str): the folder where the mosaiced tif will be saved
+            gtifs (list): a list of tile GeoTifs to be mosaiced
+            mosaicTifName (str): the name of the mosaiced GeoTif file
+            keepTifs (bool): whether to keep the tile GeoTifs, default is False
+
+        Return:
+            str: the name of the mosaiced GeoTif.
+    """
 
     # open all the Gtifs
     ras2Mosaic = []
@@ -1882,9 +2163,20 @@ def MosaicGtifs(outMapFolder,gtifs,mosaicTifName, keepTifs=False):
 # Functions to mosaic GeoTifs to replace arcpy-based mosaic function
 #
 def MosaicGtifsBlob(mapContClient, gtifs, outGtif, keepTifs=False):
-# Mosaic a list of Gtifs into one Gtif using rasterio.merge module. See https://medium.com/spatial-data-science/how-to-mosaic-merge-raster-data-in-python-fb18e44f3c8
-# This func may cause memory overflow as the merge() first creates the mosaiced array in memory!
-    
+    """ Mosaic a list of GeoTifs into one GeoTif file using rasterio.merge module on Microsoft Planetary Computer using data in Azure Blob Storage.
+        See https://medium.com/spatial-data-science/how-to-mosaic-merge-raster-data-in-python-fb18e44f3c8.
+        This func may cause memory overflow as the merge() first creates the mosaiced array in memory!
+        
+        Args:
+            mapContClient (ContainerClient): a ContainerClient object for the container to store the mosaiced tif
+            gtifs (list): a list of tile GeoTifs to be mosaiced
+            outGtif (str): the name of the mosaiced GeoTif file
+            keepTifs (bool): whether to keep the tile GeoTifs, default is False
+
+        Return:
+            None: no return.
+    """
+  
     # open all the Gtifs
     ras2Mosaic = []
     for gtif in gtifs: # assuming no None tif file names in the list
@@ -1964,9 +2256,18 @@ def MosaicGtifsBlob(mapContClient, gtifs, outGtif, keepTifs=False):
 # Functions to mosaic Geotifs
 #
 def MosaicGtifsUsingVirtualRaster(gtifs, outGtif):
-    from osgeo import gdal
-# Mosaic GeoTifs using GDAL virtual raster
-# Easiest way of mosaic very large Gtif. Based on the video at https://www.youtube.com/watch?v=sBBMKbAj8XE
+    """ Mosaic a list of GeoTifs into one GeoTif file using GDAL virtual raster.
+        Easiest way of mosaic very large Gtif. Based on the video at https://www.youtube.com/watch?v=sBBMKbAj8XE
+
+        Args:
+            gtifs (list): a list of tile GeoTifs to be mosaiced
+            outGtif (str): the name of the mosaiced GeoTif file
+
+        Return:
+            None: no return
+    """
+
+    from osgeo import gdal # since gdal cannot be installed using pip, we leave the import here and it's up to the user to install gdal.
 
     # Create a XML-based virtual raster file for mosaicing
     vrtFolder = os.path.dirname(outGtif)
@@ -1995,6 +2296,17 @@ def MosaicGtifsUsingVirtualRaster(gtifs, outGtif):
 # A function to download and unzip tiled libraries
 #
 def DownloadTiledLibrary(libUrl,libName,localLibFolder ):
+    """ Download and unzip tiled libraries.
+    
+        Args:
+            libUrl (str): the url of the library
+            libName (str): the name of the library
+            localLibFolder (str): the folder where the library will be saved
+
+        Return:
+            None: no return.
+    """
+
     # create local folder if not existing
     os.makedirs(localLibFolder,exist_ok=True)
 

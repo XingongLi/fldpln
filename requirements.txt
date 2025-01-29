@@ -8,4 +8,6 @@ rasterio
 rio_cogeo
 pyproj
 lxml
-psycopg2
+# gdal # this lib cannot be installed using pip, so we will leave it out
+# ogr # this lib cannot be installed using pip, so we will leave it out
+# psycopg2 # this lib has issue on MacOs, so we will leave it out
