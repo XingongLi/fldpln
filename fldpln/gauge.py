@@ -15,16 +15,12 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 from pyproj import CRS
-import pandas.io.sql as psql
 
-# from osgeo import ogr # ogr cannot be installed using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
-# import psycopg2 # psycopg2 cannot be installed on MacOs. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
+# ogr cannot be installed using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
+# from osgeo import ogr 
 
 # import the mapping module from THIS package
 from .mapping import * 
-
-# Import file config.py which is used for connecting to the postgresql database for Kansas FIM Dashboard
-# from config import config 
 
 #
 # Get USGS gauges. This function get USGS gauges within a box and project them
@@ -1224,122 +1220,6 @@ def GetGaugeStageFromAhpsUsgsWebServices(gaugeFile, whichStage='Nowcast'):
 
     # only keep necessary fields
     keptFields = ['stationid','x','y','stage_elevation','stage_time','status']
-    gauges = gauges[keptFields]
-    # print(gauges)
-
-    # remove stations with nan stage elevation (because of no datum elevation)
-    # gauges = gauges[gauges['stage_elevation'].isnull()]
-
-    return gauges
-
-#
-# read gauge stage from gauge FC in PostgreSQL database
-#
-def GetGaugeStageFromGaugeFc(gaugeFcName, whichStage='Nowcast'):
-    """ Read gauge stage from a gauge feature class (FC) in PostgreSQL database. 
-        
-        Args:
-            gaugeFcName (str): gauge feature class name.
-            whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major. Default to 'Nowcast'.
-
-        Return:
-            data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time, status.
-    """
-
-    import psycopg2 # MacOs cannot install the package using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
-    
-    #
-    # connect to the db
-    #
-    # read connection parameters
-    params = config() # see config.py, parameters are in database.ini
-    # connect to the PostgreSQL server
-    conn = psycopg2.connect(**params)
-    
-    # field dic for whichStage
-    fieldDic = {'Nowcast': ['stationid','x','y','status','stage_ft','stage_time','datum_elevation','to_navd88'],
-                'Forecast': ['stationid','x','y','status','stage_ft','stage_time','datum_elevation','to_navd88'],
-                'Postcast': ['stationid','x','y','status','stage_ft','stage_time','datum_elevation','to_navd88'],
-                'Action': ['stationid','x','y','status','action_stage','stage_time','datum_elevation','to_navd88'],
-                'Flood': ['stationid','x','y','status','flood_stage','stage_time','datum_elevation','to_navd88'],
-                'Moderate': ['stationid','x','y','status','moderate_stage','stage_time','datum_elevation','to_navd88'],
-                'Major': ['stationid','x','y','status','major_stage','stage_time','datum_elevation','to_navd88'],
-                }
-    stageFieldDic = {'Nowcast': 'stage_ft',
-                'Forecast': 'stage_ft',
-                'Postcast': 'stage_ft',
-                'Action': 'action_stage',
-                'Flood': 'flood_stage',
-                'Moderate': 'moderate_stage',
-                'Major': 'major_stage'
-                }
-    # perform query
-    fields = fieldDic[whichStage]
-    fieldStr = ','.join(fields)
-    sqlQuery = f'SELECT {fieldStr} FROM {gaugeFcName}'
-    gauges = psql.read_sql(sqlQuery, conn) # or gauges = psql.read_sql_query('select * from fldpln_ks_gauges', conn)
-    # print(gauges)
-
-    # calculate stage elevation
-    # gauges['stage_elevation'] = gauges['stage_ft']+gauges['datum_elevation']+gauges['to_navd88']
-    gauges['stage_elevation'] = gauges[stageFieldDic[whichStage]]+gauges['datum_elevation']+gauges['to_navd88']
-
-    # only keep necessary fields
-    keptFields = ['stationid','x','y','stage_elevation','stage_time','status']
-    gauges = gauges[keptFields]
-    # print(gauges)
-
-    # remove stations with nan stage elevation (because of no datum elevation)
-    # gauges = gauges[gauges['stage_elevation'].isnull()]
-
-    return gauges
-
-#
-# read gauge stage from PostgreSQL database. 
-#
-def GetGaugeStageFromPostgres(dbName, gaugeTableName, whichStage='Nowcast'):
-    """ Read gauge stage from a gauge table in PostgreSQL database. This function is OLD CODE in task_lib2map_gauge_table.py
-
-        Args:
-            dbName (str): database name.
-            gaugeTableName (str): gauge table name.
-            whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major. Default to 'Nowcast'.
-
-        Return:
-            data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time, status.
-    """
-
-    import psycopg2 # MacOs cannot install the package using pip. So we put it only in the functions that use it and DO NOT include it in requirements.txt. It's user's responsibility to install it.
-
-    # connect to the db
-    conn = psycopg2.connect(
-        host="itprdkarsap.home.ku.edu",
-        database=dbName,
-        user="sde",
-        password="avhRR=landsat") 
-
-    # field dic for whichStage
-    fieldDic = {'Nowcast': ['stationid','x_utm14','y_utm14','status','stage_ft','stage_time','datum_elevation','to_navd88'],
-                'Forecast': ['stationid','x_utm14','y_utm14','status','stage_ft','stage_time','datum_elevation','to_navd88'],
-                'Postcast': ['stationid','x_utm14','y_utm14','status','stage_ft','stage_time','datum_elevation','to_navd88'],
-                'Action': ['stationid','x_utm14','y_utm14','action_stage','datum_elevation','to_navd88'],
-                'Flood': ['stationid','x_utm14','y_utm14','flood_stage','datum_elevation','to_navd88'],
-                'Moderate': ['stationid','x_utm14','y_utm14','moderate_stage','datum_elevation','to_navd88'],
-                'Major': ['stationid','x_utm14','y_utm14','major_stage','datum_elevation','to_navd88'],
-                }
-    
-    # perform query
-    fields = fieldDic[whichStage]
-    fieldStr = ','.join(fields)
-    sqlQuery = f'SELECT {fieldStr} FROM {gaugeTableName}'
-    gauges = psql.read_sql(sqlQuery, conn) # or gauges = psql.read_sql_query('select * from fldpln_ks_gauges', conn)
-    # print(gauges)
-
-    # calculate stage elevation
-    gauges['stage_elevation'] = gauges['stage_ft']+gauges['datum_elevation']+gauges['to_navd88']
-
-    # only keep necessary fields
-    keptFields = ['stationid','x_utm14','y_utm14','stage_elevation','stage_time','status']
     gauges = gauges[keptFields]
     # print(gauges)
 
