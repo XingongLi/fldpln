@@ -350,7 +350,7 @@ def CalculateLibraryExtent(segLibFolder, cellSize):
     
     return (minX, maxX,minY, maxY), segExts 
 
-############################################################################################################################################
+# ############################################################################################################################################
 def ReadMatFile(matFile, varName):
     """ Read matlab files with different versions. scipy.io DOES NOT support MATLAB files version 7.3 yet! Some of the libraries are in 7.3 while the others are not.
         Args:
@@ -508,7 +508,7 @@ def CalculateFspSegmentDownstreamDistance(libFolder):
             dist=math.sqrt((fspx1-fspx2)**2+(fspy1-fspy2)**2)
             dsDist += dist
 
-            # move to ownstream segment
+            # move to downstream segment
             segID = dsSegID
             dsSegID = segID_ds
 
@@ -650,7 +650,7 @@ def GetStreamOrdersForFspsSegments(libFolder,strOrdShpFile,shpSegIdName,shpStrOr
 
     #
     # Create another table storing stream order network information with the columns:
-    # [‘StrOrd’, ‘DsStrOrd’, ‘JunctionFspX’, ‘JunctionFspY’] for use in interpolting FSP DOF
+    # [‘StrOrd’, ‘DsStrOrd’, ‘JunctionFspX’, ‘JunctionFspY’] for use in interpolating FSP DOF
     #
     strOrdDf = pd.DataFrame(columns=strOrdNetColumnNames)
     strOrds = segDf['StrOrd'].drop_duplicates().sort_values().to_list()

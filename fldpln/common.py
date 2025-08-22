@@ -14,6 +14,13 @@ matRelVarName='fldpln' # variable name storing the FSP-FPP relations in the mat 
 # matRelColumnNames = ["FSP_x", "FSP_y", "floodplain_pixel_x", "floodplain_pixel_y", "DTF", "DTF_fill_depth"] # for FLDPLN v6
 matRelColumnNames = ["FSP_x", "FSP_y", "floodplain_pixel_x", "floodplain_pixel_y", "DTF", "sink_fill_depth"] # changed on 7/1/24 to reflect changes in FLDPLN v8
 
+# stage-volume rating curve for each segment
+stageVolumeFileFolderName = 'src_stats' # folder name for stage-volume files
+stageVolumeFileMainName = 'seg' # e.g., sv_table_seg123.mat
+stageVolumeVariableName = 'tabl' # variable name storing the stage-volume relations in the mat file
+# stageVolumeColumnNames = ['DTF','area_sqft','vol_cuft','crsec_area','hydr_radius','Q_cuft/sec'] # David's matlab script
+stageVolumeColumnNames = ['DTF','area_sqft','vol_cuft'] # Xingong's matlab script only has 3 columns
+
 # FSP info CSV file: 
 fspInfoFileName = 'fsp_info.csv'
 fspInfoColumnNames= ['FspId','FspX','FspY','SegId','FilledElev','DsDist','StrOrd'] # initial columns are: 'FspId','FspX','FspY','SegId','FilledElev'

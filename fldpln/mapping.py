@@ -4,6 +4,7 @@
 # imports from Python standard library
 import os
 from math import sqrt
+import math
 import numbers
 import json
 import shutil
@@ -27,6 +28,7 @@ from rio_cogeo.profiles import cog_profiles
 
 # import the common module from THIS package
 from .common import *
+from .tile import *
 
 ############################################################################################################################################
 # Functions
@@ -582,7 +584,7 @@ def InterpolateFspDofFromGauge(libFolder,libName,gaugeFspDf,minGaugeDof=0.032808
         # get segment FSPs and find the level-off FSP
         t = fspDf[fspDf['SegId']==upSegId].copy() # tell pandas we want a copy to avoid "SettingWithCopyWarning"
         t['Dof'] = gElev+dof-t['FilledElev']
-        t = t[t['Dof']>=0].sort_values('DsDist').tail(1)[['FspX','FspY','DsDist','FilledElev','Dof']]
+        t = t[t['Dof']>=0].sort_values('DsDist').tail(1)[['FspX','FspY','DsDist','FilledElev','Dof']] 
         # check if the ending gauge is the gauge itself
         tx,ty = t.iat[0,0], t.iat[0,1]
         # same as: tx,ty = t[['FspX','FspY']].values.flatten().tolist()
@@ -2328,3 +2330,839 @@ def DownloadTiledLibrary(libUrl,libName,localLibFolder ):
     os.remove(os.path.join(localLibFolder, libName+'.zip'))
     print("Done for "+libName)
     return
+
+#############################################################################################################################
+# Reach (reach tree) class for volume-based DOF interpolation
+#############################################################################################################################
+# import necessary packages
+from scipy.interpolate import interp1d
+
+#
+# A reach is a list of stream segments (in FLDPLN's term) between the start of a stream or a confluence and an immediate downstream confluence or the end of a stream 
+# A reach stream network is a tree where the outlet reach is the root and each node is a reach consisting of an ordered (down-->up stream) segments.
+# Each reach is one of the following types:
+#   TC: terminal (i.e., head-water) reach that flows into a confluence,
+#   TO: terminal reach that flows into network outlet, 
+#   CC: confluence reach that flows into a confluence,
+#   CO: confluence reach that flows into network outlet.
+#
+#
+# A reach tree/network class
+#
+class ReachNetwork: # This class is NOT used and may have errors. It's just a place holder for future implementation
+    def __init__(self, root=None):
+        self.root = root  # root node of the reach tree
+ 
+    # @classmethod
+    # def create_network_from_seginfo(cls, seg, segInfoDf, reachId=0):
+    #     ''' Generate a reach network tree from an outlet segment ID. The reach that contains the outlet/start segment is the root reach of the reach network/tree.
+    #         seg: segment ID of the outlet/start segment
+    #         segInfoDf: segment info DataFrame with columns ['SegId', 'DsSegId'] which stores segment network connectivity
+    #         reachId: start reach ID, default is 0
+    #     '''        
+    #     return cls(GenerateReachNetworkTree(seg, segInfoDf, reachId))
+    
+    def insert_reach(self, reach, parent=None):
+        # insert a reach into a tree
+        if self.root is None:
+            self.root = reach
+            parent = self.root
+        else:
+            parent.add_child(reach)
+            parent = parent.children[0]
+        return parent
+    
+    def add_reach(self, reach):
+        if self.root is None:
+            self.root = reach
+        else:
+            self.root.add_child(reach)
+        self.reach_count += 1
+
+    def show_network(self):
+        if self.root is not None:
+            self.root.show_tree()
+        else:
+            print('No reach network generated!')
+
+#
+# Reach class
+#
+class Reach: 
+    def __init__(self, id=0, seg_ids=[]):
+        self.id = id            # reach ID
+        self.seg_ids = seg_ids  # reach segment ids
+        self.type = None        # reach type: TC, TO, CC, or CO where T is for terminal (i.e., head-water), C is for confluence reach, and O is for outlet
+        self.children = []      # children nodes, i.e., upstream reaches
+        # additional attributes may be added when applying a function to the reach using apply_func method
+        
+    def add_child(self, child_node):
+        self.children.append(child_node)
+
+    def remove_child(self, child_node):
+         self.children.remove(child_node)
+    
+    def breadth_first_traverse(self):
+        print(self.seg_ids, end=" ")
+        for child in self.children:
+            child.breadth_first_traverse()
+
+    def breadth_first_traverse2(self): # none recursive version
+        nodes_list = [self]
+        while nodes_list:
+            current_node = nodes_list.pop(0)
+            print(current_node.seg_ids, end=" ")
+            nodes_list.extend(current_node.children)
+
+    def depth_first_traverse(self):
+        if len(self.children) == 0:
+            # leaf node
+            print((self.id, self.seg_ids[::-1], self.type, self.down_volume), end=" ")
+            return
+        else:
+            for child in self.children:
+                child.depth_first_traverse()
+            print((self.id, self.seg_ids[::-1], self.type, self.down_volume), end=" ")
+  
+    def edges_updown(self):
+        edges = []
+        if len(self.children) == 0:
+            return edges
+        else:
+            for child in self.children:
+                edges.extend(child.edges_updown())
+                edges.extend([(child.id, self.id)]) 
+                # edges.extend([(child.seg_ids[::-1], self.seg_ids[::-1])]) # .reverse() change the original list and returns None
+            return edges
+    
+    def edges_downup(self):
+        edges = []
+        if len(self.children) == 0:
+            return edges
+        else:
+            for child in self.children:
+                edges.extend([(self.id, child.id)])
+                # edges.extend([(self.seg_ids, child.seg_ids)])
+                edges.extend(child.edges_downup())
+            return edges
+    
+    def show_tree(self):
+        if self is not None:
+                # show tree nodes
+                print('network nodes:', end=" ")
+                self.depth_first_traverse()
+                print()
+
+                # show tree edges
+                edges = self.edges_updown()
+                # edges = tree.edges_downup()
+                print('network edges (updown):', edges)     
+        else:
+            print('No tree generated!') 
+        return self
+    
+    #
+    # Turn reach attributes into a list of tuples
+    #
+    def reach_attrs_to_list(self, attrs=['id', 'seg_ids'], traverse_type='Depth-First'):
+        ''' Turn reach attributes into a list of tuples in a specific order.
+            attrs: list of attributes to be included in the output list
+            traverse_type: 'Depth-First' or 'Breadth-First'
+        '''
+        if self is None:
+            print('No reach, tree is empty!')
+            return []
+        else:
+            attrLst = []
+            if traverse_type == 'Depth-First':
+                if len(self.children) == 0:
+                    # leaf node
+                    t = [getattr(self, a) for a in attrs]
+                    attrLst.extend([t])
+                    return attrLst
+                else:
+                    # traverse the children nodes
+                    for child in self.children:
+                        attrLst.extend(child.reach_attrs_to_list(attrs, traverse_type))
+                        
+                    # add the current reach attributes to the list
+                    t = [getattr(self, a) for a in attrs]
+                    attrLst.extend([t])
+                    return attrLst
+            else: # assume traverse_type == 'Breadth-First'!
+                t = [getattr(self, a) for a in attrs]
+                attrLst.extend([t])
+                for child in self.children:
+                    attrLst.extend(child.reach_attrs_to_list(attrs, traverse_type))
+                return attrLst
+        
+    #
+    # filter gauged reaches and their downstream reaches from a reach tree. Keep the reach if it has least one gauge on it or any of its upstream reaches has a gauge.
+    #
+    def filter_gauged_reaches(self, gaugedSegLst, parent=None):
+        ''' Filter gauged reaches and their downstream reaches from a reach tree. Keep the reach if it has least one gauge on it or any of its upstream reaches has a gauge.
+        
+        Parameters:
+                gaugedSegLst: list of gauged segment IDs
+                parent: parent node of the current reach, None for the root node
+        '''
+        # filter the upstream reaches of the current reach
+        children = self.children.copy() # NEED to make a copy of the children list of current reach as the children list will be modified in the recursion
+        for child in children:
+            child.filter_gauged_reaches(gaugedSegLst, self)
+
+        # process the current reach
+        # find the gauged segments on the current reach
+        gsegs = [s for s in self.seg_ids if s in gaugedSegLst]
+        
+        if len(self.children) == 0 and len(gsegs) == 0:
+            # A terminal reach with no gauged segments, remove it from the tree
+            if parent is not None:  
+                parent.remove_child(self)
+            else:
+                # current reach is the root node and the tree is empty
+                return None
+
+        return self
+
+    #
+    # Apply a function to each reach in the Deep-First order
+    # 
+    def apply_func(self, order, func, *args):
+        ''' Apply a function to each reach in the Deep-First order.
+            Parameters:
+            order: 'Depth-First' or 'Breadth-First', 
+                   'Depth-First' applies the function to the reach and its children first, then to the parent reach,
+                   'Breadth-First' applies the function to the parent reach first, then to its children. This has NOT been implemented yet.
+            func: function to be applied to each reach
+            args: additional arguments to be passed to the function
+        '''
+        if len(self.children) == 0: 
+            # A terminal reach
+            # Apply the function to the terminal reach
+            func(self, *args)
+        else:
+            # A confluence reach 
+            # Applying the function to its upstream reaches first
+            for child in self.children:
+                child.apply_func(order, func, *args)
+
+            # Apply the function to the confluence reach
+            func(self, *args)
+        return self
+
+##################################################################################################################################
+# functions to interpolate reach FSP DOF using gauged volume
+##################################################################################################################################
+
+def InterpolateReachFspDof(reach, libPath, gaugeFspDf, segInfo, libFspDf, dsPropSegNum=2, outVarName='fsp_dof'):
+    ''' Interpolate reach FSP DOF from gauged FSPs through segment volumes.
+        
+        Parameters:
+            reach: a reach node with segment IDs and gauged segments
+            libPath: path to the folder where segment's DOF-volume files are stored
+            gaugeFspDf: DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']
+            segsInfo: DataFrame with all segment information including columns [SegId, MidDsDist]
+            libFspDf: DataFrame with library FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist']
+            dsPropSegNum: number of segments to propagate the volume downstream from the most downstream gauged segment for TO & CO reaches, default is 2
+            outVarName: name of the output variable to store interpolated segment volumes, default is
+
+        Note: This function stores the interpolated reach downstream volume as an attribute of the reach in addition to the interpolated FSP DOF.
+    '''
+
+    # Create a segment-id:mid downstream distance dictionary
+    segDistDict = dict(zip(segInfo['SegId'], segInfo['MidDsDist']))
+    # all gauged segments in the library
+    libGaugedSegs = gaugeFspDf['SegId'].to_list() 
+
+    #
+    # Prepare gauged segments to include detailed gauge information on each segment
+    # Note that a segment may have multiple gauges!
+    #
+    # find unique gauged segments on the reach in the order of the reach segment IDs, i.e., downstream to upstream
+    gsegs = [s for s in reach.seg_ids if s in libGaugedSegs] 
+    # # sort gauges on each segment by downstream distance and get their information. Is the for loop implementation more efficient???
+    # gInfo = [{'FspX':       gaugeFspDf[gaugeFspDf['SegId']==s].sort_values('DsDist',ascending=False)['FspX'].to_list(), 
+    #          'FspY':        gaugeFspDf[gaugeFspDf['SegId']==s].sort_values('DsDist',ascending=False)['FspY'].to_list(), 
+    #          'FilledElev':  gaugeFspDf[gaugeFspDf['SegId']==s].sort_values('DsDist',ascending=False)['FilledElev'].to_list(),
+    #          'DsDist':      gaugeFspDf[gaugeFspDf['SegId']==s].sort_values('DsDist',ascending=False)['DsDist'].to_list(), 
+    #          'Dof':         gaugeFspDf[gaugeFspDf['SegId']==s].sort_values('DsDist',ascending=False)['Dof'].to_list()} for s in gsegs]
+    
+    gInfo = []
+    for s in gsegs:
+        # sort gauges on each segment by downstream distance and get their information.
+        g = gaugeFspDf[gaugeFspDf['SegId']==s].sort_values('DsDist',ascending=False)
+        d = {
+            'FspX':        g['FspX'].to_list(), 
+            'FspY':        g['FspY'].to_list(), 
+            'FilledElev':  g['FilledElev'].to_list(),
+            'DsDist':      g['DsDist'].to_list(), 
+            'Dof':         g['Dof'].to_list()
+        }
+        gInfo.append(d) # append the gauge information for the segment
+
+    # create a segment gauge information dictionary of {segment-id: {gauge-info}}
+    gsegs_dict = dict(zip(gsegs, gInfo)) # gsegs stores the gauged segment IDs in the order of downstream to upstream; gsegs_dict is a dictionary (NO ORDER) of gauged segments with their gauge information
+
+    #
+    # Calculate segment DOF from gauged DOFs on each gauged segment and calculate segment volume from the segment DOF
+    # 
+    # calculate mean gauged DOFs as the segment DOF
+    gdofs = [(k, gsegs_dict[k]['Dof']) for k in gsegs_dict]
+    sdofs = [(sid, sum(d)/len(d) if len(d)>0 else math.nan) for sid, d in gdofs]
+    
+    # add to the dictionary of gauged segments
+    for sid, dof in sdofs:
+        gsegs_dict[sid]['SegMidDsDist'] = segDistDict[sid] # mid downstream distance of the segment
+        gsegs_dict[sid]['SegDof'] = dof
+        gsegs_dict[sid]['SegVol'] = SegDof2Volume(libPath, sid, dof) # segment volume from the segment DOF
+        gsegs_dict[sid]['SegGaugeType'] = 'RG' # segment gauge type, 'PG' for REAL gauge; 'SG' for PSEUDO gauge, etc.
+
+    #
+    # Add the confluence segment as a gauged segment if it is not gauged but has upstream reaches with volume
+    #
+    # only apply to CC or CO reaches
+    if reach.type in ['CC', 'CO']:
+        cseg_id = reach.seg_ids[-1] # the confluence segment (i.e., the most upstream segment) on the reach
+
+        # calculate the confluence segment volume 
+        if len(gsegs_dict)==0 or (not (cseg_id in gsegs_dict)):
+            # confluence segment is not gauged, calculate the confluence segment volume from upstream reaches
+            up_volume = [child.down_volume for child in reach.children] 
+            up_volume = [v for v in up_volume if not math.isnan(v)] # remove NaN values
+            if len(up_volume) == 0: cseg_volume = math.nan # no upstream each has valid volume, set confluence segment volume to NaN
+            else: cseg_volume = sum(up_volume) # sum upstream reach volumes as the confluence segment volume
+                
+            # add the confluence segment as a gauged segment if upstream segments have volume
+            # note that the confluence segment may not have upstream reach volume (i.e., sum of upstream reach volumes is NaN)!
+            if not math.isnan(cseg_volume):
+                # put the pseudo gauge at the middle FSP of the confluence segment
+                segFsps = libFspDf[libFspDf['SegId']==cseg_id].copy()
+                segFsps['Dist'] = (segFsps['DsDist'] - segDistDict[cseg_id]).abs() # distance from FSP to the middle point
+                segFsps = segFsps.sort_values('Dist', ascending=True) # sort FSPs by the distance from the middle point
+                fspx,fspy,elev,dist = segFsps.head(1)[['FspX','FspY','FilledElev','DsDist']].values.flatten().tolist() 
+
+                # put the confluence segment into the gauged segments dictionary
+                gsegs_dict[cseg_id] = {
+                    'FspX': fspx,  
+                    'FspY': fspy,
+                    'FilledElev': elev,  
+                    'DsDist': dist,  
+                    'Dof': None,  
+                    'SegMidDsDist': segDistDict[cseg_id],
+                    'SegDof': None,  
+                    'SegVol': cseg_volume,
+                    'SegGaugeType': 'PG'
+                }
+                gsegs.append(cseg_id) # add the confluence segment to the gauged segments) 
+    
+    #
+    # Interpolate segment volume and FSP DOF along the reach
+    #
+    if len(gsegs) > 0: # only do interpolation if there is at least one gauged segment on the reach
+        # index of the last (i.e., most upstream) gauged segment on the reach
+        upIdx = reach.seg_ids.index(gsegs[-1])
+        # index of the first (i.e., most downstream) gauged segment on the reach
+        downIdx = reach.seg_ids.index(gsegs[0]) 
+        
+        #
+        # Handle the most upstream gauged segment
+        #
+        sid = reach.seg_ids[upIdx]; vol = gsegs_dict[sid]['SegVol']
+        dofs = SegVolume2FspDof(libPath, libFspDf, sid, vol)
+
+        # Level water elevation at the upstream ending gauge for segment with REAL gauge
+        if gsegs_dict[sid]['SegGaugeType'] == 'RG':
+            # get the most upstream gauge on the most upstream segment of the reach
+            gElev, gDof, gDsDist = [gsegs_dict[sid][k][0] for k in ['FilledElev','Dof','DsDist']] 
+            # get FSPs above the gauge and calculate their DOF
+            fsps = libFspDf[(libFspDf['SegId']==sid) & (libFspDf['DsDist']>=gDsDist)].copy() 
+            fsps['Dof'] = gElev + gDof - fsps['FilledElev']
+            fsps = fsps[fsps['Dof']>0][['FspId', 'Dof']] # keep only FSPs with positive DOF
+            # replace the segment FSP DOF with the level-off DOF
+            if not fsps.empty:
+                dofs.set_index('FspId', inplace=True)
+                fsps.set_index('FspId', inplace=True)
+                dofs.update(fsps)
+                dofs.reset_index(inplace=True)
+        # put segment id, volume, and FSP DOF into a list
+        up_seg = [(sid, vol, dofs)]
+
+        #
+        # Handle the most downstream gauged segment on the reach
+        #
+        if downIdx == upIdx: # only one gauged segment on the reach
+            down_seg = []
+        else:
+            # calculate the segment volume and FSP DOF for the most downstream gauged segment
+            sid = reach.seg_ids[downIdx]; vol = gsegs_dict[sid]['SegVol']
+            down_seg = [(sid, vol, SegVolume2FspDof(libPath, libFspDf, sid, vol))]
+            
+        #
+        # Handle the segments downstream of the most downstream gauged segment on the reach
+        # Propagate the volume of the most downstream gauged segment down dsPropSegNum segments
+        # 
+        post_down_segs = []
+        minIdx = 0  # for reach type of TC and CC
+        if reach.type in ['TO', 'CO']:
+            # the outletSegNum of segments above the outlet will not be interpolated
+            # minIdx = min(outletSegNum, downIdx)
+            # only propagate the volume to certain number of segments downstream of it
+            minIdx = max(downIdx-dsPropSegNum, 0) # make sure minIdx is not negative
+        if downIdx >= minIdx:
+            vol = gsegs_dict[gsegs[0]]['SegVol'] # volume of the most downstream gauged segment
+            # assign the volume to the segments downstream of the most downstream gauged segment
+            sids = reach.seg_ids[minIdx:downIdx] 
+            vols = [vol] * len(sids)
+            # calculate FSP DOF for the segments downstream of the most downstream gauged segment
+            post_down_segs = [(s, v, SegVolume2FspDof(libPath, libFspDf, s, v)) for s, v in zip(sids, vols)] 
+
+        #
+        # Handle the segments between between the first and last gauged segments on the reac
+        # Linearly interpolate segment volumes
+        #
+        between_segs = []
+        if (upIdx - downIdx) > 1: # there are segments between the first and last gauged segments on the reach
+            # Create a volume interpolator
+            gSegDists = [segDistDict[s] for s in gsegs] # mid downstream distances of the gauged segments
+            gSegVols = [gsegs_dict[s]['SegVol'] for s in gsegs] # volumes
+            VolumeInterpolator = interp1d(gSegDists, gSegVols, kind='linear', fill_value='extrapolate')
+
+            # interpolate volumes between the first and last gauged segments
+            interSegIds = reach.seg_ids[downIdx+1:upIdx] # segments to be interpolated, NOT including the first and last gauged segments
+            interSegDists = [segDistDict[s] for s in interSegIds] # mid downstream distances of the segments to be interpolated
+            interSegVols = VolumeInterpolator(interSegDists)
+            between_segs = [(s, v, SegVolume2FspDof(libPath, libFspDf, s, v)) for s, v in zip(interSegIds, interSegVols)] 
+
+        # concatenate interpolated segments, a list of (sid, vol, dof), from downstream to upstream
+        all_segs = post_down_segs + down_seg + between_segs + up_seg
+
+        # get segment FSP DOF as a list
+        sfspDofs = [item[2] for item in all_segs if item[2] is not None] # keep only segments with FSP DOF
+        fspDof = pd.concat(sfspDofs, ignore_index=True)
+        
+        # store the downstream volume of the reach. This MUST be stored as an attribute of the reach in order to calculate downstream confluence segment volume
+        reach.down_volume = all_segs[0][1] if len(all_segs) > 0 else math.nan
+
+        # store interpolated FSP DOF as an attribute of the reach
+        setattr(reach, outVarName, fspDof)
+
+        # store segment volume as an attribute for checking the code. This can be removed later!
+        reach.seg_vols = [(s, v) for s, v, dof in all_segs]
+        # store gauged segments and their attributes for checking the code. 
+        reach.gsegs_dict = gsegs_dict
+
+    else:
+        # no gauged segments on the reach, set the downstream volume to NaN
+        reach.down_volume = math.nan
+        # set interpolated FSP DOF to an empty DataFrame
+        # setattr(reach, outVarName, pd.DataFrame(columns=['FspId', 'Dof']))
+        setattr(reach, outVarName, None)
+        # set segment volumes to an empty list
+        reach.seg_vols = []
+        # set gauged segments and their volumes to an empty list
+        reach.gsegs_dict = None
+    
+    return reach
+
+#
+# Generate stream reach network as a tree where each node is a reach consisting of an ordered (down-->up stream) segments
+#
+def GenerateReachNetworkTree(seg, segInfoDf, reachId=0, parent=None):
+    ''' Generate a reach network tree from an outlet segment ID. The reach that contains the outlet/start segment is the root reach of the reach network/tree.
+        This function also assign reach type as one of the following:
+                TC: terminal (i.e., head-water) reach that flows into a confluence,
+                TO: terminal reach that flows into network outlet, 
+                CC: confluence reach that flows into a confluence,
+                CO: confluence reach that flows into network outlet.
+    Parameters:
+        seg: segment ID of the outlet/start segment
+        segInfoDf: segment info DataFrame with columns ['SegId', 'DsSegId'] which stores segment network connectivity
+        reachId: start reach ID, default is 0
+        parent: parent reach of the current reach, None for the root reach
+    '''
+    # find reach segments, i.e., segments between the start of a stream or a confluence and a confluence or the end of a stream
+    reachSegs = [seg] 
+    upSegs=segInfoDf[segInfoDf['DsSegId']==seg]['SegId'].to_list()
+    # move up stream, add segments to the reach until encounter a confluence segment
+    while len(upSegs)==1:
+        # add current seg to the reach segment list
+        seg = upSegs[0]
+        reachSegs.append(seg)
+        # move to upstream segment
+        upSegs=segInfoDf[segInfoDf['DsSegId']==seg]['SegId'].to_list()
+
+    # decide reach type
+    if parent is None:
+        if len(upSegs) > 1:
+            type = 'CO' # outlet reach that flows into a confluence, i.e., 'CO' type
+        else:
+            type = 'TO' # outlet reach that flows into outlet, i.e., 'TO' type
+    else:
+        if len(upSegs) > 1:
+            type = 'CC' # confluence reach that flows into a confluence, i.e., 'CC' type
+        else:
+            type = 'TC' # confluence reach that flows into outlet, i.e., 'TC' type
+
+    # set current reach as the root of the tree
+    root  = Reach(reachId, reachSegs)
+    root.type = type
+    reachId += 1
+    parent = root
+
+    # add upstream reach trees as the children of current reach
+    for s in upSegs:
+        t = GenerateReachNetworkTree(s, segInfoDf, reachId, parent)
+        if t is not None: 
+            root.add_child(t)
+            reachId += 1
+
+    return root
+
+#
+# Interpolate FSP DOF from gauge FSP DOFs through segment volumes
+#
+def InterpolateFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFspDf):
+    ''' Interpolate library segment volumes from gauged FSPs.
+        libFolder: folder where the library is stored
+        libName: name of the library
+        gaugeFspDf: DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']
+    '''
+    # Read in library FSP info CSV file
+    fspFile = os.path.join(libFolder, libName, fspInfoFileName)
+    libFspDf = pd.read_csv(fspFile) 
+    # print(libFspDf)
+
+    # read in segment info Excel file. segInfoColumnNames = ['SegId','CellCount','DsSegId', 'StFac','EdFac', 'Length','DsDist']
+    segInfoFile = os.path.join(libFolder, libName, segInfoFileName)
+    segInfoDf = pd.read_csv(segInfoFile,float_precision='round_trip',index_col=False)
+
+    # calculate segment mid-point downstream distance
+    segInfoDf['MidDsDist'] = segInfoDf['Length']/2.0 + segInfoDf['DsDist']
+    # segDf = segDf[['SegId','MidDsDist']] # keep only necessary columns?
+    # print(segDf)
+
+    # find the outlet stream segment in each library's stream networks
+    outletSegs = segInfoDf[segInfoDf['DsSegId']==0]['SegId'].to_list()
+    print(f'{libName} has {len(outletSegs)} stream networks.')
+
+    # interpolate reach FSP DOF for each reach network
+    libReachFspDof = [] #
+    for olSeg in outletSegs:
+        print(f'Processing stream network with outlet segment {olSeg} ...')
+
+        # generate reach network as a tree
+        tree = GenerateReachNetworkTree(olSeg, segInfoDf)
+        # tree = ReachNetwork.create_network_from_seginfo(olSeg, segInfoDf).root
+        reachLst = tree.reach_attrs_to_list(['id', 'seg_ids','type'])
+        print(f'Original reach network/tree ({len(reachLst)} reaches):')
+        print(reachLst)
+  
+        # # filter gauged reaches and their downstream reaches from the reach tree
+        # # This is NOT necessary with the current implementation of the InterpolateReachSegmentVolume function!!!
+        # tree = tree.filter_gauged_reaches(gaugedSegLst)
+        # if tree is not None:
+        #     reachLst = tree.reach_attrs_to_list(['id', 'seg_ids','type'])
+        #     print(f'Gauged reach network/tree ({len(reachLst)} reaches):')
+        #     print(reachLst)
+        # else:
+        #     print('No gauged reaches found in the stream network.')
+
+       # interpolate reach FSP DOF from gauged FSPs through segment volumes
+
+        if tree is not None: 
+            libPath = os.path.join(libFolder, libName)
+            tree.apply_func('Depth-First', InterpolateReachFspDof, libPath, gaugeFspDf, segInfoDf[['SegId','MidDsDist']], libFspDf, 2, 'func_out')
+            # print(tree.reach_attrs_to_list(['id', 'type', 'gsegs_dict','func_out'])) # for checking the output
+
+            # get interpolated FSP DOF from the reach tree
+            dvol = tree.reach_attrs_to_list(['id','down_volume','seg_vols'])
+            print(f'Interpolated reach downstream volume:')
+            print(dvol)
+            
+            netReachDof = tree.reach_attrs_to_list(['func_out'])
+            numOfFsps = sum([df.shape[0] for df_lst in netReachDof for df in df_lst if df is not None])
+            print(f'Interpolated {numOfFsps} reach FSP DOF.')
+            # print(netReachDof)
+
+            # add the network reach FSP DOF to library reach FSP DOF list
+            libReachFspDof.extend(netReachDof)
+    
+    # flatten the list of list 
+    reachFspDofLst = [x for xs in libReachFspDof for x in xs if x is not None] 
+    numOfFsps = sum([df.shape[0] for df in reachFspDofLst])
+    print(f'Interpolated {numOfFsps} FSP DOFs on {len(reachFspDofLst)} reaches in {libName} library.\n')
+    # print(reachFspDofLst)
+    
+    # create a DataFrame to store FSP ID and DOF
+    fspDof = pd.concat(reachFspDofLst, ignore_index=True)    
+
+    return fspDof
+
+# def SegDof2Volume(libPath, segId, dof):
+#     return segId
+
+# def SegVolume2Dof(libPath, segId, vol):
+#     return vol/10
+
+def SegDof2Volume(libPath, segId, dof):
+    # get segment volume using the segment ID and DOF
+    mf = os.path.join(libPath, stageVolumeFileFolderName, f'{stageVolumeFileMainName}{int(segId)}_stats.mat')
+
+    # read mat file
+    matVar = ReadMatFile(mf,stageVolumeVariableName)
+    # converting array to a dataframe
+    df = pd.DataFrame(matVar, columns=stageVolumeColumnNames) 
+
+    # Create a volume interpolator
+    intp = interp1d(df['DTF'], df['vol_cuft'], kind='linear')
+    # interpolate the volume at the given DOF
+    vol = intp(dof)
+    
+    return vol.item()
+
+def SegVolume2Dof(libPath, segId, vol):
+    # get segment volume using the segment ID and DOF
+    mf = os.path.join(libPath, stageVolumeFileFolderName, f'{stageVolumeFileMainName}{int(segId)}_stats.mat')
+
+    # read mat file
+    matVar = ReadMatFile(mf,stageVolumeVariableName)
+    # converting array to a dataframe
+    df = pd.DataFrame(matVar, columns=stageVolumeColumnNames)
+
+    # Create a volume interpolator
+    intp = interp1d(df['vol_cuft'], df['DTF'], kind='linear')
+    # interpolate the volume at the given DOF
+    dof = intp(vol)
+    
+    return dof.item()
+
+def SegVolume2FspDof(libPath, libFspDf, segId, vol):
+    # get segment volume using the segment ID and DOF
+    mf = os.path.join(libPath, stageVolumeFileFolderName, f'{stageVolumeFileMainName}{int(segId)}_stats.mat')
+
+    # read mat file
+    matVar = ReadMatFile(mf,stageVolumeVariableName)
+    # converting array to a dataframe
+    df = pd.DataFrame(matVar, columns=stageVolumeColumnNames)
+
+    # Create a volume interpolator
+    intp = interp1d(df['vol_cuft'], df['DTF'], kind='linear')
+    # interpolate the volume at the given DOF
+    dof = intp(vol)
+    
+    # select the FSPs on the segment
+    segFsps = libFspDf[libFspDf['SegId']==segId][['FspId']]
+
+    segFsps['Dof'] = dof # or use the following line to add DOF to the segment FSPs
+    # segFsps.loc[:,'Dof'] = dof
+
+    return segFsps
+
+#
+# Find upstream segments of a given segment and assign a flow volume in a segment network defined by the segment info table/DataFrame.
+# This function is used to generate CatFIM depth raster.
+#
+def FindUpstreamSegments(seg, volume, segInfoDf, dist, volumeDistributionType='SFA', distanceType='Topology'):
+    ''' Find upstream segments of a given segment and assign a flow volume in a segment network defined by the segment info table/DataFrame
+    Parameters:
+        seg: segment ID of the outlet/start segment
+        volume: volume of the segment
+        segInfoDf: segment info DataFrame with columns ['SegId', 'DsSegId'] which stores segment network connectivity
+        dist: distance (number of segments) to look upstream
+        volumeDistributionType: types ('SFA'--same for all, 'WTA'--winner takes all, 'EQU'--equal distribution, or 'FAC'--flow accumulation based) of volume distribution to upstream segments at a confluence, default is 'WTA'.
+        distanceType: types ('Topology'--(0, inf), 'Network', 'Euclidean') of distance to use, default is 'Topology'. This is not used in this function but can be used in the future for different distance calculations.
+    Returns:
+        a list of upstream segment IDs        
+    '''
+    # initialize the upstream segments list and distance
+    allUpSegs = []; d = 0
+    # move upstream, add segments to the list until exceeding the distance or encountering a confluence
+    upSegs=segInfoDf[segInfoDf['DsSegId']==seg]['SegId'].to_list()
+    while len(upSegs)==1 and (d < dist):
+        # add current seg to the list
+        seg = upSegs[0]
+        allUpSegs.append((seg, volume))
+        d += 1
+        # if the distance is reached, stop moving upstream
+        if d >= dist:
+            break
+        # move to upstream segment
+        upSegs=segInfoDf[segInfoDf['DsSegId']==seg]['SegId'].to_list()
+
+    if d >= dist or len(upSegs) == 0:
+        # if the distance is reached or no more upstream segments, return the upstream segment list
+        return allUpSegs
+    else:
+        # encounter a confluence, find the segments from all upstream streams
+        for s in upSegs:
+            t = FindUpstreamSegments(s, volume, segInfoDf, dist - d)
+            allUpSegs.extend(t)
+
+    return allUpSegs
+
+#
+# Find downstream segments of a given segment and assign a flow volume in a segment network defined by the segment info table/DataFrame.
+# This function is used to generate CatFIM depth raster.
+#
+def FindDownstreamSegments(seg, volume, segInfoDf, dist, volumeDistributionType='SFA', distanceType='Topology'):
+    ''' Find downstream segments of a given segment and assign a flow volume in a segment network defined by the segment info table/DataFrame
+    Parameters:
+        seg: segment ID of the outlet/start segment
+        volume: volume of the segment
+        segInfoDf: segment info DataFrame with columns ['SegId', 'DsSegId'] which stores segment network connectivity
+        dist: distance (number of segments) to look downstream
+        volumeDistributionType: types ('SFA'--same for all, 'WTA'--winner takes all, 'EQU'--equal distribution, or 'FAC'--flow accumulation based) of volume distribution to upstream segments at a confluence, default is 'WTA'.
+        distanceType: types ('Topology'--(0, inf), 'Network', 'Euclidean') of distance to use, default is 'Topology'. This is not used in this function but can be used in the future for different distance calculations.
+    Returns:
+        a list of downstream segment IDs
+    '''
+    # initialize the downstream segments list and distance
+    allDownSegs = []; d = 0
+    # move downstream, add segments to the list until exceeding the distance or encountering a confluence
+    downSegs=segInfoDf[segInfoDf['SegId']==seg]['DsSegId'].to_list()
+    while len(downSegs)==1 and (d < dist):
+        # add current seg to the list
+        seg = downSegs[0]
+        allDownSegs.append((seg, volume))
+        d += 1
+        # if the distance is reached, stop moving downstream
+        if d >= dist:
+            break
+        # move to downstream segment
+        downSegs=segInfoDf[segInfoDf['SegId']==seg]['DsSegId'].to_list()
+
+    if d >= dist or len(downSegs) == 0:
+        # if the distance is reached or no more downstream segments, return the downstream segment list
+        return allDownSegs
+    else:
+        # encounter a confluence, find the segments from all upstream streams
+        for s in downSegs:
+            t = FindDownstreamSegments(s, volume, segInfoDf, dist - d)
+            allDownSegs.extend(t)
+
+    return allDownSegs
+
+#
+# Interpolate FSP DOF for gauge category flood inundation mapping through segment volumes
+#
+def InterpolateCategoryFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFspDf, upDist=1, dsDist=2):
+    ''' Interpolate library segment volumes from gauged FSPs.
+        libFolder: folder where the library is stored
+        libName: name of the library
+        gaugeFspDf: DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']
+    '''
+    # Read in library FSP info CSV file
+    fspFile = os.path.join(libFolder, libName, fspInfoFileName)
+    libFspDf = pd.read_csv(fspFile) 
+    # print(libFspDf)
+
+    # read in segment info Excel file. segInfoColumnNames = ['SegId','CellCount','DsSegId', 'StFac','EdFac', 'Length','DsDist']
+    segInfoFile = os.path.join(libFolder, libName, segInfoFileName)
+    segInfoDf = pd.read_csv(segInfoFile,float_precision='round_trip',index_col=False)
+
+    # find gauged segments in the library's stream networks
+    gaugedSegments = gaugeFspDf['SegId'].to_list()
+    print(f'{libName} has {len(gaugedSegments)} gauged segments.')
+
+    # interpolate FSP DOF for each gauged segment
+    allGaugeFspDofList = [] #
+    for gdSeg in gaugedSegments:
+        print(f'Processing gauged segment {gdSeg} ...')
+
+        # calculate the volue of the gauged segment
+        segDof = gaugeFspDf[gaugeFspDf['SegId']==gdSeg]['Dof'].mean()
+        segVol = SegDof2Volume(os.path.join(libFolder, libName), gdSeg, segDof)
+        print(f'Segment {gdSeg} has DOF of {segDof:.2f} ft and volume of {segVol:.2f} acre-ft.')
+
+        # find the upstream segments within certain distance 
+        upSegs = FindUpstreamSegments(gdSeg, segVol, segInfoDf, upDist)
+        print(f'Segment {gdSeg} has {len(upSegs)} upstream segments within {upDist} segments: {upSegs}')
+        # find the downstream segments within certain distance
+        downSegs = FindDownstreamSegments(gdSeg, segVol, segInfoDf, dsDist)
+        print(f'Segment {gdSeg} has {len(downSegs)} downstream segments within {dsDist} segments: {downSegs}')
+        # combine the upstream and downstream segments with the gauged segment
+        allSegs = upSegs + [(gdSeg, segVol)] + downSegs
+        print(f'Segment {gdSeg} has {len(allSegs)} upstream and downstreamsegments: {allSegs}')
+
+        # get all segment IDs
+        allSegIds = [s for s, v in allSegs]
+        # print(f'Segment {gdSeg} has {len(allSegIds)} segments: {allSegIds}')
+        # calculate FSP DOF for all the segments
+        segFspDofList = [SegVolume2FspDof(os.path.join(libFolder, libName), libFspDf, s, v) for s, v in allSegs] 
+        # combine the FSP DOF DataFrames in the list
+        segFspDofs = pd.concat(segFspDofList, ignore_index=True) #.reset_index(drop=True)
+        print(f'Interpolated FSP DOF for segment {gdSeg} with {segFspDofs.shape[0]} FSPs.', segFspDofs)
+
+        # add the network reach FSP DOF to library reach FSP DOF list
+        allGaugeFspDofList.append(segFspDofs)
+
+    # create a DataFrame to store FSP ID and DOF
+    fspDof = allGaugeFspDofList[0] if len(allGaugeFspDofList)>0 else pd.DataFrame(columns=['FspId', 'Dof'])
+
+    return fspDof
+
+#
+# Test volume-based DOF interpolation
+#
+if __name__ == '__main__':
+    # tiled library folder
+    # libFolder = r'D:\fldpln\ks2024\libraries_tiled10km'
+    libFolder =  'E:/fldpln/Overland_Park/jo_op'
+
+    # library to be mapped, i.e., gauge stages will be snapped to the FSPs in this library.
+    # libs2Map = ['neosho'] #['arkcim', 'bigblue', 'ksmo', 'neosho', 'osage', 'republican', 'smoky', 'verdigris']
+    libs2Map = ['tiledlib']
+        
+    # read gauges from PostgreSQL database
+    # print('Get gauge stage from database ...')
+    # gaugesDf = GetGaugeStageFromDatabase(pg_db_sql_con_file, 'Nowcast')
+    # print(f'Number of gauges: {len(gaugesDf)}')
+
+    # read gauges from excel file
+    # KS library gauges
+    # gaugesDf = pd.read_excel(r"E:\fldpln\volume\lower_neosho_gauges.xlsx", sheet_name='05_27_noon_2019_10gauges')
+    # OP gauges
+    # gaugesDf = pd.read_excel(r"E:\fldpln\Overland_Park\tmhk_creek_gauges.xlsx", sheet_name='07_21_am_3gauges') # event flood
+    gaugesDf = pd.read_excel(r"E:\fldpln\Overland_Park\tmhk_creek_gauges.xlsx", sheet_name='Cat_Flood_16022') # category flood
+    # print(gaugesDf)
+    print(gaugesDf)
+ 
+    # map each library
+    for libName in libs2Map:
+        # find gauged segments
+        # gaugeFspDf = SnapGauges2Fsps(libFolder,[libName],gaugesDf,snapDist=350,gaugeXField='x',gaugeYField='y',fspColumns=['FspX','FspY','SegId'])
+        gaugeFspDf = SnapGauges2Fsps(libFolder,[libName],gaugesDf,snapDist=350,gaugeXField='x',gaugeYField='y',fspColumns=['SegId','FspX','FspY','FilledElev','DsDist'])
+        print(gaugeFspDf)
+
+        # calculate gauge FSP's DOF
+        gaugeFspDf['Dof'] = gaugeFspDf['stage_elevation'] - gaugeFspDf['FilledElev']
+        # keep only necessary columns for gauge FSPs
+        gaugeFspDf = gaugeFspDf[['lib_name','SegId','FspX','FspY','FilledElev','DsDist','Dof']] # Note that 'lib_name','FspX', 'FspY' together uniquely identify a FSP!!!
+        # show info
+        print('Snapped gauge FSPs with their DOFs:')
+        print(gaugeFspDf)
+
+        # # Add gauged segments (use verdigris as an example) to test interpolation between gauged segments
+        # # segment 210 is a confluence segment
+        # r = gaugeFspDf.iloc[0].copy() # copy the first row
+        # r['SegId'] = 212
+        # gaugeFspDf.loc[len(gaugeFspDf)] = r
+        # r['SegId'] = 214
+        # gaugeFspDf.loc[len(gaugeFspDf)] = r
+        # print(gaugeFspDf)
+
+        # # add an additional gauge to a segment to test the case where a segment has multiple gauges
+        # r = gaugeFspDf.iloc[0].copy() # copy the first row    
+        # r['SegId'] = 200
+        # r['Dof'] = 50
+        # gaugeFspDf.loc[len(gaugeFspDf)] = r
+        # print(gaugeFspDf)
+
+        gaugedSegLst = gaugeFspDf['SegId'].to_list()
+        print(f'Number of gauged segments: {len(gaugedSegLst)}')
+
+        fspDof = InterpolateFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFspDf) # event flood mapping
+        fspDof = InterpolateCategoryFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFspDf) # category flood mapping
+        print(f'Interpolated FSP DOFs for {libName} library:')
+        print(fspDof)

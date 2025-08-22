@@ -855,10 +855,16 @@ def GetAhpsGaugeStageFromWebService(ahpsIds, fcstDays=0, histFloodType=None):
     # # Select a WFS service
     # sUrl = ahpsWfsServices[0]
 
-    # NWS/NOAA/AHPS AWS feature service layers
-    # fields in the features are available best through the shapefiles from https://water.weather.gov/ahps/download.php
+    # NWS/NOAA/AHPS AWS feature service layers. Fields in the features are available best through the shapefiles from https://water.weather.gov/ahps/download.php
+    # Old feature service layers were shut down on 5/28/2024. They were changed and see email with Don Rinker in 8/7/2024.
+    # Note that we should use their new API at https://api.water.noaa.gov/nwps/v1/docs/#/
+    # nws_obs_wfs  = 'https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/riv_gauges/MapServer/0' # current
+    # nws_24hr_wfs = 'https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/riv_gauges/MapServer/1' # 1 day
+    # ...
+    # nws_72hr_wfs = 'https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/riv_gauges/MapServer/14' # 14 day
+
     # Meaning of the WFS service ID: 0--Observed; 1-- forecast 1-day; ...; 14--forecast 14-day; 15--same as 14?
-    ahpsAwsWfsServices = ['https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/ahps_riv_gauges/MapServer/{}/query'.format(id) for id in range(16)]
+    ahpsAwsWfsServices = ['https://mapservices.weather.noaa.gov/eventdriven/rest/services/water/riv_gauges/MapServer/{}/query'.format(id) for id in range(16)]
     
     #
     # Prepare service query
@@ -876,35 +882,42 @@ def GetAhpsGaugeStageFromWebService(ahpsIds, fcstDays=0, histFloodType=None):
         return None
         
     # send request
-    response = requests.get(sUrl, params=payload, verify=False) # trust the service
     # print(response.request.url)
- 
-    # get the features and put them into a dataframe
-    features = response.json()['features']
-    attributes = [x['attributes'] for x in features]
+    response = requests.get(sUrl, params=payload, verify=False) # trust the service
+    
+    if response.status_code != 200: # something is wrong
+        print(f"Request failed with status code: {response.status_code}")
+        return pd.DataFrame() # return an empty dataframe
+    else:
+        # get the features and put them into a dataframe
+        features = response.json()['features']
+        attributes = [x['attributes'] for x in features]
 
-    # select attributes based on stage type
-    if histFloodType is None:
-        # get forecast stage
-        if fcstDays == 0:
-            df = pd.DataFrame(attributes)[['gaugelid','observed','obstime']] #,'status']]
-            df = df.rename(columns={'gaugelid':'stationid','observed':'stage_ft','obstime':'stage_time'})
-        else:
-            df = pd.DataFrame(attributes)[['gaugelid','forecast','fcsttime']] #,'status']]
-            df = df.rename(columns={'gaugelid':'stationid','forecast':'stage_ft','fcsttime':'stage_time'})
-    elif histFloodType in ['Major', 'Moderate', 'Flood', 'Action']:
-        # get historical flood stage
-        df = pd.DataFrame(attributes)[['gaugelid',histFloodType.lower()]]
-        df = df.rename(columns={'gaugelid':'stationid',histFloodType.lower():'stage_ft'})
-        df['stage_time'] = ''
+        # select attributes based on stage type
+        if histFloodType is None:
+            # get forecast stage
+            if fcstDays == 0:
+                df = pd.DataFrame(attributes)[['gaugelid','observed','obstime']] #,'status']]
+                df = df.rename(columns={'gaugelid':'stationid','observed':'stage_ft','obstime':'stage_time'})
+            else:
+                df = pd.DataFrame(attributes)[['gaugelid','forecast','fcsttime']] #,'status']]
+                df = df.rename(columns={'gaugelid':'stationid','forecast':'stage_ft','fcsttime':'stage_time'})
+        elif histFloodType in ['Major', 'Moderate', 'Flood', 'Action']:
+            # get historical flood stage
+            df = pd.DataFrame(attributes)[['gaugelid',histFloodType.lower()]]
+            df = df.rename(columns={'gaugelid':'stationid',histFloodType.lower():'stage_ft'})
+            df['stage_time'] = ''
 
-    # turn field "stage_ft" into numeric
-    df['stage_ft'] = pd.to_numeric(df['stage_ft'], errors='coerce')
+        # turn field "stage_ft" into numeric
+        df['stage_ft'] = pd.to_numeric(df['stage_ft'], errors='coerce')
 
-    # reset index
-    df.reset_index(drop=True,inplace=True)
+        # Convert to stage time to tz-aware
+        df["stage_time"] = pd.to_datetime(df["stage_time"], errors="coerce", format="%Y-%m-%d %H:%M:%S").dt.tz_localize('UTC')  # 'coerce' converts invalid values to NaT
 
-    return df
+        # reset index
+        df.reset_index(drop=True,inplace=True)
+
+        return df
 
 # #
 # # Get AHPS gauge stage from web service
@@ -949,8 +962,8 @@ def GetUsgsGaugeStageFromWebService(usgsIds, startDate='Now', endDate='MostRecen
     
         Args:
             usgsIds (list): a list of USGS IDs.
-            startDate (str): start date of the query. Default to 'Now'.
-            endDate (str): end date of the query. Default to 'MostRecent'.
+            startDate (str): start date (in format of '2018-09-02') of the query. Default to 'Now'. When it's "Now", endDate must be the days (an integer) from now. 
+            endDate (str): end date (in format of '2018-09-02') of the query. Default to 'MostRecent'. 'MostRecent' can only be used with "Now" as startDate.
 
         Return:
             data frame: a data frame of USGS gauge stage.
@@ -1027,6 +1040,15 @@ def GetUsgsGaugeStageFromWebService(usgsIds, startDate='Now', endDate='MostRecen
     # turn field "stage_ft" into numeric
     df['stage_ft'] = pd.to_numeric(df['stage_ft'], errors='coerce')
 
+    # convert time to UTC
+    # Convert to datetime (automatically recognizes timezone by using utc=True)
+    df["stage_time"] = pd.to_datetime(df["stage_time"], errors="coerce", utc=True)  # 'coerce' converts invalid values to NaT
+    # df["stage_time"] = pd.to_datetime(df["stage_time"], errors="coerce", format="%Y-%m-%dT%H:%M:%S.%f%z") # somehow doesn't work
+        
+    # Convert to UTC time
+    # df["stage_time"] = df["stage_time"].dt.tz_convert("UTC") # already tz-aware. not necessary
+    # df["stage_time"] = df["stage_time"].dt.tz_localize(None) # remove tz-aware
+
     # reset index
     df.reset_index(drop=True,inplace=True)
 
@@ -1065,92 +1087,6 @@ def GetUsgsGaugeStageFromWebService(usgsIds, startDate='Now', endDate='MostRecen
 #     return df
 
 #
-# read AHPS/USGS gauge stage from their respective web services
-#
-def GetAhpsUsgsGaugeStageFromWebServices(gaugeIdOrgs, whichStage='Nowcast', periodInDays=7):
-    """ Read AHPS/USGS gauge stage from their respective web services. 
-    
-        Args:
-            gaugeIdOrgs (data frame): a data frame with columns of ["stationid", "organization"]. stationid is either USGS, AHPS, or the combination of their gauge IDs. Organization is either USGS, AHPS or both.
-            whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major.
-            periodInDays (int): period in days (0 - 14) for forecast. Default to 7.
-
-        Return:
-            data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time.
-    """
-
-    # get gauge id of each organization and put them into 4 gauge ID groups
-    ahpsIds = [] # only AHPS gauges
-    usgsIds = [] # only USGS gauges 
-    commAhpsIds=[]; commUsgsIds=[] # both AHPS and USGS gauges
-    idDict={} # dict to map common gauges from AHPS or USGS ID to combined ID (e.g., sid)
-    for row in gaugeIdOrgs.itertuples(): 
-        sid, org = row.stationid, row.organization
-        if 'AHPS' in org: 
-            if org == 'AHPS':
-                # only AHPS
-                ahpsId = sid
-                ahpsIds.append(ahpsId)
-                idDict.update({ahpsId:sid})
-            else: # common gauges
-                commUsgsId, commAhpsId = sid.split(',')
-                commAhpsIds.append(commAhpsId)
-                commUsgsIds.append(commUsgsId)
-                idDict.update({commAhpsId:sid})
-                idDict.update({commUsgsId:sid})
-        elif org == 'USGS':
-            # only USGS
-            usgsId = sid
-            usgsIds.append(sid)
-            idDict.update({usgsId:sid})
-    # print(f'AHPS gauges: {len(ahpsIds)}, USGS gauges: {len(usgsIds)}')
-
-    #
-    # Get gauge stage from their web services
-    #
-    # Use different gauges for different stage types
-    # Action, Flood, Moderate, Major: only AHPS + common AHPS
-    # Nowcast : only AHPS + common AHPS + only USGS
-    # Forecast: only AHPS + common AHPS
-    # Postcast: only USGS + common USGS
-    #
-    ahpsIds = ahpsIds + commAhpsIds
-    # use just AHPS gauges
-    if whichStage in ['Action', 'Flood', 'Moderate', 'Major']:
-        gaugeStages = GetAhpsGaugeStageFromWebService(ahpsIds,fcstDays=0,histFloodType=whichStage)
-
-    # use all the gauges
-    if whichStage in ['Nowcast']:
-        ahpsStages = GetAhpsGaugeStageFromWebService(ahpsIds,fcstDays=0)
-        print(f'AHPS gauges with stages: {len(ahpsStages)}')
-        usgsStages = GetUsgsGaugeStageFromWebService(usgsIds,startDate='Now',endDate='MostRecent')
-        print(f'USGS gauges with stages: {len(usgsStages)}')
-        # combine the gauges
-        gaugeStages = pd.concat([ahpsStages, usgsStages])
-        
-    # use just AHPS gauges
-    if whichStage in ['Forecast']:
-        gaugeStages = GetAhpsGaugeStageFromWebService(ahpsIds, periodInDays)
-            
-    # use just USGS gauges
-    if whichStage in ['Postcast']:
-        gaugeStages = GetUsgsGaugeStageFromWebService(usgsIds+commUsgsIds, startDate='Now',endDate=periodInDays)
-        # find the max stage within the time period
-        maxStages = gaugeStages.groupby(['stationid'],as_index=False).agg({'stage_ft':'max'})
-        # find the most recent time with the max stage
-        df = pd.merge(gaugeStages, maxStages, how='inner', on=['stationid','stage_ft'])
-        gaugeStages = df.groupby(['stationid'], as_index=False).agg({'stationid':'first','stage_ft':'first','stage_time':'max'})
-                
-    # change stationid to the original id (i.e., AHPS ID + USGS ID)
-    gaugeStages.reset_index(drop=True,inplace=True)
-    for idx, row in gaugeStages.iterrows():    
-        gaugeStages.at[idx,'stationid'] = idDict[row['stationid']]
-    # print(gaugeStages)
-    # gaugeStages.to_excel('gauge_stages.xlsx', index=False)
-
-    return gaugeStages
-
-#
 # read gauge stage from AHPS or USGS web services
 #
 def GetGaugeStageFromAhpsUsgsWebServices(gaugeFile, whichStage='Nowcast'):
@@ -1158,7 +1094,7 @@ def GetGaugeStageFromAhpsUsgsWebServices(gaugeFile, whichStage='Nowcast'):
     
         Args:
             gaugeFile (str): file name of gauge information.
-            whichStage (str): Nowcast, Forecast, Postcast, and historical stages Action, Flood, Moderate, Major. Default to 'Nowcast'.
+            whichStage (str): Nowcast, Forecast, Hindcast, and historical stages Action, Flood, Moderate, Major. Default to 'Nowcast'.
 
         Return:
             data frame: a data frame of gauge stage with the fields of stationid, x, y, stage_elevation, stage_time, status.
@@ -1208,7 +1144,7 @@ def GetGaugeStageFromAhpsUsgsWebServices(gaugeFile, whichStage='Nowcast'):
     # calculate stage elevation based on "whichStage"
     stageFieldDic = {'Nowcast': 'stage_ft',
                 'Forecast': 'stage_ft',
-                'Postcast': 'stage_ft',
+                'Hindcast': 'stage_ft',
                 'Action': 'action_stage',
                 'Flood': 'flood_stage',
                 'Moderate': 'moderate_stage',
