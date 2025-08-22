@@ -3102,6 +3102,7 @@ def InterpolateCategoryFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFsp
 
     return fspDof
 
+''' # Commented out because of GitHub test this code on Linux/ubuntu which has problem of installing GDAL!!!
 #
 # Test volume-based DOF interpolation
 #
@@ -3166,3 +3167,4 @@ if __name__ == '__main__':
         fspDof = InterpolateCategoryFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFspDf) # category flood mapping
         print(f'Interpolated FSP DOFs for {libName} library:')
         print(fspDof)
+'''
