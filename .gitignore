@@ -105,3 +105,20 @@ ENV/
 
 # IDE settings
 .vscode/
+
+# current files to improve the package
+volume_test.py
+volume_reach.py
+test_interp1d.py
+interpolated_FSP_DOF*.csv
+interpolated_SegIds*.csv
+
+# old python files when implementing the volume-based interpolation
+volume.py
+volume_reach_old.py
+volume_reach copy.py
+volume_reach copy 2.py
+volume_reach copy 3.py
+volume_reach copy 4.py
+volume_reach copy 5.py
+volume_reach copy 6.py

@@ -26,9 +26,11 @@ from rasterio.io import MemoryFile
 from rio_cogeo.cogeo import cog_translate
 from rio_cogeo.profiles import cog_profiles
 
-# import the common module from THIS package
-from .common import *
-from .tile import *
+# import modules from THIS package
+# from .common import *
+# from .tile import *
+from fldpln.common import *
+from fldpln.tile import *
 
 ############################################################################################################################################
 # Functions
@@ -2523,7 +2525,54 @@ class Reach:
                 # current reach is the root node and the tree is empty
                 return None
 
-        return self
+        return parent
+    
+    #
+    # filter gauged reaches and their downstream reaches from a reach tree. Keep the reach if it has least one gauge on it or any of its upstream reaches has a gauge.
+    # At the same time, merge the reaches which have only one upstream reach toward their upstream reaches.
+    #
+    def filter_merge_gauged_reaches(self, gaugedSegLst, parent=None):
+        ''' filter gauged reaches and their downstream reaches from a reach tree. Keep the reach if it has least one gauge on it or any of its upstream reaches has a gauge.
+            At the same time, merge the reaches which have only one upstream reach toward their upstream reaches.
+        Parameters:
+                gaugedSegLst: list of gauged segment IDs
+                parent: parent node of the current reach, None for the root node
+        '''
+        # filter the upstream reaches of the current reach
+        children = self.children.copy() # NEED to make a copy of the children list of current reach as the children list will be modified in the recursion
+        for child in children:
+            child.filter_merge_gauged_reaches(gaugedSegLst, self)
+
+        # process the current reach
+        # find the gauged segments on the current reach
+        gsegs = [s for s in self.seg_ids if s in gaugedSegLst]
+        
+        if len(self.children) == 0 and len(gsegs) == 0:
+            # A terminal reach with no gauged segments, remove it from the tree
+            if parent is not None:  
+                parent.remove_child(self)
+            else:
+                # current reach is the root node/reach and the tree is empty
+                return None
+        elif len(self.children) == 1:
+            # current reach only has one upstream reach, merge it toward the upstream reach (i.e., keep upstream reach's ID)
+            child = self.children[0]
+            # add the current reach's segment IDss to its upstream reach's segment IDs
+            child.seg_ids = self.seg_ids + child.seg_ids # downstream to upstream
+            # merge reach types: TC, TO, CC, or CO where T is for terminal (i.e., head-water), C is for confluence reach, and O is for outlet
+            child.type = child.type[0] + self.type[1]
+
+            # remove the current reach from its parent reach
+            if parent is not None:
+                # add the current reach's upstream reaches to its parent reach
+                parent.children.append(child)
+                # remove the current reach from its parent reach
+                parent.remove_child(self)
+            else:
+                # current reach is the root node/reach; set parent to the merged upstream reach
+                parent = child
+
+        return parent
 
     #
     # Apply a function to each reach in the Deep-First order
@@ -2718,7 +2767,7 @@ def InterpolateReachFspDof(reach, libPath, gaugeFspDf, segInfo, libFspDf, dsProp
             post_down_segs = [(s, v, SegVolume2FspDof(libPath, libFspDf, s, v)) for s, v in zip(sids, vols)] 
 
         #
-        # Handle the segments between between the first and last gauged segments on the reac
+        # Handle the segments between between the first and last gauged segments on the reach
         # Linearly interpolate segment volumes
         #
         between_segs = []
@@ -2822,11 +2871,13 @@ def GenerateReachNetworkTree(seg, segInfoDf, reachId=0, parent=None):
 #
 # Interpolate FSP DOF from gauge FSP DOFs through segment volumes
 #
-def InterpolateFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFspDf):
+def InterpolateFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFspDf, netType='Filtered', dsPropSegNum=2):
     ''' Interpolate library segment volumes from gauged FSPs.
         libFolder: folder where the library is stored
         libName: name of the library
         gaugeFspDf: DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']
+        netType: type of reach network, either 'Filtered' or 'Full'
+        dsPropSegNum: number of segments to propagate the volume downstream from the most downstream gauged segment for TO & CO reaches, default to 2.
     '''
     # Read in library FSP info CSV file
     fspFile = os.path.join(libFolder, libName, fspInfoFileName)
@@ -2858,21 +2909,28 @@ def InterpolateFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFspDf):
         print(f'Original reach network/tree ({len(reachLst)} reaches):')
         print(reachLst)
   
-        # # filter gauged reaches and their downstream reaches from the reach tree
-        # # This is NOT necessary with the current implementation of the InterpolateReachSegmentVolume function!!!
-        # tree = tree.filter_gauged_reaches(gaugedSegLst)
-        # if tree is not None:
-        #     reachLst = tree.reach_attrs_to_list(['id', 'seg_ids','type'])
-        #     print(f'Gauged reach network/tree ({len(reachLst)} reaches):')
-        #     print(reachLst)
-        # else:
-        #     print('No gauged reaches found in the stream network.')
+        # filter and merge gauged reaches and their downstream reaches from the reach tree
+        if netType == 'Filtered':
+            gaugedSegLst = gaugeFspDf['SegId'].to_list()
+            # print(f'Number of gauged segments: {len(gaugedSegLst)}')
+            tree = tree.filter_merge_gauged_reaches(gaugedSegLst)
+            if tree is not None:
+                reachLst = tree.reach_attrs_to_list(['id', 'seg_ids','type'])
+                print(f'filtered and merged reach network/tree ({len(reachLst)} reaches):')
+                print(reachLst)
+            else:
+                print('No gauged reaches found in the stream network.')
+        elif netType == 'Full':
+            # use the full reach network, do nothing
+            pass
+        else: # exit the function
+            print(f'Error: netType {netType} is not recognized! It must be either "Filtered" or "Full".')
+            return
 
        # interpolate reach FSP DOF from gauged FSPs through segment volumes
-
         if tree is not None: 
             libPath = os.path.join(libFolder, libName)
-            tree.apply_func('Depth-First', InterpolateReachFspDof, libPath, gaugeFspDf, segInfoDf[['SegId','MidDsDist']], libFspDf, 2, 'func_out')
+            tree.apply_func('Depth-First', InterpolateReachFspDof, libPath, gaugeFspDf, segInfoDf[['SegId','MidDsDist']], libFspDf, dsPropSegNum, 'func_out')
             # print(tree.reach_attrs_to_list(['id', 'type', 'gsegs_dict','func_out'])) # for checking the output
 
             # get interpolated FSP DOF from the reach tree

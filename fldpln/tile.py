@@ -19,7 +19,7 @@ import h5py # for reading some .mat file
 from shapely.geometry import LineString
 
 # import the common module from THIS package
-from .common import *
+from fldpln.common import *
 
 ############################################################################################################################################
 # Functions--convert segment-based library to tiled library

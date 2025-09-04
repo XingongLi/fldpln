@@ -20,7 +20,7 @@ from pyproj import CRS
 # from osgeo import ogr 
 
 # import the mapping module from THIS package
-from .mapping import * 
+from fldpln.mapping import * 
 
 #
 # Get USGS gauges. This function get USGS gauges within a box and project them
