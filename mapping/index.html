@@ -2212,7 +2212,7 @@ this function assumes gauge FSPs already have their DOF calculated!</p>
 
 
 <h2 id="fldpln.mapping.InterpolateFspDofFromGaugeThroughVolume" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">InterpolateFspDofFromGaugeThroughVolume</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span> <span class="n">libName</span><span class="p">,</span> <span class="n">gaugeFspDf</span><span class="p">)</span></code>
+<code class="highlight language-python"><span class="n">InterpolateFspDofFromGaugeThroughVolume</span><span class="p">(</span><span class="n">libFolder</span><span class="p">,</span> <span class="n">libName</span><span class="p">,</span> <span class="n">gaugeFspDf</span><span class="p">,</span> <span class="n">netType</span><span class="o">=</span><span class="s1">&#39;Filtered&#39;</span><span class="p">,</span> <span class="n">dsPropSegNum</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></code>
 
 
 <a href="#fldpln.mapping.InterpolateFspDofFromGaugeThroughVolume" class="headerlink" title="Permanent link">&para;</a></h2>
@@ -2222,7 +2222,9 @@ this function assumes gauge FSPs already have their DOF calculated!</p>
       <p>Interpolate library segment volumes from gauged FSPs.
 libFolder: folder where the library is stored
 libName: name of the library
-gaugeFspDf: DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']</p>
+gaugeFspDf: DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']
+netType: type of reach network, either 'Filtered' or 'Full'
+dsPropSegNum: number of segments to propagate the volume downstream from the most downstream gauged segment for TO &amp; CO reaches, default to 2.</p>
 
     </div>
 
