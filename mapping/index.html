@@ -2116,11 +2116,66 @@ distance-(horizontal) or elevation-based (vertical) linear interpolation.</p>
 
     <div class="doc doc-contents ">
 
-      <p>Interpolate library segment volumes from gauged FSPs.
-libFolder: folder where the library is stored
-libName: name of the library
-gaugeFspDf: DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']</p>
+      <p>Interpolate library segment volumes from gauged FSPs.</p>
 
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>libFolder</code></td>
+        <td></td>
+        <td><p>folder where the library is stored</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>libName</code></td>
+        <td></td>
+        <td><p>name of the library</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>gaugeFspDf</code></td>
+        <td></td>
+        <td><p>DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>upDist</code></td>
+        <td></td>
+        <td><p>upstream distance to search for segments (default is 1)</p></td>
+        <td><code>1</code></td>
+      </tr>
+      <tr>
+        <td><code>dsDist</code></td>
+        <td></td>
+        <td><p>downstream distance to search for segments (default is 2)</p></td>
+        <td><code>2</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>DataFrame with interpolated FSP DOF values</p></td>
+    </tr>
+  </tbody>
+</table>
     </div>
 
   </div>
@@ -2219,13 +2274,66 @@ this function assumes gauge FSPs already have their DOF calculated!</p>
 
     <div class="doc doc-contents ">
 
-      <p>Interpolate library segment volumes from gauged FSPs.
-libFolder: folder where the library is stored
-libName: name of the library
-gaugeFspDf: DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']
-netType: type of reach network, either 'Filtered' or 'Full'
-dsPropSegNum: number of segments to propagate the volume downstream from the most downstream gauged segment for TO &amp; CO reaches, default to 2.</p>
+      <p>Interpolate library segment volumes from gauged FSPs.</p>
 
+<p><strong>Parameters:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+      <th>Default</th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr>
+        <td><code>libFolder</code></td>
+        <td></td>
+        <td><p>folder where the library is stored</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>libName</code></td>
+        <td></td>
+        <td><p>name of the library</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>gaugeFspDf</code></td>
+        <td></td>
+        <td><p>DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']</p></td>
+        <td><em>required</em></td>
+      </tr>
+      <tr>
+        <td><code>netType</code></td>
+        <td></td>
+        <td><p>type of reach network, either 'Filtered' or 'Full'</p></td>
+        <td><code>&#39;Filtered&#39;</code></td>
+      </tr>
+      <tr>
+        <td><code>dsPropSegNum</code></td>
+        <td></td>
+        <td><p>number of segments to propagate the volume downstream from the most downstream gauged segment for TO &amp; CO reaches, default to 2.</p></td>
+        <td><code>2</code></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>Returns:</strong></p>
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <td><p>DataFrame with interpolated FSP DOF values</p></td>
+    </tr>
+  </tbody>
+</table>
     </div>
 
   </div>
