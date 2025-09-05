@@ -2873,11 +2873,15 @@ def GenerateReachNetworkTree(seg, segInfoDf, reachId=0, parent=None):
 #
 def InterpolateFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFspDf, netType='Filtered', dsPropSegNum=2):
     ''' Interpolate library segment volumes from gauged FSPs.
+    Parameters:
         libFolder: folder where the library is stored
         libName: name of the library
         gaugeFspDf: DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']
         netType: type of reach network, either 'Filtered' or 'Full'
         dsPropSegNum: number of segments to propagate the volume downstream from the most downstream gauged segment for TO & CO reaches, default to 2.
+
+    returns:
+        DataFrame with interpolated FSP DOF values
     '''
     # Read in library FSP info CSV file
     fspFile = os.path.join(libFolder, libName, fspInfoFileName)
@@ -3106,9 +3110,15 @@ def FindDownstreamSegments(seg, volume, segInfoDf, dist, volumeDistributionType=
 #
 def InterpolateCategoryFspDofFromGaugeThroughVolume(libFolder, libName, gaugeFspDf, upDist=1, dsDist=2):
     ''' Interpolate library segment volumes from gauged FSPs.
+    Parameters:
         libFolder: folder where the library is stored
         libName: name of the library
         gaugeFspDf: DataFrame with gauged FSPs including columns ['lib_name', 'SegId', 'FspX', 'FspY', 'FilledElev', 'DsDist', 'Dof']
+        upDist: upstream distance to search for segments (default is 1)
+        dsDist: downstream distance to search for segments (default is 2)
+
+    returns:
+        DataFrame with interpolated FSP DOF values
     '''
     # Read in library FSP info CSV file
     fspFile = os.path.join(libFolder, libName, fspInfoFileName)
