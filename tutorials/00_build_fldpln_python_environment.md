@@ -1,9 +1,11 @@
 # Build a Python Environment for Using the FLDPLN Model
 
-To use the FLDPLN model with Python, we need to build a Python environment with the necessary packages installed. This document provides information on how to build the "fldpln_fim" Python environment and how to use it in JupyterLab and Visual Studio Code (VSC). It includes the following major steps:
+To use the FLDPLN model with Python, we need to build a Python environment with the necessary packages installed. This document provides information on how to build the "fldpln_fim" Python environment and use it in JupyterLab and Visual Studio Code (VSC). It includes the following major steps:
 * Create the fldpln_fim Python environment and install dependent Python packages.
 * Install the FLDPLN model Python package (fldpln_model) in the fldpln_fim environment and MATLAB Runtime.
 * Install FLDPLN tiling and mapping Python package (fldpln) in the fldpln_fim environment. 
+
+**Note that the following instructions are largely based on the Windows operating system. Creating the Python environment in other operating system should follow the general (but not exact) steps.**
 
 ## Create the fldpln_fim Python Environment
 
@@ -18,8 +20,8 @@ Miniconda is a lightweight version of Anaconda, which is a full-fledged data sci
 
 We will create the fldpln_fim environment using a YAML file instead of installing the dependent packages individually. You can download the [fldpln_fim YAML configuration file](https://github.com/XingongLi/fldpln/blob/main/tutorials/fldpln_fim.yml) from Github where this document is located. 
 
-Search and open an Anaconda Prompt command window from the Start button on Windows. The base Python environment was automatically created and set as the default Python environment. In the command window, navigate to the folder where the YAML file is downloaded and saved, and run the following conda command to create the environment:
-```
+Open an Anaconda Prompt command window. The base Python environment was automatically created and set as the default Python environment. In the command window, navigate to the folder where the YAML file is downloaded and saved, and run the following conda command to create the environment:
+```bash
 conda env create -f fldpln_fim.yml
 ```
 **Be patient as installing all the dependent packages might take a while!**
@@ -32,9 +34,9 @@ Two python packages are needed for using the FLDPLN model. The first is the fldp
 
 The FLDPLN model is originally developed as MATLAB scripts and is compiled into the fldpln_model Python package in MATLAB. The package can be installed on either Windows or other operating systems which support MATLAB Runtime. Note that the MATLAB Runtime is free but required to use the fldpln_model package.
 
-Two kinds of installers are available to install the fldpln_model package and MATLAB Runtime it depends on. The smaller installer ([Windows](https://github.com/XingongLi/fldpln/blob/main/fldpln_model/fldpln_model_windows_installer_web.exe) and [Mac](https://github.com/XingongLi/fldpln/blob/main/fldpln_model/fldpln_model_mac_installer_web.app.zip)) available on Github downloads the MATLAB Runtime on-the-fly during installation and the larger installer ([Windows](https://kbs-karsfl-pc01.home.ku.edu/download/fldpln_model_windows_installer_offline.exe) and [Mac](https://kbs-karsfl-pc01.home.ku.edu/download/fldpln_model_mac_installer_offline.app.zip)) available on a KU server has the MATLAB Runtime included in the installer. Whichever installer is used, it will install both the MATLAB Runtime and the fldpln_model package. 
+Two kinds of installers are available to install the fldpln_model package and MATLAB Runtime it depends on. The smaller installer ([Windows](https://github.com/XingongLi/fldpln/blob/main/fldpln_model/fldpln_model_windows_installer_web.exe) and [Mac](https://github.com/XingongLi/fldpln/blob/main/fldpln_model/fldpln_model_mac_installer_web.app.zip)) available on Github downloads the MATLAB Runtime on-the-fly during installation and the larger installer ([Windows](https://kbs-karsfl-pc01.home.ku.edu/download/fldpln_model_windows_installer_offline.exe) and [Mac](https://kbs-karsfl-pc01.home.ku.edu/download/fldpln_model_mac_installer_offline.app.zip)) available on a KU server has the MATLAB Runtime included in the installer. Whichever installer is used, it will install both the MATLAB Runtime and the fldpln_model package. Note that MATLAB Runtime requires 3 GB disk space and takes time to download and install.
 
-Note that MATLAB Runtime requires 3 GB disk space and takes time to download and install. Also note that the installer for Windows automatically sets the MATLAB Runtime path during installation, but on Linux or macOS you must add the Runtime manually. See [here](https://www.mathworks.com/help/compiler_sdk/cxx/mcr-path-settings-for-run-time-deployment.html) for more information.
+> ⚠️ **Critical for macOS & Linux Users:** > While the Windows installer sets the runtime path automatically, you **must** configure your environment paths manually on Linux or macOS before running Python, or the package import will fail. See the [MathWorks Documentation](https://www.mathworks.com/help/compiler_sdk/cxx/mcr-path-settings-for-run-time-deployment.html) for exact export commands.
 
 After running the installer, open an Anaconda Prompt command window, navigate to the application folder under where the fldpln_model is installed (i.e., fldpln_model/application and where file setup.py is located), and activate the fldpln_fim environment by:
 ```
@@ -78,9 +80,6 @@ The fldpln_fim environment should be directly available in VSC after for writing
 
     ![Setup PATH variable](./images/PATH_environment_variables.png)
 * VSC terminal 
-  * VSC uses powershell as the default terminal which cause some issues even after including conda path in the PATH environment variable.
+  * VSC uses powershell as the default terminal which may still have some issues even after including conda path in the PATH environment variable.
   * A quick solution is to change the default powershell terminal in VSC to the regular cmd terminal by press CTRL+SHIFT+P in VSC and search for “terminal select default profile” and select “Command Prompt C:\WINDOWS\System32\cmd.exe”
-* VSC also supports Jupyter notebooks. But it needs the ipython kernel package be installed into the environment. The kernel can also be installed when you open a notebook in VSC and choose the fldpln_fim environment. You can also install the package into the fldpln_fim environment by:
-  ```
-  conda install -c conda-forge ipykernel
-  ```
+* VSC also supports Jupyter notebooks. But it needs the ipython kernel package be installed in the chosen environment.
